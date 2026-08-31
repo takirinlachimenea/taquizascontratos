@@ -54,8 +54,17 @@
         </div>
       </div>
 
+      <!-- Cloud Sync Indicator in Sidebar -->
+      <div class="px-4 pt-3 pb-1">
+        <button type="button" onclick="StorageManager.syncWithCloud()" id="navbar-sync-indicator" class="w-full flex items-center justify-center gap-2 px-3 py-1.5 rounded-xl text-xs font-bold bg-emerald-50 text-emerald-800 border border-emerald-200 hover:bg-emerald-100 transition-all cursor-pointer" title="Hacer clic para sincronizar ahora con todos tus dispositivos">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+          <span id="navbar-sync-text">Nube: Sincronizado</span>
+          <span class="text-xs">🔄</span>
+        </button>
+      </div>
+
       <!-- Quick Action Button -->
-      <div class="p-4">
+      <div class="p-4 pt-2">
         <button type="button" onclick="App.newContract()" class="w-full py-2.5 px-4 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-bold text-xs rounded-xl shadow-sm hover:shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
           <span>Nuevo Contrato</span>
@@ -82,7 +91,7 @@
         </a>
         <a class="nav-link" data-view="sync" onclick="App.navigate('sync')">
           <svg class="w-5 h-5 text-slate-500 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-          <span class="pointer-events-none">GitHub & Respaldo</span>
+          <span class="pointer-events-none">Sincronización Nube</span>
         </a>
       </nav>
     </div>
@@ -113,6 +122,9 @@
           <p class="text-xs text-slate-500 mt-0.5">Administra tus servicios, anticipos de clientes y calendario de eventos.</p>
         </div>
         <div class="flex items-center gap-2">
+          <button type="button" onclick="StorageManager.syncWithCloud()" class="px-3.5 py-2 bg-emerald-50 border border-emerald-200 hover:bg-emerald-100 text-emerald-800 text-xs font-bold rounded-xl transition-colors shadow-xs flex items-center gap-1.5 cursor-pointer">
+            🔄 Sincronizar Nube
+          </button>
           <button type="button" onclick="App.navigate('calendar')" class="px-3.5 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-bold rounded-xl transition-colors shadow-xs flex items-center gap-1.5 cursor-pointer">
             📅 Ver Calendario
           </button>
@@ -576,12 +588,65 @@
     </section>
 
     <!-- ========================================
-         VIEW: BACKUP & GITHUB SYNC
+         VIEW: BACKUP & CLOUD / GITHUB SYNC
     ======================================== -->
     <section id="view-sync" class="p-4 md:p-8 space-y-6 hidden">
       <div>
-        <h2 class="text-2xl font-black text-slate-900">Respaldo y Sincronización con GitHub</h2>
-        <p class="text-xs text-slate-500">Tus contratos se guardan localmente en este dispositivo y puedes desplegar la app en GitHub Pages para abrirla desde cualquier celular o equipo.</p>
+        <h2 class="text-2xl font-black text-slate-900">Sincronización en la Nube y Respaldo Multidispositivo</h2>
+        <p class="text-xs text-slate-500">Conecta todos tus celulares, tablets y computadoras para que tus contratos se sincronicen automáticamente en tiempo real.</p>
+      </div>
+
+      <!-- Cloud Sync Panel -->
+      <div class="bg-gradient-to-br from-slate-900 to-slate-800 text-white p-6 rounded-3xl shadow-xl space-y-5">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-700/80 pb-4">
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 bg-red-600 rounded-2xl flex items-center justify-center text-2xl shadow-md">
+              ☁️
+            </div>
+            <div>
+              <h3 class="text-lg font-black text-white">Sincronización Automática entre Dispositivos</h3>
+              <p class="text-xs text-slate-300">Tus contratos se guardan en la nube para que aparezcan en tu celular y laptop al mismo tiempo.</p>
+            </div>
+          </div>
+          <button type="button" onclick="StorageManager.syncWithCloud()" class="px-5 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs rounded-xl transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer self-start sm:self-auto">
+            <span>🔄 Sincronizar Ahora</span>
+          </button>
+        </div>
+
+        <!-- Sync Configuration Fields -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+          <!-- Room Key Sync (Default & Easiest) -->
+          <div class="bg-white/10 p-4 rounded-2xl border border-white/10 space-y-3">
+            <div class="flex items-center justify-between">
+              <strong class="text-sm font-black text-amber-400">🔑 Clave de Negocio (Recomendada)</strong>
+              <span class="text-[10px] bg-emerald-500/30 text-emerald-300 font-bold px-2 py-0.5 rounded-full">Activa</span>
+            </div>
+            <p class="text-slate-300 text-[11px]">Todos los dispositivos que tengan la misma clave compartirán la misma base de datos automáticamente.</p>
+            <div>
+              <label class="block text-[11px] font-bold text-slate-300 mb-1">Clave de Sincronización:</label>
+              <div class="flex gap-2">
+                <input type="text" id="input-cloud-key" value="takirin-lachimenea-cordoba" class="flex-1 bg-slate-900/90 text-white p-2 rounded-xl border border-slate-700 text-xs font-mono font-bold">
+                <button type="button" onclick="App.saveCloudKeySetting()" class="px-3 py-2 bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold rounded-xl text-xs">Guardar</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- GitHub Gist Sync (Optional) -->
+          <div class="bg-white/10 p-4 rounded-2xl border border-white/10 space-y-3">
+            <div class="flex items-center justify-between">
+              <strong class="text-sm font-black text-slate-200">🐙 GitHub Token (Opcional)</strong>
+              <span class="text-[10px] bg-slate-700 text-slate-300 font-bold px-2 py-0.5 rounded-full">Gist API</span>
+            </div>
+            <p class="text-slate-300 text-[11px]">Si prefieres sincronizar directamente con tu cuenta privada de GitHub.</p>
+            <div>
+              <label class="block text-[11px] font-bold text-slate-300 mb-1">Personal Access Token (con permiso gist):</label>
+              <div class="flex gap-2">
+                <input type="password" id="input-github-token" placeholder="ghp_xxxxxxxxxxxx" class="flex-1 bg-slate-900/90 text-white p-2 rounded-xl border border-slate-700 text-xs font-mono">
+                <button type="button" onclick="App.saveGitHubTokenSetting()" class="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-xs">Conectar</button>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -592,8 +657,8 @@
               💾
             </div>
             <div>
-              <h3 class="font-bold text-slate-900 text-base">Exportar e Importar Datos</h3>
-              <p class="text-xs text-slate-500">Descarga un respaldo JSON con todos tus contratos.</p>
+              <h3 class="font-bold text-slate-900 text-base">Exportar e Importar Respaldo</h3>
+              <p class="text-xs text-slate-500">Descarga un archivo JSON con todos tus contratos para guardarlo en tu computadora o enviarlo por correo.</p>
             </div>
           </div>
 
@@ -618,18 +683,18 @@
               🌐
             </div>
             <div>
-              <h3 class="font-bold text-slate-900 text-base">Acceso desde Cualquier Dispositivo</h3>
-              <p class="text-xs text-slate-500">Instrucciones para subir a GitHub y abrir en tu celular.</p>
+              <h3 class="font-bold text-slate-900 text-base">Acceso desde Cualquier Celular (GitHub Pages)</h3>
+              <p class="text-xs text-slate-500">Ten tu aplicación disponible 24/7 en internet gratis.</p>
             </div>
           </div>
 
           <div class="text-xs text-slate-600 space-y-2 bg-slate-50 p-4 rounded-xl border border-slate-200">
             <p class="font-bold text-slate-900">Pasos para activar en GitHub Pages:</p>
             <ol class="list-decimal list-inside space-y-1">
-              <li>Crea un repositorio en GitHub (ej. <code class="bg-white px-1 py-0.5 rounded text-red-600">takirin-contratos</code>).</li>
-              <li>Sube los archivos de este proyecto al repositorio.</li>
+              <li>Crea un repositorio en GitHub llamado <code class="bg-white px-1 py-0.5 rounded text-red-600">takirin-contratos</code>.</li>
+              <li>Sube todos los archivos del proyecto a la rama <code class="bg-white px-1 py-0.5 rounded text-red-600">main</code>.</li>
               <li>Ve a <strong>Settings → Pages</strong> y selecciona la rama <code class="bg-white px-1 py-0.5 rounded text-red-600">main / root</code>.</li>
-              <li>¡Listo! Tu app estará disponible en un enlace web público/privado para usar en iPhone, Android, iPad o cualquier computadora.</li>
+              <li>Abre el enlace en tu celular y ¡los contratos que crees en el celular se sincronizarán con tu computadora automáticamente!</li>
             </ol>
           </div>
         </div>
@@ -669,7 +734,7 @@
   <script src="js/calendar.js"></script>
   <script src="js/app.js"></script>
 
-  <!-- Import file helper -->
+  <!-- Cloud Sync UI Helper methods -->
   <script>
     App.handleImportFile = async function(file) {
       if (!file) return;
@@ -678,10 +743,40 @@
         App.showToast(result.message, 'success');
         App.renderStats();
         App.renderContractsTable();
-        CalendarManager.render();
+        if (typeof CalendarManager !== 'undefined') CalendarManager.render();
       } catch (err) {
         App.showToast('Error al importar el archivo: ' + err.message, 'error');
       }
+    };
+
+    App.saveCloudKeySetting = async function() {
+      const keyInput = document.getElementById('input-cloud-key');
+      if (!keyInput) return;
+      const key = keyInput.value.trim() || 'takirin-lachimenea-cordoba';
+      const config = StorageManager.getSyncConfig();
+      config.cloudKey = key;
+      config.provider = 'cloudkey';
+      config.enabled = true;
+      StorageManager.saveSyncConfig(config);
+      App.showToast('Clave de sincronización guardada. Sincronizando...', 'info');
+      await StorageManager.syncWithCloud();
+    };
+
+    App.saveGitHubTokenSetting = async function() {
+      const tokenInput = document.getElementById('input-github-token');
+      if (!tokenInput) return;
+      const token = tokenInput.value.trim();
+      if (!token) {
+        App.showToast('Ingresa un token válido de GitHub.', 'warning');
+        return;
+      }
+      const config = StorageManager.getSyncConfig();
+      config.githubToken = token;
+      config.provider = 'github';
+      config.enabled = true;
+      StorageManager.saveSyncConfig(config);
+      App.showToast('Token de GitHub guardado. Conectando con GitHub Gists...', 'info');
+      await StorageManager.syncWithCloud();
     };
   </script>
 </body>
