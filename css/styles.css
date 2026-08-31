@@ -1,0 +1,178 @@
+/* ----------------------------------------------------
+   TAKIRIN LA CHIMENEA - CONTRATOS & CALENDARIO
+   Estilos principales y motor de impresión tamaño CARTA
+---------------------------------------------------- */
+
+:root {
+  --primary-red: #e60000;
+  --primary-red-dark: #b8001f;
+  --primary-yellow: #f5a623;
+  --primary-yellow-light: #fbbf24;
+  --primary-yellow-header: #f5a623;
+  --bg-slate: #f8fafc;
+  --border-black: #000000;
+  --text-main: #000000;
+}
+
+/* Fundamental utility classes */
+.hidden {
+  display: none !important;
+}
+
+.modal-overlay.hidden {
+  display: none !important;
+  pointer-events: none !important;
+}
+
+.modal-overlay {
+  display: flex;
+  pointer-events: auto;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  color: #0f172a;
+  background-color: #f1f5f9;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+/* App Layout Navigation */
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 1rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  font-size: 0.925rem;
+  color: #475569;
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+  user-select: none;
+}
+.nav-link:hover {
+  background-color: #f8fafc;
+  color: #d90429;
+}
+.nav-link.active {
+  background-color: #fee2e2;
+  color: #d90429;
+  font-weight: 600;
+}
+
+/* ====================================================
+   FORMATO DE CONTRATO FOP-01 (TAMAÑO CARTA EXACTO)
+==================================================== */
+
+.contract-sheet-wrapper {
+  background: #e2e8f0;
+  padding: 20px 10px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100%;
+}
+
+.contract-paper {
+  background: #ffffff;
+  width: 100%;
+  max-width: 760px;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.12), 0 8px 10px -6px rgba(0, 0, 0, 0.08);
+  padding: 16px 22px;
+  margin: 0 auto;
+  box-sizing: border-box;
+  position: relative;
+  font-family: Arial, Helvetica, sans-serif;
+  color: #000000;
+  border: 1px solid #cbd5e1;
+}
+
+/* ====================================================
+   PRINT STYLES FOR EXACT 1-PAGE LETTER PRINTING
+==================================================== */
+@media print {
+  @page {
+    size: letter portrait;
+    margin: 4mm 6mm 4mm 6mm;
+  }
+
+  html, body {
+    width: 215.9mm !important;
+    height: 279.4mm !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #ffffff !important;
+    color: #000000 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    overflow: hidden !important;
+  }
+
+  /* Hide app navigation, sidebars, buttons and modals */
+  .no-print,
+  nav,
+  header,
+  aside,
+  .btn-action,
+  .app-sidebar,
+  .app-header,
+  .contract-editor-pane,
+  .modal-overlay,
+  .toast-container,
+  main > section:not(#print-mount-area) {
+    display: none !important;
+  }
+
+  #print-mount-area {
+    display: block !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .contract-sheet-wrapper {
+    background: transparent !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    display: block !important;
+  }
+
+  .contract-paper {
+    box-shadow: none !important;
+    margin: 0 auto !important;
+    padding: 4mm 6mm 2mm 6mm !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    height: 100% !important;
+    max-height: 270mm !important;
+    border: none !important;
+    page-break-after: avoid !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  /* Force background colors on print engines */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}

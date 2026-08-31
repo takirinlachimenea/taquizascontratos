@@ -1,0 +1,180 @@
+[
+  {
+    "id": "TK-2026-0001",
+    "folio": "0001",
+    "contractDate": "2026-08-31",
+    "client": {
+      "name": "Lic. Roberto Morales Vázquez",
+      "address": "Av. 3 #1420, Fracc. San José, Córdoba, Ver.",
+      "reference": "Frente al parque de San José, portón blanco",
+      "phone": "271 123 4567"
+    },
+    "event": {
+      "type": "Taquiza Tradicional para 80 personas:\n• Pastor marinado con piña\n• Suadero al estilo CDMX\n• Longaniza artesanal\n• Bistec de res",
+      "amount": 4800,
+      "complements": [
+        "Salsa Verde",
+        "Salsa Roja",
+        "Cebolla morada con habanero",
+        "Rábanos o pepinos",
+        "Limones",
+        "Pico de gallo",
+        "Cebolla y Cilantro",
+        "Plato desechable",
+        "2 horas de servicio"
+      ],
+      "complementsText": "• Salsa Verde\n• Salsa Roja\n• Cebolla morada con habanero\n• Rábanos o pepinos\n• Limones\n• Pico de gallo\n• Cebolla y Cilantro\n• Plato desechable\n• 2 horas de servicio",
+      "additionals": "40 Gringas de pastor con queso Gouda + Vitrolero Horchata 20L",
+      "additionalsAmount": 850,
+      "travelCost": 0,
+      "date": "2026-09-05",
+      "dayOfWeek": "SÁBADO",
+      "arrivalTime": "14:00",
+      "startTime": "15:00",
+      "serviceTime": "2 HORAS",
+      "endTime": "17:00",
+      "assignedStaff": "Carlos Mendoza (Parrillero), Jesús López (Ayudante)"
+    },
+    "payments": {
+      "anticipos": [
+        {
+          "id": "ant-1",
+          "date": "2026-08-31",
+          "type": "Transferencia",
+          "amount": 2500,
+          "note": "Apartado 50%"
+        }
+      ],
+      "subtotal": 5650,
+      "ivaRate": 0,
+      "ivaAmount": 0,
+      "total": 5650,
+      "remainingBalance": 3150,
+      "status": "partial"
+    },
+    "elaboratedBy": "Alexis Lira",
+    "createdAt": "2026-08-31T13:30:00.000Z",
+    "updatedAt": "2026-08-31T13:30:00.000Z"
+  },
+  {
+    "id": "TK-2026-0002",
+    "folio": "0002",
+    "contractDate": "2026-08-30",
+    "client": {
+      "name": "Dra. Mariana Castillo Ramos",
+      "address": "Calle 9 Poniente #45, Col. Centro, Fortín de las Flores, Ver.",
+      "reference": "A dos cuadras del parque central de Fortín",
+      "phone": "271 987 6543"
+    },
+    "event": {
+      "type": "Taquiza Premium 120 personas:\n• Pastor especial Takirin\n• Chuleta ahumada con queso\n• Alambre mixto con morrón\n• Longaniza y Bistec",
+      "amount": 7200,
+      "complements": [
+        "Salsa Verde",
+        "Salsa Roja",
+        "Cebolla morada con habanero",
+        "Rábanos o pepinos",
+        "Limones",
+        "Pico de gallo",
+        "Cebolla y Cilantro",
+        "Plato desechable",
+        "2 horas de servicio"
+      ],
+      "complementsText": "• Salsa Verde\n• Salsa Roja\n• Cebolla morada con habanero\n• Rábanos o pepinos\n• Limones\n• Pico de gallo\n• Cebolla y Cilantro\n• Plato desechable\n• 2 horas de servicio",
+      "additionals": "1 Hora extra de servicio ($300) + 50 quesadillas de maíz",
+      "additionalsAmount": 750,
+      "travelCost": 250,
+      "date": "2026-09-12",
+      "dayOfWeek": "SÁBADO",
+      "arrivalTime": "17:30",
+      "startTime": "19:00",
+      "serviceTime": "3 HORAS",
+      "endTime": "22:00",
+      "assignedStaff": "Carlos Mendoza, Pedro Ramírez, Sofia Huerta"
+    },
+    "payments": {
+      "anticipos": [
+        {
+          "id": "ant-1",
+          "date": "2026-08-30",
+          "type": "Efectivo",
+          "amount": 4000,
+          "note": "Anticipo inicial"
+        },
+        {
+          "id": "ant-2",
+          "date": "2026-08-31",
+          "type": "Transferencia",
+          "amount": 4200,
+          "note": "Liquidación total"
+        }
+      ],
+      "subtotal": 8200,
+      "ivaRate": 0,
+      "ivaAmount": 0,
+      "total": 8200,
+      "remainingBalance": 0,
+      "status": "paid"
+    },
+    "elaboratedBy": "Alexis Lira",
+    "createdAt": "2026-08-30T10:15:00.000Z",
+    "updatedAt": "2026-08-31T12:00:00.000Z"
+  },
+  {
+    "id": "TK-2026-0003",
+    "folio": "0003",
+    "contractDate": "2026-08-31",
+    "client": {
+      "name": "Ing. Fernando Gómez Perea",
+      "address": "Privada Las Palmas #12, Fracc. Campestre, Córdoba, Ver.",
+      "reference": "Entrando por la caseta, tercera casa a mano derecha",
+      "phone": "271 555 8899"
+    },
+    "event": {
+      "type": "Taquiza Familiar 50 personas:\n• Pastor al trompo tradicional\n• Suadero suave\n• Bistec",
+      "amount": 3200,
+      "complements": [
+        "Salsa Verde",
+        "Salsa Roja",
+        "Cebolla morada con habanero",
+        "Rábanos o pepinos",
+        "Limones",
+        "Pico de gallo",
+        "Cebolla y Cilantro",
+        "Plato desechable",
+        "2 horas de servicio"
+      ],
+      "complementsText": "• Salsa Verde\n• Salsa Roja\n• Cebolla morada con habanero\n• Rábanos o pepinos\n• Limones\n• Pico de gallo\n• Cebolla y Cilantro\n• Plato desechable\n• 2 horas de servicio",
+      "additionals": "Cazuela de frijoles charros con tocino y salchicha",
+      "additionalsAmount": 450,
+      "travelCost": 0,
+      "date": "2026-09-18",
+      "dayOfWeek": "VIERNES",
+      "arrivalTime": "19:00",
+      "startTime": "20:00",
+      "serviceTime": "2 HORAS",
+      "endTime": "22:00",
+      "assignedStaff": "Jesús López (Parrillero)"
+    },
+    "payments": {
+      "anticipos": [
+        {
+          "id": "ant-1",
+          "date": "2026-08-31",
+          "type": "Transferencia",
+          "amount": 1500,
+          "note": "Anticipo de confirmación"
+        }
+      ],
+      "subtotal": 3650,
+      "ivaRate": 0,
+      "ivaAmount": 0,
+      "total": 3650,
+      "remainingBalance": 2150,
+      "status": "partial"
+    },
+    "elaboratedBy": "Alexis Lira",
+    "createdAt": "2026-08-31T11:00:00.000Z",
+    "updatedAt": "2026-08-31T11:00:00.000Z"
+  }
+]

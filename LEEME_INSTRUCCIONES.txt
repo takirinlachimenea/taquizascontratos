@@ -1,0 +1,51 @@
+========================================================================
+🌮 TAKIRIN LA CHIMENEA - SISTEMA DE CONTRATOS Y CALENDARIO DE TAQUIZAS
+========================================================================
+
+¡Listo para funcionar en CUALQUIER COMPUTADORA (Windows, Mac o Linux)
+o CELULAR sin necesidad de instalar programas adicionales!
+
+------------------------------------------------------------------------
+CÓMO USAR EN CADA COMPUTADORA:
+------------------------------------------------------------------------
+
+▶ EN CUALQUIER COMPUTADORA (La forma más fácil y rápida):
+   1. Haz doble clic en el archivo: "Contratos_Takirin.html"
+   2. ¡Listo! Se abrirá en tu navegador favorito (Chrome, Edge, Safari, Firefox).
+   * Funciona 100% sin internet y guarda tus datos en la memoria local de tu equipo.
+
+▶ EN WINDOWS:
+   - Haz doble clic en "Abrir_en_Windows.bat" o en "Contratos_Takirin.html".
+
+▶ EN MAC:
+   - Haz doble clic en "Contratos_Takirin.html" o en "index.html".
+
+▶ USAR COMO SERVIDOR LOCAL (Opcional):
+   - Abre tu terminal en esta carpeta y ejecuta:
+     python3 server.py
+   - Y abre en tu navegador: http://localhost:8080
+
+------------------------------------------------------------------------
+CÓMO USAR EN TU CELULAR (iPhone o Android) CON GITHUB:
+------------------------------------------------------------------------
+1. Crea un repositorio en https://github.com (ejemplo: "takirin-contratos").
+2. Sube todos los archivos de esta carpeta a tu repositorio.
+3. En GitHub ve a "Settings" -> "Pages".
+4. En "Branch" selecciona "main" / "root" y presiona Save.
+5. ¡Listo! GitHub te dará un enlace web para usar la app en tu celular en cualquier lugar.
+
+------------------------------------------------------------------------
+CARACTERÍSTICAS INCLUIDAS:
+------------------------------------------------------------------------
+✔ Formato oficial FOP-01 idéntico al papel original con logotipo y franjas.
+✔ Tipografía 100% homogénea en Arial.
+✔ Calibrado exacto para impresión y descarga en PDF tamaño CARTA (1 sola hoja).
+✔ Control dinámico de anticipos con auto-cálculo de Saldo Restante.
+✔ Folios automáticos y editor en vivo en pantalla dividida.
+✔ Calendario de eventos por mes y agenda con código de colores de pago.
+✔ Botón de compartir resumen por WhatsApp.
+✔ Respaldo y restauración de datos en archivos .JSON.
+
+Takirin La Chimenea • Córdoba, Veracruz • 271 157 1770
+"Donde la carne es más suave que la tortilla"
+========================================================================

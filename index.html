@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Takirin La Chimenea - Contratos & Taquizas</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              red: '#d90429',
+              redDark: '#b8001f',
+              yellow: '#f5a623',
+              yellowLight: '#fde047',
+              dark: '#111827'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- html2pdf.js for client-side PDF export -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <!-- Custom CSS & Print Styles -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="bg-slate-100 min-h-screen text-slate-800 flex flex-col md:flex-row antialiased">
+
+  <!-- ==========================================
+       SIDEBAR NAVIGATION (DESKTOP & MOBILE)
+  =========================================== -->
+  <aside class="app-sidebar w-full md:w-64 bg-white border-r border-slate-200 flex flex-col justify-between shrink-0 shadow-xs z-20">
+    <div>
+      <!-- Brand Header -->
+      <div class="p-5 border-b border-slate-100 flex items-center justify-between cursor-pointer" onclick="App.navigate('dashboard')">
+        <div class="flex items-center gap-3">
+          <img src="assets/logo.png" alt="Takirin La Chimenea" class="h-10 w-auto object-contain" onerror="this.src='assets/media_1788204842733.png'">
+          <div>
+            <h1 class="text-sm font-black text-slate-900 tracking-tight leading-tight">TAKIRIN</h1>
+            <p class="text-[10px] font-bold text-red-600 tracking-wider">LA CHIMENEA</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Action Button -->
+      <div class="p-4">
+        <button type="button" onclick="App.newContract()" class="w-full py-2.5 px-4 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-bold text-xs rounded-xl shadow-sm hover:shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+          <span>Nuevo Contrato</span>
+        </button>
+      </div>
+
+      <!-- Nav Links -->
+      <nav class="px-3 space-y-1">
+        <a class="nav-link active" data-view="dashboard" onclick="App.navigate('dashboard')">
+          <svg class="w-5 h-5 text-slate-500 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+          <span class="pointer-events-none">Panel Principal</span>
+        </a>
+        <a class="nav-link" data-view="contracts" onclick="App.navigate('contracts')">
+          <svg class="w-5 h-5 text-slate-500 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+          <span class="pointer-events-none">Contratos & Folios</span>
+        </a>
+        <a class="nav-link" data-view="calendar" onclick="App.navigate('calendar')">
+          <svg class="w-5 h-5 text-slate-500 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+          <span class="pointer-events-none">Calendario Taquizas</span>
+        </a>
+        <a class="nav-link" data-view="editor" onclick="App.navigate('editor')">
+          <svg class="w-5 h-5 text-slate-500 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+          <span class="pointer-events-none">Generador / Editor</span>
+        </a>
+        <a class="nav-link" data-view="sync" onclick="App.navigate('sync')">
+          <svg class="w-5 h-5 text-slate-500 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+          <span class="pointer-events-none">GitHub & Respaldo</span>
+        </a>
+      </nav>
+    </div>
+
+    <!-- Sidebar Footer -->
+    <div class="p-4 border-t border-slate-100 bg-slate-50/50">
+      <div class="text-[11px] text-slate-500 flex items-center justify-between">
+        <span>Formato Oficial</span>
+        <span class="font-mono font-bold bg-slate-200 text-slate-700 px-1.5 py-0.5 rounded">FOP-01</span>
+      </div>
+      <p class="text-[10px] text-slate-400 mt-1">Córdoba, Veracruz • 271 157 1770</p>
+    </div>
+  </aside>
+
+  <!-- ==========================================
+       MAIN CONTENT CONTAINER
+  =========================================== -->
+  <main class="flex-1 flex flex-col min-w-0 overflow-y-auto max-h-screen">
+    
+    <!-- ========================================
+         VIEW: DASHBOARD
+    ======================================== -->
+    <section id="view-dashboard" class="p-4 md:p-8 space-y-6">
+      <!-- Top Title Bar -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h2 class="text-2xl font-black text-slate-900">Control de Taquizas y Contratos</h2>
+          <p class="text-xs text-slate-500 mt-0.5">Administra tus servicios, anticipos de clientes y calendario de eventos.</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <button type="button" onclick="App.navigate('calendar')" class="px-3.5 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-bold rounded-xl transition-colors shadow-xs flex items-center gap-1.5 cursor-pointer">
+            📅 Ver Calendario
+          </button>
+          <button type="button" onclick="App.newContract()" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-xs font-bold rounded-xl transition-colors shadow-xs flex items-center gap-1.5 cursor-pointer">
+            + Nuevo Contrato
+          </button>
+        </div>
+      </div>
+
+      <!-- Upcoming Event Alert Banner -->
+      <div id="dashboard-upcoming-banner"></div>
+
+      <!-- Stats Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+        <!-- Stat 1 -->
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex flex-col justify-between">
+          <div class="flex justify-between items-center text-slate-400">
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Total Contratos</span>
+            <span class="p-1.5 bg-slate-100 rounded-lg text-slate-700">📄</span>
+          </div>
+          <div class="mt-3">
+            <span id="stat-total-contratos" class="text-2xl font-black text-slate-900">0</span>
+            <span class="text-[11px] text-slate-400 block mt-0.5">Registrados en el sistema</span>
+          </div>
+        </div>
+
+        <!-- Stat 2 -->
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex flex-col justify-between">
+          <div class="flex justify-between items-center text-slate-400">
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Eventos Este Mes</span>
+            <span class="p-1.5 bg-red-50 text-red-600 rounded-lg">🌮</span>
+          </div>
+          <div class="mt-3">
+            <span id="stat-eventos-mes" class="text-2xl font-black text-red-600">0</span>
+            <span class="text-[11px] text-slate-400 block mt-0.5">Taquizas programadas</span>
+          </div>
+        </div>
+
+        <!-- Stat 3 -->
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex flex-col justify-between">
+          <div class="flex justify-between items-center text-slate-400">
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Total en Ventas</span>
+            <span class="p-1.5 bg-blue-50 text-blue-600 rounded-lg">💼</span>
+          </div>
+          <div class="mt-3">
+            <span id="stat-ingresos-totales" class="text-2xl font-black text-slate-900">$0</span>
+            <span class="text-[11px] text-slate-400 block mt-0.5">Suma total de servicios</span>
+          </div>
+        </div>
+
+        <!-- Stat 4 -->
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex flex-col justify-between">
+          <div class="flex justify-between items-center text-slate-400">
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Anticipos Cobrados</span>
+            <span class="p-1.5 bg-emerald-50 text-emerald-600 rounded-lg">💵</span>
+          </div>
+          <div class="mt-3">
+            <span id="stat-anticipos-cobrados" class="text-2xl font-black text-emerald-600">$0</span>
+            <span class="text-[11px] text-slate-400 block mt-0.5">Recaudado efectivamente</span>
+          </div>
+        </div>
+
+        <!-- Stat 5 -->
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex flex-col justify-between">
+          <div class="flex justify-between items-center text-slate-400">
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Saldo por Cobrar</span>
+            <span class="p-1.5 bg-amber-50 text-amber-600 rounded-lg">⏳</span>
+          </div>
+          <div class="mt-3">
+            <span id="stat-saldo-por-cobrar" class="text-2xl font-black text-amber-600">$0</span>
+            <span class="text-[11px] text-slate-400 block mt-0.5">Pendiente de liquidación</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Contracts Table Section -->
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+        <div class="p-5 border-b border-slate-100 flex items-center justify-between">
+          <div>
+            <h3 class="font-bold text-slate-900 text-base">Últimos Contratos Registrados</h3>
+            <p class="text-xs text-slate-500">Acceso directo para imprimir, editar o registrar anticipos.</p>
+          </div>
+          <button type="button" onclick="App.navigate('contracts')" class="text-xs font-bold text-red-600 hover:text-red-700 flex items-center gap-1 cursor-pointer">
+            Ver todos los contratos →
+          </button>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left">
+            <thead class="bg-slate-50 text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b border-slate-200">
+              <tr>
+                <th class="py-3 px-4">Folio</th>
+                <th class="py-3 px-4">Cliente</th>
+                <th class="py-3 px-4">Fecha Evento</th>
+                <th class="py-3 px-4 text-right">Total</th>
+                <th class="py-3 px-4 text-right">Saldo Restante</th>
+                <th class="py-3 px-4 text-center">Estado</th>
+                <th class="py-3 px-4 text-right">Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="dashboard-recent-table" class="divide-y divide-slate-100">
+              <!-- Loaded via JavaScript -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================
+         VIEW: CONTRACTS LIST & SEARCH
+    ======================================== -->
+    <section id="view-contracts" class="p-4 md:p-8 space-y-6 hidden">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h2 class="text-2xl font-black text-slate-900">Catálogo de Contratos</h2>
+          <p class="text-xs text-slate-500">Historial completo con filtros por estado de pago y búsqueda por folio/cliente.</p>
+        </div>
+        <button type="button" onclick="App.newContract()" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-xs font-bold rounded-xl transition-colors shadow-xs flex items-center gap-1.5 self-start sm:self-auto cursor-pointer">
+          + Nuevo Contrato
+        </button>
+      </div>
+
+      <!-- Filters & Search Bar -->
+      <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex flex-col md:flex-row gap-3 items-center justify-between">
+        <div class="relative w-full md:w-96">
+          <input type="text" id="search-contracts-input" placeholder="Buscar por Folio, Cliente, Teléfono o Dirección..." class="w-full pl-9 pr-4 py-2 text-xs border border-slate-200 rounded-xl bg-slate-50 focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-red-500">
+          <svg class="w-4 h-4 text-slate-400 absolute left-3 top-2.5 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+        </div>
+
+        <div class="flex items-center gap-2 w-full md:w-auto">
+          <label class="text-xs font-bold text-slate-500 shrink-0">Filtrar:</label>
+          <select id="filter-contracts-status" class="text-xs border border-slate-200 rounded-xl px-3 py-2 bg-slate-50 focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-red-500">
+            <option value="all">Todos los Contratos</option>
+            <option value="partial">Con Saldo Pendiente</option>
+            <option value="paid">Liquidados al 100%</option>
+            <option value="pending">Sin Anticipo</option>
+            <option value="cancelled">Cancelados</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Full Contracts Table -->
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left">
+            <thead class="bg-slate-50 text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b border-slate-200">
+              <tr>
+                <th class="py-3 px-4">Folio</th>
+                <th class="py-3 px-4">Cliente</th>
+                <th class="py-3 px-4">Fecha Evento</th>
+                <th class="py-3 px-4 text-right">Total</th>
+                <th class="py-3 px-4 text-right">Saldo Restante</th>
+                <th class="py-3 px-4 text-center">Estado</th>
+                <th class="py-3 px-4 text-right">Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="contracts-table-body" class="divide-y divide-slate-100">
+              <!-- Loaded dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================
+         VIEW: CALENDAR OF EVENTS
+    ======================================== -->
+    <section id="view-calendar" class="p-4 md:p-8 space-y-6 hidden">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h2 class="text-2xl font-black text-slate-900">Calendario de Eventos</h2>
+          <p class="text-xs text-slate-500">Programa tus fechas, visualiza la disponibilidad y controla los saldos pendientes.</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <div class="bg-white border border-slate-200 rounded-xl p-1 flex items-center">
+            <button type="button" onclick="CalendarManager.currentView = 'month'; CalendarManager.render()" class="px-3 py-1 text-xs font-bold rounded-lg text-slate-700 hover:bg-slate-100 cursor-pointer">Mes</button>
+            <button type="button" onclick="CalendarManager.currentView = 'agenda'; CalendarManager.render()" class="px-3 py-1 text-xs font-bold rounded-lg text-slate-700 hover:bg-slate-100 cursor-pointer">Agenda</button>
+          </div>
+          <button type="button" onclick="App.newContract()" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-xs font-bold rounded-xl transition-colors shadow-xs cursor-pointer">
+            + Agendar Taquiza
+          </button>
+        </div>
+      </div>
+
+      <!-- Calendar Controls -->
+      <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        <div class="lg:col-span-3 space-y-4">
+          <!-- Navigation Bar -->
+          <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <button type="button" onclick="CalendarManager.changeMonth(-1)" class="p-2 border border-slate-200 rounded-xl hover:bg-slate-50 text-slate-600 font-bold cursor-pointer">
+                ◀
+              </button>
+              <h3 id="calendar-month-title" class="text-lg font-black text-slate-900 capitalize"></h3>
+              <button type="button" onclick="CalendarManager.changeMonth(1)" class="p-2 border border-slate-200 rounded-xl hover:bg-slate-50 text-slate-600 font-bold cursor-pointer">
+                ▶
+              </button>
+            </div>
+            <button type="button" onclick="CalendarManager.goToToday()" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl cursor-pointer">
+              Hoy
+            </button>
+          </div>
+
+          <!-- Calendar Grid Mount -->
+          <div id="calendar-container"></div>
+        </div>
+
+        <!-- Right Sidebar: Upcoming Taquizas -->
+        <div class="space-y-4">
+          <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs">
+            <h4 class="font-black text-slate-900 text-sm mb-3 flex items-center justify-between">
+              <span>Próximas Taquizas</span>
+              <span class="text-xs bg-red-100 text-red-700 px-2 py-0.5 rounded-full font-bold">Agenda</span>
+            </h4>
+            <div id="upcoming-events-sidebar" class="space-y-2.5">
+              <!-- Dynamically rendered -->
+            </div>
+          </div>
+
+          <!-- Legend Box -->
+          <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs text-xs space-y-2">
+            <h5 class="font-bold text-slate-800 uppercase tracking-wider text-[10px]">Guía de Colores</h5>
+            <div class="flex items-center gap-2">
+              <span class="w-3 h-3 rounded-full bg-emerald-500"></span>
+              <span class="text-slate-600">Liquidado al 100%</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="w-3 h-3 rounded-full bg-amber-500"></span>
+              <span class="text-slate-600">Anticipo dado (Saldo pendiente)</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="w-3 h-3 rounded-full bg-red-500"></span>
+              <span class="text-slate-600">Sin anticipo registrado</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================
+         VIEW: CONTRACT GENERATOR & EDITOR (LIVE SPLIT)
+    ======================================== -->
+    <section id="view-editor" class="p-4 md:p-6 space-y-4 hidden">
+      <!-- Editor Action Top Bar -->
+      <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex flex-col md:flex-row items-center justify-between gap-4 sticky top-2 z-10">
+        <div class="flex items-center gap-3">
+          <button type="button" onclick="App.navigate('contracts')" class="p-2 border border-slate-200 rounded-xl hover:bg-slate-50 text-slate-600 font-bold cursor-pointer" title="Regresar al listado">
+            ←
+          </button>
+          <div>
+            <h2 class="text-lg font-black text-slate-900">Editor de Contrato (Formato FOP-01)</h2>
+            <p class="text-xs text-slate-500">Los cambios se actualizan en tiempo real en la vista previa del documento oficial.</p>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2">
+          <button type="button" onclick="App.newContract()" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl transition-colors cursor-pointer">
+            + Nuevo
+          </button>
+          <button type="button" onclick="App.saveCurrentContract()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl transition-colors shadow-xs flex items-center gap-1.5 cursor-pointer">
+            💾 Guardar Contrato
+          </button>
+          <button type="button" onclick="App.viewAndPrintContract()" class="px-4 py-2 bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold rounded-xl transition-colors shadow-xs flex items-center gap-1.5 cursor-pointer">
+            🖨️ Imprimir Formato
+          </button>
+          <button type="button" onclick="App.downloadContractPDF()" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-xs font-bold rounded-xl transition-colors shadow-xs flex items-center gap-1.5 cursor-pointer">
+            📥 Descargar PDF
+          </button>
+        </div>
+      </div>
+
+      <!-- Split Layout: Form (Left) & Realtime FOP-01 Preview (Right) -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- LEFT COLUMN: FORM INPUTS -->
+        <div class="lg:col-span-5 space-y-4 contract-editor-pane">
+          <form id="contract-form" class="space-y-4" onsubmit="event.preventDefault(); App.saveCurrentContract();">
+            
+            <!-- SECTION 1: FOLIO Y FECHA DE CONTRATO -->
+            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs space-y-3">
+              <h3 class="font-bold text-xs text-slate-900 uppercase tracking-wider flex items-center gap-2 border-b pb-2">
+                <span class="w-2 h-2 rounded-full bg-red-600"></span> 1. Folio y Fecha del Contrato
+              </h3>
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="text-xs font-bold text-slate-700 block mb-1">Folio (Automático / Editable)</label>
+                  <input type="text" id="input-folio" class="w-full text-sm font-black p-2 border border-slate-300 rounded-xl bg-red-50/30 text-red-700 focus:ring-2 focus:ring-red-500">
+                </div>
+                <div>
+                  <label class="text-xs font-bold text-slate-700 block mb-1">Fecha de Elaboración</label>
+                  <input type="date" id="input-contract-date" class="w-full text-xs p-2 border border-slate-300 rounded-xl bg-white focus:ring-2 focus:ring-red-500">
+                </div>
+              </div>
+            </div>
+
+            <!-- SECTION 2: DATOS DEL CLIENTE -->
+            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs space-y-3">
+              <h3 class="font-bold text-xs text-slate-900 uppercase tracking-wider flex items-center gap-2 border-b pb-2">
+                <span class="w-2 h-2 rounded-full bg-red-600"></span> 2. Datos del Cliente
+              </h3>
+              <div>
+                <label class="text-xs font-bold text-slate-700 block mb-1">Nombre Completo del Cliente *</label>
+                <input type="text" id="input-client-name" required placeholder="Ej. Lic. Roberto Morales Vázquez" class="w-full text-xs p-2 border border-slate-300 rounded-xl bg-white focus:ring-2 focus:ring-red-500">
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label class="text-xs font-bold text-slate-700 block mb-1">Teléfono</label>
+                  <input type="tel" id="input-client-phone" placeholder="Ej. 271 123 4567" class="w-full text-xs p-2 border border-slate-300 rounded-xl bg-white">
+                </div>
+                <div>
+                  <label class="text-xs font-bold text-slate-700 block mb-1">Referencia</label>
+                  <input type="text" id="input-client-reference" placeholder="Ej. Portón blanco, frente al parque" class="w-full text-xs p-2 border border-slate-300 rounded-xl bg-white">
+                </div>
+              </div>
+              <div>
+                <label class="text-xs font-bold text-slate-700 block mb-1">Dirección del Evento</label>
+                <textarea id="input-client-address" rows="2" placeholder="Calle, número, colonia, municipio..." class="w-full text-xs p-2 border border-slate-300 rounded-xl bg-white"></textarea>
+              </div>
+            </div>
+
+            <!-- SECTION 3: MENÚ, COMPLEMENTOS Y PRECIO BASE -->
+            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs space-y-3">
+              <h3 class="font-bold text-xs text-slate-900 uppercase tracking-wider flex items-center gap-2 border-b pb-2">
+                <span class="w-2 h-2 rounded-full bg-amber-500"></span> 3. Tipo de Evento, Menú e Importe
+              </h3>
+              <div>
+                <label class="text-xs font-bold text-slate-700 block mb-1">Descripción del Paquete / Carnes</label>
+                <textarea id="input-event-type" rows="3" class="w-full text-xs p-2 border border-slate-300 rounded-xl bg-white font-sans" placeholder="Taquiza 50 personas: Pastor, Bistec, Longaniza, etc."></textarea>
+              </div>
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="text-xs font-bold text-slate-700 block mb-1">Importe Paquete ($ MXN)</label>
+                  <input type="number" step="any" min="0" id="input-event-amount" class="w-full text-sm font-black p-2 border border-slate-300 rounded-xl bg-amber-50/30 text-slate-900 focus:ring-2 focus:ring-amber-500">
+                </div>
+                <div>
+                  <label class="text-xs font-bold text-slate-700 block mb-1">Costo Traslado ($ Fuera Córdoba)</label>
+                  <input type="number" step="any" min="0" id="input-travel-cost" class="w-full text-sm font-black p-2 border border-slate-300 rounded-xl bg-white">
+                </div>
+              </div>
+              <div>
+                <label class="text-xs font-bold text-slate-700 block mb-1">Complementos Incluidos</label>
+                <textarea id="input-complements" rows="4" class="w-full text-xs p-2 border border-slate-300 rounded-xl bg-slate-50 font-mono"></textarea>
+              </div>
+              <div class="grid grid-cols-3 gap-2">
+                <div class="col-span-2">
+                  <label class="text-xs font-bold text-slate-700 block mb-1">Adicionales (Gringas, bebidas, etc.)</label>
+                  <input type="text" id="input-additionals" placeholder="Ej. 40 Gringas + Horchata 20L" class="w-full text-xs p-2 border border-slate-300 rounded-xl bg-white">
+                </div>
+                <div>
+                  <label class="text-xs font-bold text-slate-700 block mb-1">Monto ($)</label>
+                  <input type="number" step="any" min="0" id="input-additionals-amount" class="w-full text-xs p-2 border border-slate-300 rounded-xl bg-white">
+                </div>
+              </div>
+            </div>
+
+            <!-- SECTION 4: LOGÍSTICA, HORARIOS Y PERSONAL -->
+            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs space-y-3">
+              <h3 class="font-bold text-xs text-slate-900 uppercase tracking-wider flex items-center gap-2 border-b pb-2">
+                <span class="w-2 h-2 rounded-full bg-blue-600"></span> 4. Logística y Horarios de Servicio
+              </h3>
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="text-xs font-bold text-slate-700 block mb-1">Fecha del Evento</label>
+                  <input type="date" id="input-event-date" onchange="App.onEventDateChange(this.value)" class="w-full text-xs p-2 border border-slate-300 rounded-xl bg-white">
+                </div>
+                <div>
+                  <label class="text-xs font-bold text-slate-700 block mb-1">Día del Evento (Auto)</label>
+                  <input type="text" id="input-event-day" placeholder="Ej. SÁBADO" class="w-full text-xs font-bold uppercase p-2 border border-slate-300 rounded-xl bg-slate-100">
+                </div>
+              </div>
+
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                <div>
+                  <label class="text-[11px] font-bold text-slate-700 block mb-1">Hora Llegada</label>
+                  <input type="time" id="input-arrival-time" class="w-full text-xs p-2 border border-slate-300 rounded-xl bg-white">
+                </div>
+                <div>
+                  <label class="text-[11px] font-bold text-slate-700 block mb-1">Hora Inicio</label>
+                  <input type="time" id="input-start-time" onchange="App.onStartTimeChange()" class="w-full text-xs p-2 border border-slate-300 rounded-xl bg-white">
+                </div>
+                <div>
+                  <label class="text-[11px] font-bold text-slate-700 block mb-1">Tiempo Servicio</label>
+                  <input type="text" id="input-service-time" value="2 HORAS" onchange="App.onStartTimeChange()" class="w-full text-xs p-2 border border-slate-300 rounded-xl bg-white">
+                </div>
+                <div>
+                  <label class="text-[11px] font-bold text-slate-700 block mb-1">Hora Fin</label>
+                  <input type="time" id="input-end-time" class="w-full text-xs p-2 border border-slate-300 rounded-xl bg-white">
+                </div>
+              </div>
+
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="text-xs font-bold text-slate-700 block mb-1">Personal Asignado</label>
+                  <input type="text" id="input-assigned-staff" placeholder="Ej. Carlos Mendoza, Jesús López" class="w-full text-xs p-2 border border-slate-300 rounded-xl bg-white">
+                </div>
+                <div>
+                  <label class="text-xs font-bold text-slate-700 block mb-1">Elaboró Contrato</label>
+                  <input type="text" id="input-elaborated-by" value="Alexis Lira" class="w-full text-xs p-2 border border-slate-300 rounded-xl bg-white">
+                </div>
+              </div>
+            </div>
+
+            <!-- SECTION 5: ANTICIPOS Y TOTALES -->
+            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs space-y-3">
+              <div class="flex items-center justify-between border-b pb-2">
+                <h3 class="font-bold text-xs text-slate-900 uppercase tracking-wider flex items-center gap-2">
+                  <span class="w-2 h-2 rounded-full bg-emerald-500"></span> 5. Anticipos & Liquidación
+                </h3>
+                <button type="button" onclick="App.addAnticipoRow()" class="px-2.5 py-1 bg-amber-100 hover:bg-amber-200 text-amber-900 font-bold text-xs rounded-lg transition-colors flex items-center gap-1 cursor-pointer">
+                  + Agregar Anticipo
+                </button>
+              </div>
+
+              <!-- Dynamic Anticipos Container -->
+              <div id="form-anticipos-container" class="space-y-2.5">
+                <!-- Injected dynamically -->
+              </div>
+
+              <!-- IVA Config -->
+              <div class="flex items-center justify-between pt-2 border-t text-xs">
+                <label class="font-bold text-slate-700">Tasa de IVA (%):</label>
+                <div class="w-28">
+                  <input type="number" step="any" min="0" id="input-iva-rate" value="0" class="w-full text-xs p-1.5 border border-slate-300 rounded-lg text-right font-bold">
+                </div>
+              </div>
+
+              <!-- Financial Live Badges -->
+              <div class="grid grid-cols-3 gap-2 text-center pt-2">
+                <div class="bg-slate-100 p-2 rounded-xl">
+                  <span class="text-[10px] text-slate-500 block">Subtotal:</span>
+                  <strong id="display-form-subtotal" class="text-xs font-bold text-slate-800">$0.00</strong>
+                </div>
+                <div class="bg-slate-900 text-white p-2 rounded-xl">
+                  <span class="text-[10px] text-slate-300 block">Total Final:</span>
+                  <strong id="display-form-total" class="text-xs font-black">$0.00</strong>
+                </div>
+                <div class="bg-amber-100 text-amber-900 p-2 rounded-xl border border-amber-200">
+                  <span class="text-[10px] text-amber-700 block">Saldo Restante:</span>
+                  <strong id="display-form-saldo" class="text-xs font-black text-red-600">$0.00</strong>
+                </div>
+              </div>
+            </div>
+
+            <!-- Submit Button bottom -->
+            <div class="pt-2">
+              <button type="submit" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm rounded-xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer">
+                💾 Guardar Todos los Cambios del Contrato
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- RIGHT COLUMN: EXACT 1:1 FOP-01 LIVE PREVIEW SHEET -->
+        <div class="lg:col-span-7 contract-sheet-wrapper rounded-2xl shadow-inner overflow-x-auto">
+          <div id="live-preview-container">
+            <!-- Rendered 1:1 identical to original sheet -->
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ========================================
+         VIEW: BACKUP & GITHUB SYNC
+    ======================================== -->
+    <section id="view-sync" class="p-4 md:p-8 space-y-6 hidden">
+      <div>
+        <h2 class="text-2xl font-black text-slate-900">Respaldo y Sincronización con GitHub</h2>
+        <p class="text-xs text-slate-500">Tus contratos se guardan localmente en este dispositivo y puedes desplegar la app en GitHub Pages para abrirla desde cualquier celular o equipo.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Card 1: Local Backup Export / Import -->
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs space-y-4">
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center text-xl">
+              💾
+            </div>
+            <div>
+              <h3 class="font-bold text-slate-900 text-base">Exportar e Importar Datos</h3>
+              <p class="text-xs text-slate-500">Descarga un respaldo JSON con todos tus contratos.</p>
+            </div>
+          </div>
+
+          <div class="space-y-3 pt-2">
+            <button type="button" onclick="StorageManager.exportToJSON()" class="w-full py-2.5 px-4 bg-slate-900 hover:bg-black text-white text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-2 shadow-xs cursor-pointer">
+              📥 Descargar Archivo de Respaldo (.JSON)
+            </button>
+
+            <div class="relative">
+              <label class="w-full py-2.5 px-4 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer border border-dashed border-slate-300">
+                📤 Restaurar Respaldo desde Archivo JSON
+                <input type="file" accept=".json" class="hidden" onchange="App.handleImportFile(this.files[0])">
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2: GitHub Pages Guide -->
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs space-y-4">
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 bg-red-50 text-red-600 rounded-2xl flex items-center justify-center text-xl">
+              🌐
+            </div>
+            <div>
+              <h3 class="font-bold text-slate-900 text-base">Acceso desde Cualquier Dispositivo</h3>
+              <p class="text-xs text-slate-500">Instrucciones para subir a GitHub y abrir en tu celular.</p>
+            </div>
+          </div>
+
+          <div class="text-xs text-slate-600 space-y-2 bg-slate-50 p-4 rounded-xl border border-slate-200">
+            <p class="font-bold text-slate-900">Pasos para activar en GitHub Pages:</p>
+            <ol class="list-decimal list-inside space-y-1">
+              <li>Crea un repositorio en GitHub (ej. <code class="bg-white px-1 py-0.5 rounded text-red-600">takirin-contratos</code>).</li>
+              <li>Sube los archivos de este proyecto al repositorio.</li>
+              <li>Ve a <strong>Settings → Pages</strong> y selecciona la rama <code class="bg-white px-1 py-0.5 rounded text-red-600">main / root</code>.</li>
+              <li>¡Listo! Tu app estará disponible en un enlace web público/privado para usar en iPhone, Android, iPad o cualquier computadora.</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==========================================
+       MODALS & HIDDEN PRINT AREA
+  =========================================== -->
+
+  <!-- Modal: Event Details (From Calendar or List) -->
+  <div id="event-detail-modal" class="modal-overlay fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-2xl w-full p-6 shadow-2xl overflow-y-auto max-h-[90vh]" id="event-detail-modal-content">
+      <!-- Injected by CalendarManager -->
+    </div>
+  </div>
+
+  <!-- Modal: Quick Anticipo Registration -->
+  <div id="quick-anticipo-modal" class="modal-overlay fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl" id="quick-anticipo-modal-content">
+      <!-- Injected by App.openQuickAnticipoModal -->
+    </div>
+  </div>
+
+  <!-- Hidden Mount Area for 1:1 Letter Size Print & PDF Generation -->
+  <div id="print-mount-area" class="hidden"></div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="toast-container fixed bottom-5 right-5 z-50 space-y-2 pointer-events-none"></div>
+
+  <!-- Application Logic Scripts -->
+  <script src="js/storage.js"></script>
+  <script src="js/contract-model.js"></script>
+  <script src="js/pdf-generator.js"></script>
+  <script src="js/calendar.js"></script>
+  <script src="js/app.js"></script>
+
+  <!-- Import file helper -->
+  <script>
+    App.handleImportFile = async function(file) {
+      if (!file) return;
+      try {
+        const result = await StorageManager.importFromJSON(file);
+        App.showToast(result.message, 'success');
+        App.renderStats();
+        App.renderContractsTable();
+        CalendarManager.render();
+      } catch (err) {
+        App.showToast('Error al importar el archivo: ' + err.message, 'error');
+      }
+    };
+  </script>
+</body>
+</html>
