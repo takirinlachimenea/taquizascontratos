@@ -296,7 +296,10 @@ const App = {
         </td>
         <td class="py-3 px-4 text-right">
           <div class="flex items-center justify-end gap-1.5">
-            <button onclick="App.viewAndPrintContract('${c.id}')" class="p-1.5 text-slate-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer" title="Imprimir / Descargar PDF">
+            <button onclick="App.downloadContractPDF('${c.id}')" class="px-2 py-1 bg-red-50 text-red-700 hover:bg-red-600 hover:text-white border border-red-200 rounded-lg transition-colors font-bold text-xs flex items-center gap-1 cursor-pointer" title="Guardar en PDF (Tamaño Carta)">
+              📥 PDF
+            </button>
+            <button onclick="App.viewAndPrintContract('${c.id}')" class="p-1.5 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer" title="Imprimir Formato">
               🖨️
             </button>
             ${!isCancelled ? `

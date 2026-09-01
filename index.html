@@ -39,7 +39,7 @@
   <meta http-equiv="Expires" content="0">
 
   <!-- Custom CSS & Print Styles -->
-  <link rel="stylesheet" href="css/styles.css?v=20260831.4">
+  <link rel="stylesheet" href="css/styles.css?v=20260831.5">
 </head>
 <body class="bg-slate-100 min-h-screen text-slate-800 flex flex-col md:flex-row antialiased">
 
@@ -564,9 +564,12 @@
               </div>
             </div>
 
-            <div class="pt-2">
-              <button type="submit" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm rounded-xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer">
-                💾 Guardar Todos los Cambios del Contrato
+            <div class="pt-2 grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <button type="submit" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-md transition-all flex items-center justify-center gap-1.5 cursor-pointer">
+                💾 Guardar Cambios
+              </button>
+              <button type="button" onclick="App.downloadContractPDF()" class="w-full py-3 bg-red-600 hover:bg-red-700 text-white font-bold text-xs rounded-xl shadow-md transition-all flex items-center justify-center gap-1.5 cursor-pointer" title="Descargar archivo PDF oficial">
+                📥 Guardar en PDF
               </button>
             </div>
           </form>
@@ -686,11 +689,11 @@
   <div id="toast-container" class="toast-container fixed bottom-5 right-5 z-50 space-y-2 pointer-events-none"></div>
 
   <!-- Application Logic Scripts (Versioned for Instant Cache Busting) -->
-  <script src="js/storage.js?v=20260831.4"></script>
-  <script src="js/contract-model.js?v=20260831.4"></script>
-  <script src="js/pdf-generator.js?v=20260831.4"></script>
-  <script src="js/calendar.js?v=20260831.4"></script>
-  <script src="js/app.js?v=20260831.4"></script>
+  <script src="js/storage.js?v=20260831.5"></script>
+  <script src="js/contract-model.js?v=20260831.5"></script>
+  <script src="js/pdf-generator.js?v=20260831.5"></script>
+  <script src="js/calendar.js?v=20260831.5"></script>
+  <script src="js/app.js?v=20260831.5"></script>
 
   <script>
     // Initialize Firebase URL input on load

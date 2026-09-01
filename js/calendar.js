@@ -429,10 +429,13 @@ const CalendarManager = {
             🚫 Cancelar
           </button>
         `}
-        <button onclick="App.viewAndPrintContract('${contract.id}')" class="px-4 py-2 bg-slate-800 hover:bg-slate-900 text-white font-bold rounded-lg transition-colors text-sm shadow-xs flex items-center gap-1.5">
-          🖨️ Ver / Imprimir
+        <button onclick="App.downloadContractPDF('${contract.id}')" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg transition-colors text-sm shadow-xs flex items-center gap-1.5 cursor-pointer">
+          📥 Guardar en PDF
         </button>
-        <button onclick="App.closeModal('event-detail-modal'); App.editContract('${contract.id}')" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg transition-colors text-sm shadow-xs flex items-center gap-1.5">
+        <button onclick="App.viewAndPrintContract('${contract.id}')" class="px-4 py-2 bg-slate-800 hover:bg-slate-900 text-white font-bold rounded-lg transition-colors text-sm shadow-xs flex items-center gap-1.5 cursor-pointer">
+          🖨️ Imprimir
+        </button>
+        <button onclick="App.closeModal('event-detail-modal'); App.editContract('${contract.id}')" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg transition-colors text-sm shadow-xs flex items-center gap-1.5 cursor-pointer">
           ✏️ Editar
         </button>
       </div>
