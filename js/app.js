@@ -563,7 +563,7 @@ const App = {
     setVal('input-service-time', (contract.event && contract.event.serviceTime) || '2 HORAS');
     setVal('input-end-time', (contract.event && contract.event.endTime) || '');
     setVal('input-assigned-staff', (contract.event && contract.event.assignedStaff) || '');
-    setVal('input-elaborated-by', contract.elaboratedBy || 'Alexis Lira');
+    setVal('input-elaborated-by', contract.elaboratedBy || '');
 
     // Payments & Anticipos
     setVal('input-iva-rate', (contract.payments && contract.payments.ivaRate) || 0);

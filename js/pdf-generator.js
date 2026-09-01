@@ -281,14 +281,14 @@ const PDFGenerator = {
           </tr>
         </table>
 
-        <!-- 5. PENALTIES BOX -->
-        <div style="background-color:#e60000; color:#ffffff; border:1px solid #000000; padding:3.5px 8px; font-family:Arial, Helvetica, sans-serif; font-size:8px; line-height:1.25; margin-bottom:6px; text-align:center;">
-          <div style="font-weight:bold; margin-bottom:1px;">En caso de <strong>cancelación</strong> del presente contrato, se aplicarán las siguientes penalizaciones:</div>
-          <div>• Cancelación con más de 15 días de anticipación: 5% del monto total. &nbsp;&nbsp;&nbsp;&nbsp; • Cancelación con 10 días o menos de anticipación: 10% del monto total.</div>
+        <!-- 5. PENALTIES BOX (AGRANDADO LIGERAMENTE PARA MAYOR CLARIDAD) -->
+        <div style="background-color:#e60000; color:#ffffff; border:1.5px solid #000000; padding:5px 8px; font-family:Arial, Helvetica, sans-serif; margin-bottom:6px; text-align:center;">
+          <div style="font-weight:bold; font-size:10px; margin-bottom:2px; letter-spacing:0.3px;">En caso de <strong>cancelación</strong> del presente contrato, se aplicarán las siguientes penalizaciones:</div>
+          <div style="font-size:9.5px; font-weight:bold; line-height:1.3;">• Cancelación con más de 15 días de anticipación: 5% del monto total. &nbsp;&nbsp;&nbsp;&nbsp; • Cancelación con 10 días o menos de anticipación: 10% del monto total.</div>
         </div>
 
         <!-- 6. SIGNATURE LINES (ESPACIO AMPLIO PARA FIRMAR Y LLENAR) -->
-        <table style="width:100%; border-collapse:collapse; margin-top:28px; margin-bottom:14px; font-family:Arial, Helvetica, sans-serif;">
+        <table style="width:100%; border-collapse:collapse; margin-top:26px; margin-bottom:12px; font-family:Arial, Helvetica, sans-serif;">
           <tr>
             <!-- Elaboró Column -->
             <td style="width:50%; text-align:center; vertical-align:bottom; padding:0 35px;">
@@ -322,8 +322,8 @@ const PDFGenerator = {
           </tr>
         </table>
 
-        <!-- 8. FOOTER WITH SOCIAL MEDIA -->
-        <table style="width:100%; border-collapse:collapse; margin-top:3px; border-top:1px solid #e2e8f0; padding-top:2px; font-family:Arial, Helvetica, sans-serif;">
+        <!-- 8. FOOTER WITH SOCIAL MEDIA & CREDITS -->
+        <table style="width:100%; border-collapse:collapse; margin-top:3px; border-top:1px solid #cbd5e1; padding-top:2px; font-family:Arial, Helvetica, sans-serif;">
           <tr>
             <td style="text-align:left; vertical-align:middle;">
               <div style="display:flex; align-items:center; gap:16px; font-family:Arial, Helvetica, sans-serif; font-size:10px; font-weight:bold; color:#000000;">
@@ -343,6 +343,11 @@ const PDFGenerator = {
             </td>
             <td style="text-align:right; font-family:Arial, Helvetica, sans-serif; font-size:10.5px; font-weight:bold; color:#000000; letter-spacing:0.5px;">
               ${settings.docCode || 'FOP-01'}
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2" style="text-align:center; font-family:Arial, Helvetica, sans-serif; font-size:8px; font-weight:bold; color:#64748b; padding-top:3px; letter-spacing:0.4px;">
+              Diseñado por Lira Soluciones
             </td>
           </tr>
         </table>

@@ -39,7 +39,7 @@
   <meta http-equiv="Expires" content="0">
 
   <!-- Custom CSS & Print Styles -->
-  <link rel="stylesheet" href="css/styles.css?v=20260831.5">
+  <link rel="stylesheet" href="css/styles.css?v=20260831.6">
 </head>
 <body class="bg-slate-100 min-h-screen text-slate-800 flex flex-col md:flex-row antialiased">
 
@@ -108,6 +108,9 @@
         <span class="font-mono font-bold bg-slate-200 text-slate-700 px-1.5 py-0.5 rounded">FOP-01</span>
       </div>
       <p class="text-[10px] text-slate-400 mt-1">Córdoba, Veracruz • 271 157 1770</p>
+      <div class="mt-2.5 pt-2 border-t border-slate-200/60 text-[10.5px] text-slate-500 font-medium text-center">
+        Diseñado por <strong class="text-slate-800">Lira Soluciones</strong>
+      </div>
     </div>
   </aside>
 
@@ -522,7 +525,7 @@
                 </div>
                 <div>
                   <label class="text-xs font-bold text-slate-700 block mb-1">Elaboró Contrato</label>
-                  <input type="text" id="input-elaborated-by" value="Alexis Lira" class="w-full text-xs p-2 border border-slate-300 rounded-xl bg-white">
+                  <input type="text" id="input-elaborated-by" value="" placeholder="Nombre de quien elabora" class="w-full text-xs p-2 border border-slate-300 rounded-xl bg-white">
                 </div>
               </div>
             </div>
@@ -672,6 +675,12 @@
       </div>
     </section>
 
+    <!-- Global Footer -->
+    <footer class="p-6 text-center text-xs text-slate-400 border-t border-slate-200 mt-8">
+      <span>Takirin La Chimenea • Sistema de Contratos & Taquizas</span>
+      <span class="mx-2">•</span>
+      <span>Diseñado por <strong class="text-slate-600 font-bold">Lira Soluciones</strong></span>
+    </footer>
   </main>
 
   <!-- Modals & Print Area -->
@@ -689,11 +698,11 @@
   <div id="toast-container" class="toast-container fixed bottom-5 right-5 z-50 space-y-2 pointer-events-none"></div>
 
   <!-- Application Logic Scripts (Versioned for Instant Cache Busting) -->
-  <script src="js/storage.js?v=20260831.5"></script>
-  <script src="js/contract-model.js?v=20260831.5"></script>
-  <script src="js/pdf-generator.js?v=20260831.5"></script>
-  <script src="js/calendar.js?v=20260831.5"></script>
-  <script src="js/app.js?v=20260831.5"></script>
+  <script src="js/storage.js?v=20260831.6"></script>
+  <script src="js/contract-model.js?v=20260831.6"></script>
+  <script src="js/pdf-generator.js?v=20260831.6"></script>
+  <script src="js/calendar.js?v=20260831.6"></script>
+  <script src="js/app.js?v=20260831.6"></script>
 
   <script>
     // Initialize Firebase URL input on load

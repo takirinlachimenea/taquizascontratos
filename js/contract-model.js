@@ -39,7 +39,7 @@ const ContractModel = {
         phone: ''
       },
       event: {
-        type: 'Taquiza Tradicional:\n• Pastor marinado con piña\n• Suadero al estilo CDMX\n• Longaniza artesanal\n• Bistec de res',
+        type: '',
         amount: 0,
         complementsText: this.DEFAULT_COMPLEMENTS_TEXT,
         additionals: '',
@@ -71,7 +71,7 @@ const ContractModel = {
         remainingBalance: 0,
         status: 'pending'
       },
-      elaboratedBy: settings.elaboratedByDefault || 'Alexis Lira',
+      elaboratedBy: settings.elaboratedByDefault || '',
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     };

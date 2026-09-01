@@ -237,7 +237,7 @@ const StorageManager = {
         phone: '271 157 1770',
         docCode: 'FOP-01',
         extraHourRate: 300,
-        elaboratedByDefault: 'Alexis Lira',
+        elaboratedByDefault: '',
         defaultComplements: [
           'Salsa Verde',
           'Salsa Roja',
