@@ -76,8 +76,8 @@ const PDFGenerator = {
               <div style="font-family:Arial, Helvetica, sans-serif; font-size:16px; font-weight:bold; letter-spacing:0.5px; margin:0 0 2px 0; color:#000;">${settings.businessName || 'TAKIRIN LA CHIMENEA'}</div>
               <div style="font-family:Arial, Helvetica, sans-serif; font-size:9.5px; font-weight:bold; margin:0 0 2px 0; color:#000;">${settings.address || 'CALLE 15 #221, COL. CENTRO, CP 94500, CÓRDOBA, VER.'}</div>
               <div style="font-family:Arial, Helvetica, sans-serif; font-size:11px; font-weight:bold; margin:0 0 4px 0; color:#000;">${settings.phone || '271 157 1770'}</div>
-              <div style="font-family:Arial, Helvetica, sans-serif; background-color:#e60000; color:#ffffff; font-size:12px; font-weight:bold; padding:3px 8px; text-align:center; letter-spacing:1px;">
-                CONTRATO DE TAQUIZA
+              <div style="font-family:Arial, Helvetica, sans-serif; background-color:${contract.payments && contract.payments.status === 'cancelled' ? '#64748b' : '#e60000'}; color:#ffffff; font-size:12px; font-weight:bold; padding:3px 8px; text-align:center; letter-spacing:1px;">
+                ${contract.payments && contract.payments.status === 'cancelled' ? 'CONTRATO CANCELADO' : 'CONTRATO DE TAQUIZA'}
               </div>
             </td>
 

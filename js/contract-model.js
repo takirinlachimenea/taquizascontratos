@@ -77,6 +77,10 @@ const ContractModel = {
     };
   },
 
+  generateId() {
+    return `TK-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`;
+  },
+
   getDayOfWeek(dateString) {
     if (!dateString) return '';
     try {
@@ -86,6 +90,10 @@ const ContractModel = {
     } catch (e) {
       return '';
     }
+  },
+
+  getDayOfWeekSpanish(dateString) {
+    return this.getDayOfWeek(dateString);
   },
 
   parseDateParts(dateString) {
@@ -120,6 +128,10 @@ const ContractModel = {
     } catch (e) {
       return '';
     }
+  },
+
+  calculateFinancials(contract) {
+    return this.recalculateTotals(contract);
   },
 
   recalculateTotals(contract) {

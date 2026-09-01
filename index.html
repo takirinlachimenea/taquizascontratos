@@ -54,12 +54,12 @@
         </div>
       </div>
 
-      <!-- Cloud Sync Indicator in Sidebar -->
+      <!-- Realtime Cloud Status Indicator in Sidebar -->
       <div class="px-4 pt-3 pb-1">
-        <button type="button" onclick="StorageManager.syncWithCloud()" id="navbar-sync-indicator" class="w-full flex items-center justify-center gap-2 px-3 py-1.5 rounded-xl text-xs font-bold bg-emerald-50 text-emerald-800 border border-emerald-200 hover:bg-emerald-100 transition-all cursor-pointer" title="Hacer clic para sincronizar ahora con todos tus dispositivos">
-          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
-          <span id="navbar-sync-text">Nube: Sincronizado</span>
-          <span class="text-xs">🔄</span>
+        <button type="button" onclick="App.navigate('sync')" id="navbar-sync-indicator" class="w-full flex items-center justify-center gap-2 px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 border border-slate-200 hover:bg-slate-200 transition-all cursor-pointer" title="Configurar o ver estado de la Nube">
+          <span class="w-2 h-2 rounded-full bg-slate-400"></span>
+          <span id="navbar-sync-text">Configurar Nube</span>
+          <span class="text-xs">⚡</span>
         </button>
       </div>
 
@@ -90,8 +90,8 @@
           <span class="pointer-events-none">Generador / Editor</span>
         </a>
         <a class="nav-link" data-view="sync" onclick="App.navigate('sync')">
-          <svg class="w-5 h-5 text-slate-500 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-          <span class="pointer-events-none">Sincronización Nube</span>
+          <svg class="w-5 h-5 text-slate-500 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 00-9.78 2.096A4.001 4.001 0 003 15z"></path></svg>
+          <span class="pointer-events-none">Nube & Sincronización</span>
         </a>
       </nav>
     </div>
@@ -115,14 +115,13 @@
          VIEW: DASHBOARD
     ======================================== -->
     <section id="view-dashboard" class="p-4 md:p-8 space-y-6">
-      <!-- Top Title Bar -->
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h2 class="text-2xl font-black text-slate-900">Control de Taquizas y Contratos</h2>
           <p class="text-xs text-slate-500 mt-0.5">Administra tus servicios, anticipos de clientes y calendario de eventos.</p>
         </div>
         <div class="flex items-center gap-2">
-          <button type="button" onclick="StorageManager.syncWithCloud()" class="px-3.5 py-2 bg-emerald-50 border border-emerald-200 hover:bg-emerald-100 text-emerald-800 text-xs font-bold rounded-xl transition-colors shadow-xs flex items-center gap-1.5 cursor-pointer">
+          <button type="button" onclick="StorageManager.syncFromFirebase(false)" class="px-3.5 py-2 bg-emerald-50 border border-emerald-200 hover:bg-emerald-100 text-emerald-800 text-xs font-bold rounded-xl transition-colors shadow-xs flex items-center gap-1.5 cursor-pointer">
             🔄 Sincronizar Nube
           </button>
           <button type="button" onclick="App.navigate('calendar')" class="px-3.5 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-bold rounded-xl transition-colors shadow-xs flex items-center gap-1.5 cursor-pointer">
@@ -139,7 +138,6 @@
 
       <!-- Stats Grid -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-        <!-- Stat 1 -->
         <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex flex-col justify-between">
           <div class="flex justify-between items-center text-slate-400">
             <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Total Contratos</span>
@@ -147,11 +145,10 @@
           </div>
           <div class="mt-3">
             <span id="stat-total-contratos" class="text-2xl font-black text-slate-900">0</span>
-            <span class="text-[11px] text-slate-400 block mt-0.5">Registrados en el sistema</span>
+            <span class="text-[11px] text-slate-400 block mt-0.5">Registrados en total</span>
           </div>
         </div>
 
-        <!-- Stat 2 -->
         <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex flex-col justify-between">
           <div class="flex justify-between items-center text-slate-400">
             <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Eventos Este Mes</span>
@@ -163,7 +160,6 @@
           </div>
         </div>
 
-        <!-- Stat 3 -->
         <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex flex-col justify-between">
           <div class="flex justify-between items-center text-slate-400">
             <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Total en Ventas</span>
@@ -175,7 +171,6 @@
           </div>
         </div>
 
-        <!-- Stat 4 -->
         <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex flex-col justify-between">
           <div class="flex justify-between items-center text-slate-400">
             <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Anticipos Cobrados</span>
@@ -187,7 +182,6 @@
           </div>
         </div>
 
-        <!-- Stat 5 -->
         <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex flex-col justify-between">
           <div class="flex justify-between items-center text-slate-400">
             <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Saldo por Cobrar</span>
@@ -226,7 +220,6 @@
               </tr>
             </thead>
             <tbody id="dashboard-recent-table" class="divide-y divide-slate-100">
-              <!-- Loaded via JavaScript -->
             </tbody>
           </table>
         </div>
@@ -247,7 +240,6 @@
         </button>
       </div>
 
-      <!-- Filters & Search Bar -->
       <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex flex-col md:flex-row gap-3 items-center justify-between">
         <div class="relative w-full md:w-96">
           <input type="text" id="search-contracts-input" placeholder="Buscar por Folio, Cliente, Teléfono o Dirección..." class="w-full pl-9 pr-4 py-2 text-xs border border-slate-200 rounded-xl bg-slate-50 focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-red-500">
@@ -266,7 +258,6 @@
         </div>
       </div>
 
-      <!-- Full Contracts Table -->
       <div class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
         <div class="overflow-x-auto">
           <table class="w-full text-left">
@@ -282,7 +273,6 @@
               </tr>
             </thead>
             <tbody id="contracts-table-body" class="divide-y divide-slate-100">
-              <!-- Loaded dynamically -->
             </tbody>
           </table>
         </div>
@@ -309,10 +299,8 @@
         </div>
       </div>
 
-      <!-- Calendar Controls -->
       <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
         <div class="lg:col-span-3 space-y-4">
-          <!-- Navigation Bar -->
           <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex items-center justify-between">
             <div class="flex items-center gap-3">
               <button type="button" onclick="CalendarManager.changeMonth(-1)" class="p-2 border border-slate-200 rounded-xl hover:bg-slate-50 text-slate-600 font-bold cursor-pointer">
@@ -328,11 +316,9 @@
             </button>
           </div>
 
-          <!-- Calendar Grid Mount -->
           <div id="calendar-container"></div>
         </div>
 
-        <!-- Right Sidebar: Upcoming Taquizas -->
         <div class="space-y-4">
           <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs">
             <h4 class="font-black text-slate-900 text-sm mb-3 flex items-center justify-between">
@@ -340,11 +326,9 @@
               <span class="text-xs bg-red-100 text-red-700 px-2 py-0.5 rounded-full font-bold">Agenda</span>
             </h4>
             <div id="upcoming-events-sidebar" class="space-y-2.5">
-              <!-- Dynamically rendered -->
             </div>
           </div>
 
-          <!-- Legend Box -->
           <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs text-xs space-y-2">
             <h5 class="font-bold text-slate-800 uppercase tracking-wider text-[10px]">Guía de Colores</h5>
             <div class="flex items-center gap-2">
@@ -368,15 +352,14 @@
          VIEW: CONTRACT GENERATOR & EDITOR (LIVE SPLIT)
     ======================================== -->
     <section id="view-editor" class="p-4 md:p-6 space-y-4 hidden">
-      <!-- Editor Action Top Bar -->
       <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex flex-col md:flex-row items-center justify-between gap-4 sticky top-2 z-10">
         <div class="flex items-center gap-3">
           <button type="button" onclick="App.navigate('contracts')" class="p-2 border border-slate-200 rounded-xl hover:bg-slate-50 text-slate-600 font-bold cursor-pointer" title="Regresar al listado">
             ←
           </button>
           <div>
-            <h2 class="text-lg font-black text-slate-900">Editor de Contrato (Formato FOP-01)</h2>
-            <p class="text-xs text-slate-500">Los cambios se actualizan en tiempo real en la vista previa del documento oficial.</p>
+            <h2 id="editor-title-heading" class="text-lg font-black text-slate-900">Editor de Contrato (Formato FOP-01)</h2>
+            <p id="editor-subtitle-text" class="text-xs text-slate-500">Los cambios se actualizan en tiempo real en la vista previa del documento oficial.</p>
           </div>
         </div>
 
@@ -387,13 +370,25 @@
           <button type="button" onclick="App.saveCurrentContract()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl transition-colors shadow-xs flex items-center gap-1.5 cursor-pointer">
             💾 Guardar Contrato
           </button>
-          <button type="button" onclick="App.viewAndPrintContract()" class="px-4 py-2 bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold rounded-xl transition-colors shadow-xs flex items-center gap-1.5 cursor-pointer">
-            🖨️ Imprimir Formato
+          <button type="button" onclick="App.saveAndReturn()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl transition-colors shadow-xs flex items-center gap-1.5 cursor-pointer" title="Guardar cambios y volver al listado">
+            💾 Guardar y Volver
           </button>
-          <button type="button" onclick="App.downloadContractPDF()" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-xs font-bold rounded-xl transition-colors shadow-xs flex items-center gap-1.5 cursor-pointer">
-            📥 Descargar PDF
+          <button type="button" onclick="App.viewAndPrintContract()" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold rounded-xl transition-colors shadow-xs flex items-center gap-1.5 cursor-pointer">
+            🖨️ Imprimir
+          </button>
+          <button type="button" onclick="App.downloadContractPDF()" class="px-3.5 py-2 bg-red-600 hover:bg-red-700 text-white text-xs font-bold rounded-xl transition-colors shadow-xs flex items-center gap-1.5 cursor-pointer">
+            📥 PDF
           </button>
         </div>
+      </div>
+
+      <!-- Mode Banner -->
+      <div id="editor-mode-banner" class="hidden p-3 bg-blue-50 border border-blue-200 rounded-xl flex items-center justify-between text-xs text-blue-900 font-medium">
+        <div class="flex items-center gap-2">
+          <span class="text-base">✏️</span>
+          <span id="editor-mode-banner-text">Editando contrato</span>
+        </div>
+        <button type="button" onclick="App.newContract()" class="text-blue-700 hover:text-blue-900 font-bold underline cursor-pointer">Crear nuevo contrato en blanco</button>
       </div>
 
       <!-- Split Layout: Form (Left) & Realtime FOP-01 Preview (Right) -->
@@ -538,12 +533,9 @@
                 </button>
               </div>
 
-              <!-- Dynamic Anticipos Container -->
               <div id="form-anticipos-container" class="space-y-2.5">
-                <!-- Injected dynamically -->
               </div>
 
-              <!-- IVA Config -->
               <div class="flex items-center justify-between pt-2 border-t text-xs">
                 <label class="font-bold text-slate-700">Tasa de IVA (%):</label>
                 <div class="w-28">
@@ -551,7 +543,6 @@
                 </div>
               </div>
 
-              <!-- Financial Live Badges -->
               <div class="grid grid-cols-3 gap-2 text-center pt-2">
                 <div class="bg-slate-100 p-2 rounded-xl">
                   <span class="text-[10px] text-slate-500 block">Subtotal:</span>
@@ -568,7 +559,6 @@
               </div>
             </div>
 
-            <!-- Submit Button bottom -->
             <div class="pt-2">
               <button type="submit" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm rounded-xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer">
                 💾 Guardar Todos los Cambios del Contrato
@@ -580,7 +570,6 @@
         <!-- RIGHT COLUMN: EXACT 1:1 FOP-01 LIVE PREVIEW SHEET -->
         <div class="lg:col-span-7 contract-sheet-wrapper rounded-2xl shadow-inner overflow-x-auto">
           <div id="live-preview-container">
-            <!-- Rendered 1:1 identical to original sheet -->
           </div>
         </div>
 
@@ -588,77 +577,74 @@
     </section>
 
     <!-- ========================================
-         VIEW: BACKUP & CLOUD / GITHUB SYNC
+         VIEW: FIREBASE REALTIME CLOUD SYNC & BACKUP
     ======================================== -->
     <section id="view-sync" class="p-4 md:p-8 space-y-6 hidden">
       <div>
-        <h2 class="text-2xl font-black text-slate-900">Sincronización en la Nube y Respaldo Multidispositivo</h2>
-        <p class="text-xs text-slate-500">Conecta todos tus celulares, tablets y computadoras para que tus contratos se sincronicen automáticamente en tiempo real.</p>
+        <h2 class="text-2xl font-black text-slate-900">Sincronización en Tiempo Real con Firebase</h2>
+        <p class="text-xs text-slate-500">Conecta tu base de datos gratuita de Google Firebase para que tus contratos se actualicen en vivo en tu celular y computadora en menos de 1 segundo.</p>
       </div>
 
-      <!-- Cloud Sync Panel -->
+      <!-- Firebase Connect Card -->
       <div class="bg-gradient-to-br from-slate-900 to-slate-800 text-white p-6 rounded-3xl shadow-xl space-y-5">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-700/80 pb-4">
           <div class="flex items-center gap-3">
-            <div class="w-12 h-12 bg-red-600 rounded-2xl flex items-center justify-center text-2xl shadow-md">
-              ☁️
+            <div class="w-12 h-12 bg-amber-500 text-slate-900 rounded-2xl flex items-center justify-center text-2xl shadow-md font-black">
+              🔥
             </div>
             <div>
-              <h3 class="text-lg font-black text-white">Sincronización Automática entre Dispositivos</h3>
-              <p class="text-xs text-slate-300">Tus contratos se guardan en la nube para que aparezcan en tu celular y laptop al mismo tiempo.</p>
+              <h3 class="text-lg font-black text-white">Google Firebase Realtime Database</h3>
+              <p class="text-xs text-slate-300">Sincronización automática multidispositivo en vivo.</p>
             </div>
           </div>
-          <button type="button" onclick="StorageManager.syncWithCloud()" class="px-5 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs rounded-xl transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer self-start sm:self-auto">
-            <span>🔄 Sincronizar Ahora</span>
+          <button type="button" onclick="App.saveFirebaseConfig()" class="px-5 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs rounded-xl transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer self-start sm:self-auto">
+            <span>💾 Conectar y Sincronizar</span>
           </button>
         </div>
 
-        <!-- Sync Configuration Fields -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-          <!-- Room Key Sync (Default & Easiest) -->
-          <div class="bg-white/10 p-4 rounded-2xl border border-white/10 space-y-3">
-            <div class="flex items-center justify-between">
-              <strong class="text-sm font-black text-amber-400">🔑 Clave de Negocio (Recomendada)</strong>
-              <span class="text-[10px] bg-emerald-500/30 text-emerald-300 font-bold px-2 py-0.5 rounded-full">Activa</span>
-            </div>
-            <p class="text-slate-300 text-[11px]">Todos los dispositivos que tengan la misma clave compartirán la misma base de datos automáticamente.</p>
-            <div>
-              <label class="block text-[11px] font-bold text-slate-300 mb-1">Clave de Sincronización:</label>
-              <div class="flex gap-2">
-                <input type="text" id="input-cloud-key" value="takirin-lachimenea-cordoba" class="flex-1 bg-slate-900/90 text-white p-2 rounded-xl border border-slate-700 text-xs font-mono font-bold">
-                <button type="button" onclick="App.saveCloudKeySetting()" class="px-3 py-2 bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold rounded-xl text-xs">Guardar</button>
-              </div>
-            </div>
+        <div class="space-y-3">
+          <label class="block text-xs font-bold text-amber-400">URL de tu Base de Datos Firebase (Realtime Database):</label>
+          <div class="flex flex-col sm:flex-row gap-2">
+            <input type="text" id="input-firebase-url" placeholder="https://tu-proyecto-default-rtdb.firebaseio.com" class="flex-1 bg-slate-900 text-white p-3 rounded-xl border border-slate-700 text-xs font-mono font-bold focus:outline-hidden focus:ring-2 focus:ring-amber-500">
+            <button type="button" onclick="App.saveFirebaseConfig()" class="px-6 py-3 bg-amber-500 hover:bg-amber-600 text-slate-900 font-black rounded-xl text-xs shrink-0 cursor-pointer">
+              ⚡ Conectar
+            </button>
           </div>
-
-          <!-- GitHub Gist Sync (Optional) -->
-          <div class="bg-white/10 p-4 rounded-2xl border border-white/10 space-y-3">
-            <div class="flex items-center justify-between">
-              <strong class="text-sm font-black text-slate-200">🐙 GitHub Token (Opcional)</strong>
-              <span class="text-[10px] bg-slate-700 text-slate-300 font-bold px-2 py-0.5 rounded-full">Gist API</span>
-            </div>
-            <p class="text-slate-300 text-[11px]">Si prefieres sincronizar directamente con tu cuenta privada de GitHub.</p>
-            <div>
-              <label class="block text-[11px] font-bold text-slate-300 mb-1">Personal Access Token (con permiso gist):</label>
-              <div class="flex gap-2">
-                <input type="password" id="input-github-token" placeholder="ghp_xxxxxxxxxxxx" class="flex-1 bg-slate-900/90 text-white p-2 rounded-xl border border-slate-700 text-xs font-mono">
-                <button type="button" onclick="App.saveGitHubTokenSetting()" class="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-xs">Conectar</button>
-              </div>
-            </div>
-          </div>
+          <p class="text-[11px] text-slate-400">Pega aquí la URL de tu base de datos de Firebase. Una vez guardada, cualquier contrato que crees en tu celular o computadora se sincronizará automáticamente.</p>
         </div>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <!-- Card 1: Local Backup Export / Import -->
+        <!-- Card 1: 4 Easy Steps to Create Firebase DB -->
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs space-y-3">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center text-lg font-black">
+              📋
+            </div>
+            <div>
+              <h3 class="font-bold text-slate-900 text-base">Cómo crear tu base en 2 minutos (Gratis)</h3>
+              <p class="text-xs text-slate-500">Sigue estos sencillos pasos:</p>
+            </div>
+          </div>
+
+          <ol class="text-xs text-slate-700 space-y-2 list-decimal list-inside bg-slate-50 p-4 rounded-xl border border-slate-200">
+            <li>Entra a <a href="https://console.firebase.google.com" target="_blank" class="text-blue-600 font-bold underline">console.firebase.google.com</a> con tu cuenta Google.</li>
+            <li>Haz clic en <strong>"Crear un proyecto"</strong> y ponle de nombre <code class="bg-white px-1 font-bold text-red-600">takirin-contratos</code>.</li>
+            <li>En el menú izquierdo ve a <strong>Compilación → Realtime Database</strong> y presiona <strong>"Crear base de datos"</strong>.</li>
+            <li>Elige <strong>"Iniciar en modo de prueba"</strong> y pulsa <strong>Habilitar</strong>.</li>
+            <li>Copia la URL que aparece arriba (termina en <code class="bg-white px-1 text-slate-900 font-mono">.firebaseio.com</code>) y pégala en el campo de arriba.</li>
+          </ol>
+        </div>
+
+        <!-- Card 2: Manual Backup Export / Import -->
         <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs space-y-4">
           <div class="flex items-center gap-3">
-            <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center text-xl">
+            <div class="w-10 h-10 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center text-lg">
               💾
             </div>
             <div>
-              <h3 class="font-bold text-slate-900 text-base">Exportar e Importar Respaldo</h3>
-              <p class="text-xs text-slate-500">Descarga un archivo JSON con todos tus contratos para guardarlo en tu computadora o enviarlo por correo.</p>
+              <h3 class="font-bold text-slate-900 text-base">Respaldo Manual en Archivo JSON</h3>
+              <p class="text-xs text-slate-500">Descarga o restaura un respaldo en cualquier momento.</p>
             </div>
           </div>
 
@@ -675,56 +661,23 @@
             </div>
           </div>
         </div>
-
-        <!-- Card 2: GitHub Pages Guide -->
-        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs space-y-4">
-          <div class="flex items-center gap-3">
-            <div class="w-12 h-12 bg-red-50 text-red-600 rounded-2xl flex items-center justify-center text-xl">
-              🌐
-            </div>
-            <div>
-              <h3 class="font-bold text-slate-900 text-base">Acceso desde Cualquier Celular (GitHub Pages)</h3>
-              <p class="text-xs text-slate-500">Ten tu aplicación disponible 24/7 en internet gratis.</p>
-            </div>
-          </div>
-
-          <div class="text-xs text-slate-600 space-y-2 bg-slate-50 p-4 rounded-xl border border-slate-200">
-            <p class="font-bold text-slate-900">Pasos para activar en GitHub Pages:</p>
-            <ol class="list-decimal list-inside space-y-1">
-              <li>Crea un repositorio en GitHub llamado <code class="bg-white px-1 py-0.5 rounded text-red-600">takirin-contratos</code>.</li>
-              <li>Sube todos los archivos del proyecto a la rama <code class="bg-white px-1 py-0.5 rounded text-red-600">main</code>.</li>
-              <li>Ve a <strong>Settings → Pages</strong> y selecciona la rama <code class="bg-white px-1 py-0.5 rounded text-red-600">main / root</code>.</li>
-              <li>Abre el enlace en tu celular y ¡los contratos que crees en el celular se sincronizarán con tu computadora automáticamente!</li>
-            </ol>
-          </div>
-        </div>
       </div>
     </section>
 
   </main>
 
-  <!-- ==========================================
-       MODALS & HIDDEN PRINT AREA
-  =========================================== -->
-
-  <!-- Modal: Event Details (From Calendar or List) -->
+  <!-- Modals & Print Area -->
   <div id="event-detail-modal" class="modal-overlay fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
     <div class="bg-white rounded-2xl max-w-2xl w-full p-6 shadow-2xl overflow-y-auto max-h-[90vh]" id="event-detail-modal-content">
-      <!-- Injected by CalendarManager -->
     </div>
   </div>
 
-  <!-- Modal: Quick Anticipo Registration -->
   <div id="quick-anticipo-modal" class="modal-overlay fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
     <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl" id="quick-anticipo-modal-content">
-      <!-- Injected by App.openQuickAnticipoModal -->
     </div>
   </div>
 
-  <!-- Hidden Mount Area for 1:1 Letter Size Print & PDF Generation -->
   <div id="print-mount-area" class="hidden"></div>
-
-  <!-- Toast Notification Container -->
   <div id="toast-container" class="toast-container fixed bottom-5 right-5 z-50 space-y-2 pointer-events-none"></div>
 
   <!-- Application Logic Scripts -->
@@ -734,8 +687,28 @@
   <script src="js/calendar.js"></script>
   <script src="js/app.js"></script>
 
-  <!-- Cloud Sync UI Helper methods -->
   <script>
+    // Initialize Firebase URL input on load
+    document.addEventListener('DOMContentLoaded', () => {
+      const input = document.getElementById('input-firebase-url');
+      if (input) {
+        input.value = StorageManager.getFirebaseUrl();
+      }
+    });
+
+    App.saveFirebaseConfig = async function() {
+      const input = document.getElementById('input-firebase-url');
+      if (!input) return;
+      const url = input.value.trim();
+      if (!url) {
+        App.showToast('Ingresa una URL válida de Firebase Realtime Database.', 'warning');
+        return;
+      }
+      StorageManager.setFirebaseUrl(url);
+      App.showToast('Conectando a Firebase...', 'info');
+      await StorageManager.syncFromFirebase(false);
+    };
+
     App.handleImportFile = async function(file) {
       if (!file) return;
       try {
@@ -747,36 +720,6 @@
       } catch (err) {
         App.showToast('Error al importar el archivo: ' + err.message, 'error');
       }
-    };
-
-    App.saveCloudKeySetting = async function() {
-      const keyInput = document.getElementById('input-cloud-key');
-      if (!keyInput) return;
-      const key = keyInput.value.trim() || 'takirin-lachimenea-cordoba';
-      const config = StorageManager.getSyncConfig();
-      config.cloudKey = key;
-      config.provider = 'cloudkey';
-      config.enabled = true;
-      StorageManager.saveSyncConfig(config);
-      App.showToast('Clave de sincronización guardada. Sincronizando...', 'info');
-      await StorageManager.syncWithCloud();
-    };
-
-    App.saveGitHubTokenSetting = async function() {
-      const tokenInput = document.getElementById('input-github-token');
-      if (!tokenInput) return;
-      const token = tokenInput.value.trim();
-      if (!token) {
-        App.showToast('Ingresa un token válido de GitHub.', 'warning');
-        return;
-      }
-      const config = StorageManager.getSyncConfig();
-      config.githubToken = token;
-      config.provider = 'github';
-      config.enabled = true;
-      StorageManager.saveSyncConfig(config);
-      App.showToast('Token de GitHub guardado. Conectando con GitHub Gists...', 'info');
-      await StorageManager.syncWithCloud();
     };
   </script>
 </body>

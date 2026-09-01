@@ -414,16 +414,25 @@ const CalendarManager = {
 
       <!-- Action Buttons -->
       <div class="flex flex-wrap gap-2 justify-end border-t pt-4">
-        <button onclick="App.openQuickAnticipoModal('${contract.id}')" class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-lg transition-colors text-sm shadow-xs flex items-center gap-1.5">
-          💵 Registrar Anticipo
-        </button>
-        <button onclick="App.sendWhatsAppMessage('${contract.id}')" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg transition-colors text-sm shadow-xs flex items-center gap-1.5">
-          📱 WhatsApp
-        </button>
+        ${(contract.payments && contract.payments.status === 'cancelled') ? `
+          <button onclick="App.closeModal('event-detail-modal'); App.toggleCancelContract('${contract.id}')" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg transition-colors text-sm shadow-xs flex items-center gap-1.5">
+            🔄 Reactivar Evento
+          </button>
+        ` : `
+          <button onclick="App.openQuickAnticipoModal('${contract.id}')" class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-lg transition-colors text-sm shadow-xs flex items-center gap-1.5">
+            💵 Registrar Anticipo
+          </button>
+          <button onclick="App.sendWhatsAppMessage('${contract.id}')" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg transition-colors text-sm shadow-xs flex items-center gap-1.5">
+            📱 WhatsApp
+          </button>
+          <button onclick="App.toggleCancelContract('${contract.id}')" class="px-4 py-2 bg-slate-200 hover:bg-red-50 text-red-600 font-bold rounded-lg transition-colors text-sm shadow-xs flex items-center gap-1.5" title="Cancelar Taquiza sin borrar">
+            🚫 Cancelar
+          </button>
+        `}
         <button onclick="App.viewAndPrintContract('${contract.id}')" class="px-4 py-2 bg-slate-800 hover:bg-slate-900 text-white font-bold rounded-lg transition-colors text-sm shadow-xs flex items-center gap-1.5">
           🖨️ Ver / Imprimir
         </button>
-        <button onclick="App.editContract('${contract.id}')" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg transition-colors text-sm shadow-xs flex items-center gap-1.5">
+        <button onclick="App.closeModal('event-detail-modal'); App.editContract('${contract.id}')" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg transition-colors text-sm shadow-xs flex items-center gap-1.5">
           ✏️ Editar
         </button>
       </div>

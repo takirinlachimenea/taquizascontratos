@@ -234,12 +234,12 @@ body {
         </div>
       </div>
 
-      <!-- Cloud Sync Indicator in Sidebar -->
+      <!-- Realtime Cloud Status Indicator in Sidebar -->
       <div class="px-4 pt-3 pb-1">
-        <button type="button" onclick="StorageManager.syncWithCloud()" id="navbar-sync-indicator" class="w-full flex items-center justify-center gap-2 px-3 py-1.5 rounded-xl text-xs font-bold bg-emerald-50 text-emerald-800 border border-emerald-200 hover:bg-emerald-100 transition-all cursor-pointer" title="Hacer clic para sincronizar ahora con todos tus dispositivos">
-          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
-          <span id="navbar-sync-text">Nube: Sincronizado</span>
-          <span class="text-xs">🔄</span>
+        <button type="button" onclick="App.navigate('sync')" id="navbar-sync-indicator" class="w-full flex items-center justify-center gap-2 px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 border border-slate-200 hover:bg-slate-200 transition-all cursor-pointer" title="Configurar o ver estado de la Nube">
+          <span class="w-2 h-2 rounded-full bg-slate-400"></span>
+          <span id="navbar-sync-text">Configurar Nube</span>
+          <span class="text-xs">⚡</span>
         </button>
       </div>
 
@@ -270,8 +270,8 @@ body {
           <span class="pointer-events-none">Generador / Editor</span>
         </a>
         <a class="nav-link" data-view="sync" onclick="App.navigate('sync')">
-          <svg class="w-5 h-5 text-slate-500 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-          <span class="pointer-events-none">Sincronización Nube</span>
+          <svg class="w-5 h-5 text-slate-500 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 00-9.78 2.096A4.001 4.001 0 003 15z"></path></svg>
+          <span class="pointer-events-none">Nube & Sincronización</span>
         </a>
       </nav>
     </div>
@@ -295,14 +295,13 @@ body {
          VIEW: DASHBOARD
     ======================================== -->
     <section id="view-dashboard" class="p-4 md:p-8 space-y-6">
-      <!-- Top Title Bar -->
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h2 class="text-2xl font-black text-slate-900">Control de Taquizas y Contratos</h2>
           <p class="text-xs text-slate-500 mt-0.5">Administra tus servicios, anticipos de clientes y calendario de eventos.</p>
         </div>
         <div class="flex items-center gap-2">
-          <button type="button" onclick="StorageManager.syncWithCloud()" class="px-3.5 py-2 bg-emerald-50 border border-emerald-200 hover:bg-emerald-100 text-emerald-800 text-xs font-bold rounded-xl transition-colors shadow-xs flex items-center gap-1.5 cursor-pointer">
+          <button type="button" onclick="StorageManager.syncFromFirebase(false)" class="px-3.5 py-2 bg-emerald-50 border border-emerald-200 hover:bg-emerald-100 text-emerald-800 text-xs font-bold rounded-xl transition-colors shadow-xs flex items-center gap-1.5 cursor-pointer">
             🔄 Sincronizar Nube
           </button>
           <button type="button" onclick="App.navigate('calendar')" class="px-3.5 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-bold rounded-xl transition-colors shadow-xs flex items-center gap-1.5 cursor-pointer">
@@ -319,7 +318,6 @@ body {
 
       <!-- Stats Grid -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-        <!-- Stat 1 -->
         <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex flex-col justify-between">
           <div class="flex justify-between items-center text-slate-400">
             <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Total Contratos</span>
@@ -327,11 +325,10 @@ body {
           </div>
           <div class="mt-3">
             <span id="stat-total-contratos" class="text-2xl font-black text-slate-900">0</span>
-            <span class="text-[11px] text-slate-400 block mt-0.5">Registrados en el sistema</span>
+            <span class="text-[11px] text-slate-400 block mt-0.5">Registrados en total</span>
           </div>
         </div>
 
-        <!-- Stat 2 -->
         <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex flex-col justify-between">
           <div class="flex justify-between items-center text-slate-400">
             <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Eventos Este Mes</span>
@@ -343,7 +340,6 @@ body {
           </div>
         </div>
 
-        <!-- Stat 3 -->
         <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex flex-col justify-between">
           <div class="flex justify-between items-center text-slate-400">
             <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Total en Ventas</span>
@@ -355,7 +351,6 @@ body {
           </div>
         </div>
 
-        <!-- Stat 4 -->
         <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex flex-col justify-between">
           <div class="flex justify-between items-center text-slate-400">
             <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Anticipos Cobrados</span>
@@ -367,7 +362,6 @@ body {
           </div>
         </div>
 
-        <!-- Stat 5 -->
         <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex flex-col justify-between">
           <div class="flex justify-between items-center text-slate-400">
             <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Saldo por Cobrar</span>
@@ -406,7 +400,6 @@ body {
               </tr>
             </thead>
             <tbody id="dashboard-recent-table" class="divide-y divide-slate-100">
-              <!-- Loaded via JavaScript -->
             </tbody>
           </table>
         </div>
@@ -427,7 +420,6 @@ body {
         </button>
       </div>
 
-      <!-- Filters & Search Bar -->
       <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex flex-col md:flex-row gap-3 items-center justify-between">
         <div class="relative w-full md:w-96">
           <input type="text" id="search-contracts-input" placeholder="Buscar por Folio, Cliente, Teléfono o Dirección..." class="w-full pl-9 pr-4 py-2 text-xs border border-slate-200 rounded-xl bg-slate-50 focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-red-500">
@@ -446,7 +438,6 @@ body {
         </div>
       </div>
 
-      <!-- Full Contracts Table -->
       <div class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
         <div class="overflow-x-auto">
           <table class="w-full text-left">
@@ -462,7 +453,6 @@ body {
               </tr>
             </thead>
             <tbody id="contracts-table-body" class="divide-y divide-slate-100">
-              <!-- Loaded dynamically -->
             </tbody>
           </table>
         </div>
@@ -489,10 +479,8 @@ body {
         </div>
       </div>
 
-      <!-- Calendar Controls -->
       <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
         <div class="lg:col-span-3 space-y-4">
-          <!-- Navigation Bar -->
           <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex items-center justify-between">
             <div class="flex items-center gap-3">
               <button type="button" onclick="CalendarManager.changeMonth(-1)" class="p-2 border border-slate-200 rounded-xl hover:bg-slate-50 text-slate-600 font-bold cursor-pointer">
@@ -508,11 +496,9 @@ body {
             </button>
           </div>
 
-          <!-- Calendar Grid Mount -->
           <div id="calendar-container"></div>
         </div>
 
-        <!-- Right Sidebar: Upcoming Taquizas -->
         <div class="space-y-4">
           <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs">
             <h4 class="font-black text-slate-900 text-sm mb-3 flex items-center justify-between">
@@ -520,11 +506,9 @@ body {
               <span class="text-xs bg-red-100 text-red-700 px-2 py-0.5 rounded-full font-bold">Agenda</span>
             </h4>
             <div id="upcoming-events-sidebar" class="space-y-2.5">
-              <!-- Dynamically rendered -->
             </div>
           </div>
 
-          <!-- Legend Box -->
           <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs text-xs space-y-2">
             <h5 class="font-bold text-slate-800 uppercase tracking-wider text-[10px]">Guía de Colores</h5>
             <div class="flex items-center gap-2">
@@ -548,15 +532,14 @@ body {
          VIEW: CONTRACT GENERATOR & EDITOR (LIVE SPLIT)
     ======================================== -->
     <section id="view-editor" class="p-4 md:p-6 space-y-4 hidden">
-      <!-- Editor Action Top Bar -->
       <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex flex-col md:flex-row items-center justify-between gap-4 sticky top-2 z-10">
         <div class="flex items-center gap-3">
           <button type="button" onclick="App.navigate('contracts')" class="p-2 border border-slate-200 rounded-xl hover:bg-slate-50 text-slate-600 font-bold cursor-pointer" title="Regresar al listado">
             ←
           </button>
           <div>
-            <h2 class="text-lg font-black text-slate-900">Editor de Contrato (Formato FOP-01)</h2>
-            <p class="text-xs text-slate-500">Los cambios se actualizan en tiempo real en la vista previa del documento oficial.</p>
+            <h2 id="editor-title-heading" class="text-lg font-black text-slate-900">Editor de Contrato (Formato FOP-01)</h2>
+            <p id="editor-subtitle-text" class="text-xs text-slate-500">Los cambios se actualizan en tiempo real en la vista previa del documento oficial.</p>
           </div>
         </div>
 
@@ -567,13 +550,25 @@ body {
           <button type="button" onclick="App.saveCurrentContract()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl transition-colors shadow-xs flex items-center gap-1.5 cursor-pointer">
             💾 Guardar Contrato
           </button>
-          <button type="button" onclick="App.viewAndPrintContract()" class="px-4 py-2 bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold rounded-xl transition-colors shadow-xs flex items-center gap-1.5 cursor-pointer">
-            🖨️ Imprimir Formato
+          <button type="button" onclick="App.saveAndReturn()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl transition-colors shadow-xs flex items-center gap-1.5 cursor-pointer" title="Guardar cambios y volver al listado">
+            💾 Guardar y Volver
           </button>
-          <button type="button" onclick="App.downloadContractPDF()" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-xs font-bold rounded-xl transition-colors shadow-xs flex items-center gap-1.5 cursor-pointer">
-            📥 Descargar PDF
+          <button type="button" onclick="App.viewAndPrintContract()" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold rounded-xl transition-colors shadow-xs flex items-center gap-1.5 cursor-pointer">
+            🖨️ Imprimir
+          </button>
+          <button type="button" onclick="App.downloadContractPDF()" class="px-3.5 py-2 bg-red-600 hover:bg-red-700 text-white text-xs font-bold rounded-xl transition-colors shadow-xs flex items-center gap-1.5 cursor-pointer">
+            📥 PDF
           </button>
         </div>
+      </div>
+
+      <!-- Mode Banner -->
+      <div id="editor-mode-banner" class="hidden p-3 bg-blue-50 border border-blue-200 rounded-xl flex items-center justify-between text-xs text-blue-900 font-medium">
+        <div class="flex items-center gap-2">
+          <span class="text-base">✏️</span>
+          <span id="editor-mode-banner-text">Editando contrato</span>
+        </div>
+        <button type="button" onclick="App.newContract()" class="text-blue-700 hover:text-blue-900 font-bold underline cursor-pointer">Crear nuevo contrato en blanco</button>
       </div>
 
       <!-- Split Layout: Form (Left) & Realtime FOP-01 Preview (Right) -->
@@ -718,12 +713,9 @@ body {
                 </button>
               </div>
 
-              <!-- Dynamic Anticipos Container -->
               <div id="form-anticipos-container" class="space-y-2.5">
-                <!-- Injected dynamically -->
               </div>
 
-              <!-- IVA Config -->
               <div class="flex items-center justify-between pt-2 border-t text-xs">
                 <label class="font-bold text-slate-700">Tasa de IVA (%):</label>
                 <div class="w-28">
@@ -731,7 +723,6 @@ body {
                 </div>
               </div>
 
-              <!-- Financial Live Badges -->
               <div class="grid grid-cols-3 gap-2 text-center pt-2">
                 <div class="bg-slate-100 p-2 rounded-xl">
                   <span class="text-[10px] text-slate-500 block">Subtotal:</span>
@@ -748,7 +739,6 @@ body {
               </div>
             </div>
 
-            <!-- Submit Button bottom -->
             <div class="pt-2">
               <button type="submit" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm rounded-xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer">
                 💾 Guardar Todos los Cambios del Contrato
@@ -760,7 +750,6 @@ body {
         <!-- RIGHT COLUMN: EXACT 1:1 FOP-01 LIVE PREVIEW SHEET -->
         <div class="lg:col-span-7 contract-sheet-wrapper rounded-2xl shadow-inner overflow-x-auto">
           <div id="live-preview-container">
-            <!-- Rendered 1:1 identical to original sheet -->
           </div>
         </div>
 
@@ -768,77 +757,74 @@ body {
     </section>
 
     <!-- ========================================
-         VIEW: BACKUP & CLOUD / GITHUB SYNC
+         VIEW: FIREBASE REALTIME CLOUD SYNC & BACKUP
     ======================================== -->
     <section id="view-sync" class="p-4 md:p-8 space-y-6 hidden">
       <div>
-        <h2 class="text-2xl font-black text-slate-900">Sincronización en la Nube y Respaldo Multidispositivo</h2>
-        <p class="text-xs text-slate-500">Conecta todos tus celulares, tablets y computadoras para que tus contratos se sincronicen automáticamente en tiempo real.</p>
+        <h2 class="text-2xl font-black text-slate-900">Sincronización en Tiempo Real con Firebase</h2>
+        <p class="text-xs text-slate-500">Conecta tu base de datos gratuita de Google Firebase para que tus contratos se actualicen en vivo en tu celular y computadora en menos de 1 segundo.</p>
       </div>
 
-      <!-- Cloud Sync Panel -->
+      <!-- Firebase Connect Card -->
       <div class="bg-gradient-to-br from-slate-900 to-slate-800 text-white p-6 rounded-3xl shadow-xl space-y-5">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-700/80 pb-4">
           <div class="flex items-center gap-3">
-            <div class="w-12 h-12 bg-red-600 rounded-2xl flex items-center justify-center text-2xl shadow-md">
-              ☁️
+            <div class="w-12 h-12 bg-amber-500 text-slate-900 rounded-2xl flex items-center justify-center text-2xl shadow-md font-black">
+              🔥
             </div>
             <div>
-              <h3 class="text-lg font-black text-white">Sincronización Automática entre Dispositivos</h3>
-              <p class="text-xs text-slate-300">Tus contratos se guardan en la nube para que aparezcan en tu celular y laptop al mismo tiempo.</p>
+              <h3 class="text-lg font-black text-white">Google Firebase Realtime Database</h3>
+              <p class="text-xs text-slate-300">Sincronización automática multidispositivo en vivo.</p>
             </div>
           </div>
-          <button type="button" onclick="StorageManager.syncWithCloud()" class="px-5 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs rounded-xl transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer self-start sm:self-auto">
-            <span>🔄 Sincronizar Ahora</span>
+          <button type="button" onclick="App.saveFirebaseConfig()" class="px-5 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs rounded-xl transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer self-start sm:self-auto">
+            <span>💾 Conectar y Sincronizar</span>
           </button>
         </div>
 
-        <!-- Sync Configuration Fields -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-          <!-- Room Key Sync (Default & Easiest) -->
-          <div class="bg-white/10 p-4 rounded-2xl border border-white/10 space-y-3">
-            <div class="flex items-center justify-between">
-              <strong class="text-sm font-black text-amber-400">🔑 Clave de Negocio (Recomendada)</strong>
-              <span class="text-[10px] bg-emerald-500/30 text-emerald-300 font-bold px-2 py-0.5 rounded-full">Activa</span>
-            </div>
-            <p class="text-slate-300 text-[11px]">Todos los dispositivos que tengan la misma clave compartirán la misma base de datos automáticamente.</p>
-            <div>
-              <label class="block text-[11px] font-bold text-slate-300 mb-1">Clave de Sincronización:</label>
-              <div class="flex gap-2">
-                <input type="text" id="input-cloud-key" value="takirin-lachimenea-cordoba" class="flex-1 bg-slate-900/90 text-white p-2 rounded-xl border border-slate-700 text-xs font-mono font-bold">
-                <button type="button" onclick="App.saveCloudKeySetting()" class="px-3 py-2 bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold rounded-xl text-xs">Guardar</button>
-              </div>
-            </div>
+        <div class="space-y-3">
+          <label class="block text-xs font-bold text-amber-400">URL de tu Base de Datos Firebase (Realtime Database):</label>
+          <div class="flex flex-col sm:flex-row gap-2">
+            <input type="text" id="input-firebase-url" placeholder="https://tu-proyecto-default-rtdb.firebaseio.com" class="flex-1 bg-slate-900 text-white p-3 rounded-xl border border-slate-700 text-xs font-mono font-bold focus:outline-hidden focus:ring-2 focus:ring-amber-500">
+            <button type="button" onclick="App.saveFirebaseConfig()" class="px-6 py-3 bg-amber-500 hover:bg-amber-600 text-slate-900 font-black rounded-xl text-xs shrink-0 cursor-pointer">
+              ⚡ Conectar
+            </button>
           </div>
-
-          <!-- GitHub Gist Sync (Optional) -->
-          <div class="bg-white/10 p-4 rounded-2xl border border-white/10 space-y-3">
-            <div class="flex items-center justify-between">
-              <strong class="text-sm font-black text-slate-200">🐙 GitHub Token (Opcional)</strong>
-              <span class="text-[10px] bg-slate-700 text-slate-300 font-bold px-2 py-0.5 rounded-full">Gist API</span>
-            </div>
-            <p class="text-slate-300 text-[11px]">Si prefieres sincronizar directamente con tu cuenta privada de GitHub.</p>
-            <div>
-              <label class="block text-[11px] font-bold text-slate-300 mb-1">Personal Access Token (con permiso gist):</label>
-              <div class="flex gap-2">
-                <input type="password" id="input-github-token" placeholder="ghp_xxxxxxxxxxxx" class="flex-1 bg-slate-900/90 text-white p-2 rounded-xl border border-slate-700 text-xs font-mono">
-                <button type="button" onclick="App.saveGitHubTokenSetting()" class="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-xs">Conectar</button>
-              </div>
-            </div>
-          </div>
+          <p class="text-[11px] text-slate-400">Pega aquí la URL de tu base de datos de Firebase. Una vez guardada, cualquier contrato que crees en tu celular o computadora se sincronizará automáticamente.</p>
         </div>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <!-- Card 1: Local Backup Export / Import -->
+        <!-- Card 1: 4 Easy Steps to Create Firebase DB -->
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs space-y-3">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center text-lg font-black">
+              📋
+            </div>
+            <div>
+              <h3 class="font-bold text-slate-900 text-base">Cómo crear tu base en 2 minutos (Gratis)</h3>
+              <p class="text-xs text-slate-500">Sigue estos sencillos pasos:</p>
+            </div>
+          </div>
+
+          <ol class="text-xs text-slate-700 space-y-2 list-decimal list-inside bg-slate-50 p-4 rounded-xl border border-slate-200">
+            <li>Entra a <a href="https://console.firebase.google.com" target="_blank" class="text-blue-600 font-bold underline">console.firebase.google.com</a> con tu cuenta Google.</li>
+            <li>Haz clic en <strong>"Crear un proyecto"</strong> y ponle de nombre <code class="bg-white px-1 font-bold text-red-600">takirin-contratos</code>.</li>
+            <li>En el menú izquierdo ve a <strong>Compilación → Realtime Database</strong> y presiona <strong>"Crear base de datos"</strong>.</li>
+            <li>Elige <strong>"Iniciar en modo de prueba"</strong> y pulsa <strong>Habilitar</strong>.</li>
+            <li>Copia la URL que aparece arriba (termina en <code class="bg-white px-1 text-slate-900 font-mono">.firebaseio.com</code>) y pégala en el campo de arriba.</li>
+          </ol>
+        </div>
+
+        <!-- Card 2: Manual Backup Export / Import -->
         <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs space-y-4">
           <div class="flex items-center gap-3">
-            <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center text-xl">
+            <div class="w-10 h-10 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center text-lg">
               💾
             </div>
             <div>
-              <h3 class="font-bold text-slate-900 text-base">Exportar e Importar Respaldo</h3>
-              <p class="text-xs text-slate-500">Descarga un archivo JSON con todos tus contratos para guardarlo en tu computadora o enviarlo por correo.</p>
+              <h3 class="font-bold text-slate-900 text-base">Respaldo Manual en Archivo JSON</h3>
+              <p class="text-xs text-slate-500">Descarga o restaura un respaldo en cualquier momento.</p>
             </div>
           </div>
 
@@ -855,318 +841,205 @@ body {
             </div>
           </div>
         </div>
-
-        <!-- Card 2: GitHub Pages Guide -->
-        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs space-y-4">
-          <div class="flex items-center gap-3">
-            <div class="w-12 h-12 bg-red-50 text-red-600 rounded-2xl flex items-center justify-center text-xl">
-              🌐
-            </div>
-            <div>
-              <h3 class="font-bold text-slate-900 text-base">Acceso desde Cualquier Celular (GitHub Pages)</h3>
-              <p class="text-xs text-slate-500">Ten tu aplicación disponible 24/7 en internet gratis.</p>
-            </div>
-          </div>
-
-          <div class="text-xs text-slate-600 space-y-2 bg-slate-50 p-4 rounded-xl border border-slate-200">
-            <p class="font-bold text-slate-900">Pasos para activar en GitHub Pages:</p>
-            <ol class="list-decimal list-inside space-y-1">
-              <li>Crea un repositorio en GitHub llamado <code class="bg-white px-1 py-0.5 rounded text-red-600">takirin-contratos</code>.</li>
-              <li>Sube todos los archivos del proyecto a la rama <code class="bg-white px-1 py-0.5 rounded text-red-600">main</code>.</li>
-              <li>Ve a <strong>Settings → Pages</strong> y selecciona la rama <code class="bg-white px-1 py-0.5 rounded text-red-600">main / root</code>.</li>
-              <li>Abre el enlace en tu celular y ¡los contratos que crees en el celular se sincronizarán con tu computadora automáticamente!</li>
-            </ol>
-          </div>
-        </div>
       </div>
     </section>
 
   </main>
 
-  <!-- ==========================================
-       MODALS & HIDDEN PRINT AREA
-  =========================================== -->
-
-  <!-- Modal: Event Details (From Calendar or List) -->
+  <!-- Modals & Print Area -->
   <div id="event-detail-modal" class="modal-overlay fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
     <div class="bg-white rounded-2xl max-w-2xl w-full p-6 shadow-2xl overflow-y-auto max-h-[90vh]" id="event-detail-modal-content">
-      <!-- Injected by CalendarManager -->
     </div>
   </div>
 
-  <!-- Modal: Quick Anticipo Registration -->
   <div id="quick-anticipo-modal" class="modal-overlay fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
     <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl" id="quick-anticipo-modal-content">
-      <!-- Injected by App.openQuickAnticipoModal -->
     </div>
   </div>
 
-  <!-- Hidden Mount Area for 1:1 Letter Size Print & PDF Generation -->
   <div id="print-mount-area" class="hidden"></div>
-
-  <!-- Toast Notification Container -->
   <div id="toast-container" class="toast-container fixed bottom-5 right-5 z-50 space-y-2 pointer-events-none"></div>
 
   <!-- Application Logic Scripts -->
   <script>
 /**
- * Takirin La Chimenea - Storage & Realtime Cloud Synchronization Engine
- * Sincronización en tiempo real multidispositivo con Firebase Realtime DB + GitHub Gists + Respaldo Local
+ * Takirin La Chimenea - Firebase Realtime Database Sync Engine
+ * Sincronización automática instantánea en la nube (Opción 1: Firebase)
  */
-
-const DEFAULT_SAMPLE_CONTRACTS = [
-  {
-    "id": "TK-2026-0001",
-    "folio": "0001",
-    "contractDate": "2026-08-31",
-    "client": {
-      "name": "Lic. Roberto Morales Vázquez",
-      "address": "Av. 3 #1420, Fracc. San José, Córdoba, Ver.",
-      "reference": "Frente al parque de San José, portón blanco",
-      "phone": "271 123 4567"
-    },
-    "event": {
-      "type": "Taquiza Tradicional para 80 personas:\n• Pastor marinado con piña\n• Suadero al estilo CDMX\n• Longaniza artesanal\n• Bistec de res",
-      "amount": 4800,
-      "complements": [
-        "Salsa Verde",
-        "Salsa Roja",
-        "Cebolla morada con habanero",
-        "Rábanos o pepinos",
-        "Limones",
-        "Pico de gallo",
-        "Cebolla y Cilantro",
-        "Plato desechable",
-        "2 horas de servicio"
-      ],
-      "complementsText": "• Salsa Verde\n• Salsa Roja\n• Cebolla morada con habanero\n• Rábanos o pepinos\n• Limones\n• Pico de gallo\n• Cebolla y Cilantro\n• Plato desechable\n• 2 horas de servicio",
-      "additionals": "40 Gringas de pastor con queso Gouda + Vitrolero Horchata 20L",
-      "additionalsAmount": 850,
-      "travelCost": 0,
-      "date": "2026-09-05",
-      "dayOfWeek": "SÁBADO",
-      "arrivalTime": "14:00",
-      "startTime": "15:00",
-      "serviceTime": "2 HORAS",
-      "endTime": "17:00",
-      "assignedStaff": "Carlos Mendoza (Parrillero), Jesús López (Ayudante)"
-    },
-    "payments": {
-      "anticipos": [
-        {
-          "id": "ant-1",
-          "date": "2026-08-31",
-          "type": "Transferencia",
-          "amount": 2500,
-          "note": "Apartado 50%"
-        }
-      ],
-      "subtotal": 5650,
-      "ivaRate": 0,
-      "ivaAmount": 0,
-      "total": 5650,
-      "totalAnticipos": 2500,
-      "remainingBalance": 3150,
-      "status": "partial"
-    },
-    "elaboratedBy": "Alexis Lira",
-    "createdAt": "2026-08-31T13:30:00.000Z",
-    "updatedAt": "2026-08-31T13:30:00.000Z"
-  },
-  {
-    "id": "TK-2026-0002",
-    "folio": "0002",
-    "contractDate": "2026-08-30",
-    "client": {
-      "name": "Dra. Mariana Castillo Ramos",
-      "address": "Calle 9 Poniente #45, Col. Centro, Fortín de las Flores, Ver.",
-      "reference": "A dos cuadras del parque central de Fortín",
-      "phone": "271 987 6543"
-    },
-    "event": {
-      "type": "Taquiza Premium 120 personas:\n• Pastor especial Takirin\n• Chuleta ahumada con queso\n• Alambre mixto con morrón\n• Longaniza y Bistec",
-      "amount": 7200,
-      "complements": [
-        "Salsa Verde",
-        "Salsa Roja",
-        "Cebolla morada con habanero",
-        "Rábanos o pepinos",
-        "Limones",
-        "Pico de gallo",
-        "Cebolla y Cilantro",
-        "Plato desechable",
-        "2 horas de servicio"
-      ],
-      "complementsText": "• Salsa Verde\n• Salsa Roja\n• Cebolla morada con habanero\n• Rábanos o pepinos\n• Limones\n• Pico de gallo\n• Cebolla y Cilantro\n• Plato desechable\n• 2 horas de servicio",
-      "additionals": "1 Hora extra de servicio ($300) + 50 quesadillas de maíz",
-      "additionalsAmount": 750,
-      "travelCost": 250,
-      "date": "2026-09-12",
-      "dayOfWeek": "SÁBADO",
-      "arrivalTime": "17:30",
-      "startTime": "19:00",
-      "serviceTime": "3 HORAS",
-      "endTime": "22:00",
-      "assignedStaff": "Carlos Mendoza, Pedro Ramírez, Sofia Huerta"
-    },
-    "payments": {
-      "anticipos": [
-        {
-          "id": "ant-1",
-          "date": "2026-08-30",
-          "type": "Efectivo",
-          "amount": 4000,
-          "note": "Anticipo inicial"
-        },
-        {
-          "id": "ant-2",
-          "date": "2026-08-31",
-          "type": "Transferencia",
-          "amount": 4200,
-          "note": "Liquidación total"
-        }
-      ],
-      "subtotal": 8200,
-      "ivaRate": 0,
-      "ivaAmount": 0,
-      "total": 8200,
-      "totalAnticipos": 8200,
-      "remainingBalance": 0,
-      "status": "paid"
-    },
-    "elaboratedBy": "Alexis Lira",
-    "createdAt": "2026-08-30T10:15:00.000Z",
-    "updatedAt": "2026-08-31T12:00:00.000Z"
-  },
-  {
-    "id": "TK-2026-0003",
-    "folio": "0003",
-    "contractDate": "2026-08-31",
-    "client": {
-      "name": "Ing. Fernando Gómez Perea",
-      "address": "Privada Las Palmas #12, Fracc. Campestre, Córdoba, Ver.",
-      "reference": "Entrando por la caseta, tercera casa a mano derecha",
-      "phone": "271 555 8899"
-    },
-    "event": {
-      "type": "Taquiza Familiar 50 personas:\n• Pastor al trompo tradicional\n• Suadero suave\n• Bistec",
-      "amount": 3200,
-      "complements": [
-        "Salsa Verde",
-        "Salsa Roja",
-        "Cebolla morada con habanero",
-        "Rábanos o pepinos",
-        "Limones",
-        "Pico de gallo",
-        "Cebolla y Cilantro",
-        "Plato desechable",
-        "2 horas de servicio"
-      ],
-      "complementsText": "• Salsa Verde\n• Salsa Roja\n• Cebolla morada con habanero\n• Rábanos o pepinos\n• Limones\n• Pico de gallo\n• Cebolla y Cilantro\n• Plato desechable\n• 2 horas de servicio",
-      "additionals": "Cazuela de frijoles charros con tocino y salchicha",
-      "additionalsAmount": 450,
-      "travelCost": 0,
-      "date": "2026-09-18",
-      "dayOfWeek": "VIERNES",
-      "arrivalTime": "19:00",
-      "startTime": "20:00",
-      "serviceTime": "2 HORAS",
-      "endTime": "22:00",
-      "assignedStaff": "Jesús López (Parrillero)"
-    },
-    "payments": {
-      "anticipos": [
-        {
-          "id": "ant-1",
-          "date": "2026-08-31",
-          "type": "Transferencia",
-          "amount": 1500,
-          "note": "Anticipo de confirmación"
-        }
-      ],
-      "subtotal": 3650,
-      "ivaRate": 0,
-      "ivaAmount": 0,
-      "total": 3650,
-      "totalAnticipos": 1500,
-      "remainingBalance": 2150,
-      "status": "partial"
-    },
-    "elaboratedBy": "Alexis Lira",
-    "createdAt": "2026-08-31T11:00:00.000Z",
-    "updatedAt": "2026-08-31T11:00:00.000Z"
-  }
-];
 
 const STORAGE_KEYS = {
   CONTRACTS: 'takirin_contratos_db',
   SETTINGS: 'takirin_app_settings',
-  SYNC_CONFIG: 'takirin_sync_config',
+  FIREBASE_URL: 'takirin_firebase_url',
   LAST_SYNC: 'takirin_last_sync_time'
 };
 
 const StorageManager = {
   isSyncing: false,
-  autoSyncInterval: null,
+  realtimeActive: false,
+  syncInterval: null,
 
-  /**
-   * Initializes database and starts background realtime sync
-   */
   async init() {
-    const existing = this.getContracts();
-    if (!existing || existing.length === 0) {
-      this.saveContractsLocally(DEFAULT_SAMPLE_CONTRACTS);
+    // 1. Cargar datos locales primero para arranque instantáneo
+    const local = this.getContracts();
+    if (!local || local.length === 0) {
+      if (typeof DEFAULT_SAMPLE_CONTRACTS !== 'undefined') {
+        this.saveContractsLocally(DEFAULT_SAMPLE_CONTRACTS);
+      }
     }
 
-    // Try initial sync on app open
-    setTimeout(() => {
-      this.syncWithCloud(true);
-    }, 500);
+    // 2. Conectar y sincronizar con Firebase Realtime Database
+    const firebaseUrl = this.getFirebaseUrl();
+    if (firebaseUrl) {
+      this.syncFromFirebase(true);
+      this.startRealtimePolling();
+    } else {
+      this.updateStatusPill('unconfigured');
+    }
+  },
 
-    // Setup auto-sync polling every 20 seconds so devices update without refreshing
-    if (!this.autoSyncInterval) {
-      this.autoSyncInterval = setInterval(() => {
-        this.syncWithCloud(true);
-      }, 20000);
+  getFirebaseUrl() {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEYS.FIREBASE_URL);
+      if (saved && saved.trim().length > 0) return saved.trim().replace(/\/+$/, '');
+    } catch (e) {}
+    // URL por defecto si el usuario ya la configuró
+    return '';
+  },
+
+  setFirebaseUrl(url) {
+    if (!url) return;
+    const cleanUrl = url.trim().replace(/\/+$/, '');
+    localStorage.setItem(STORAGE_KEYS.FIREBASE_URL, cleanUrl);
+    this.syncFromFirebase(false);
+    this.startRealtimePolling();
+  },
+
+  startRealtimePolling() {
+    if (this.syncInterval) clearInterval(this.syncInterval);
+    // Revisa cambios en la nube cada 8 segundos de forma silenciosa
+    this.syncInterval = setInterval(() => {
+      this.syncFromFirebase(true);
+    }, 8000);
+  },
+
+  /**
+   * Lee la base de datos de Firebase en tiempo real
+   */
+  async syncFromFirebase(silent = false) {
+    const firebaseUrl = this.getFirebaseUrl();
+    if (!firebaseUrl) {
+      this.updateStatusPill('unconfigured');
+      return;
+    }
+
+    this.updateStatusPill('syncing');
+
+    try {
+      const endpoint = `${firebaseUrl}/contratos.json`;
+      const res = await fetch(endpoint, {
+        method: 'GET',
+        headers: { 'Accept': 'application/json' }
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        let remoteContracts = [];
+
+        if (Array.isArray(data)) {
+          remoteContracts = data.filter(c => c && c.id);
+        } else if (data && typeof data === 'object') {
+          remoteContracts = Object.values(data).filter(c => c && c.id);
+        }
+
+        const local = this.getContracts();
+        const map = new Map();
+
+        // Mezcla inteligente para no perder datos si no hay internet temporalmente
+        local.forEach(c => map.set(c.id, c));
+
+        let hasNewData = false;
+        remoteContracts.forEach(rc => {
+          if (!map.has(rc.id)) {
+            map.set(rc.id, rc);
+            hasNewData = true;
+          } else {
+            const lc = map.get(rc.id);
+            const lcTime = new Date(lc.updatedAt || lc.createdAt || 0).getTime();
+            const rcTime = new Date(rc.updatedAt || rc.createdAt || 0).getTime();
+            if (rcTime > lcTime) {
+              map.set(rc.id, rc);
+              hasNewData = true;
+            }
+          }
+        });
+
+        const merged = Array.from(map.values());
+        this.saveContractsLocally(merged);
+        this.updateStatusPill('connected');
+
+        if (hasNewData && typeof App !== 'undefined') {
+          App.renderStats();
+          App.renderContractsTable();
+          if (typeof CalendarManager !== 'undefined') CalendarManager.render();
+        }
+
+        if (!silent && typeof App !== 'undefined' && App.showToast) {
+          App.showToast(`¡Conectado a Firebase! (${merged.length} contratos sincronizados)`, 'success');
+        }
+      } else {
+        throw new Error(`Firebase respondió código ${res.status}`);
+      }
+    } catch (err) {
+      console.warn('Error al sincronizar con Firebase:', err);
+      this.updateStatusPill('error');
+      if (!silent && typeof App !== 'undefined' && App.showToast) {
+        App.showToast('No se pudo conectar a Firebase: ' + err.message, 'warning');
+      }
     }
   },
 
   /**
-   * Get all contracts from localStorage
-   * @returns {Array} List of contracts
+   * Guarda localmente y sube a Firebase de inmediato
    */
+  async saveContracts(contracts) {
+    this.saveContractsLocally(contracts);
+    
+    // Subir a Firebase en tiempo real
+    const firebaseUrl = this.getFirebaseUrl();
+    if (firebaseUrl) {
+      try {
+        const endpoint = `${firebaseUrl}/contratos.json`;
+        await fetch(endpoint, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(contracts)
+        });
+        this.updateStatusPill('connected');
+      } catch (e) {
+        console.warn('Error al guardar en Firebase:', e);
+        this.updateStatusPill('error');
+      }
+    }
+    return true;
+  },
+
   getContracts() {
     try {
       const data = localStorage.getItem(STORAGE_KEYS.CONTRACTS);
       return data ? JSON.parse(data) : [];
     } catch (e) {
-      console.error('Error reading contracts from localStorage', e);
       return [];
     }
   },
 
-  /**
-   * Save contracts locally
-   */
   saveContractsLocally(contracts) {
     try {
       localStorage.setItem(STORAGE_KEYS.CONTRACTS, JSON.stringify(contracts));
       return true;
     } catch (e) {
-      console.error('Error saving contracts locally', e);
       return false;
     }
-  },
-
-  /**
-   * Save all contracts and trigger cloud push immediately
-   * @param {Array} contracts 
-   */
-  saveContracts(contracts) {
-    this.saveContractsLocally(contracts);
-    // Push immediately to cloud
-    this.syncWithCloud(true);
-    return true;
   },
 
   getContract(idOrFolio) {
@@ -1250,292 +1123,33 @@ const StorageManager = {
     localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(settings));
   },
 
-  /**
-   * Get Sync Configuration
-   */
-  getSyncConfig() {
-    try {
-      const data = localStorage.getItem(STORAGE_KEYS.SYNC_CONFIG);
-      return data ? JSON.parse(data) : {
-        enabled: true,
-        cloudKey: 'takirin-lachimenea-cordoba',
-        firebaseUrl: 'https://takirin-contratos-default-rtdb.firebaseio.com',
-        githubToken: '',
-        githubGistId: ''
-      };
-    } catch (e) {
-      return {
-        enabled: true,
-        cloudKey: 'takirin-lachimenea-cordoba',
-        firebaseUrl: 'https://takirin-contratos-default-rtdb.firebaseio.com'
-      };
-    }
-  },
-
-  saveSyncConfig(config) {
-    localStorage.setItem(STORAGE_KEYS.SYNC_CONFIG, JSON.stringify(config));
-  },
-
-  /**
-   * Core Multichannel Cloud Synchronization (Firebase Realtime DB + GitHub Gist)
-   */
-  async syncWithCloud(silent = false) {
-    if (this.isSyncing) return;
-    this.isSyncing = true;
-    this.updateSyncUIStatus('syncing');
-
-    try {
-      const config = this.getSyncConfig();
-      if (!config.enabled) {
-        this.updateSyncUIStatus('idle');
-        this.isSyncing = false;
-        return;
-      }
-
-      let remoteContracts = null;
-      let syncSuccess = false;
-
-      // CHANNEL 1: Firebase Realtime Database (High Speed Realtime Sync)
-      const firebaseUrl = config.firebaseUrl || 'https://takirin-contratos-default-rtdb.firebaseio.com';
-      const cleanKey = (config.cloudKey || 'takirin-lachimenea-cordoba').replace(/[^a-zA-Z0-9_-]/g, '');
-      const endpoint = `${firebaseUrl}/negocios/${cleanKey}.json`;
-
-      try {
-        const getRes = await fetch(endpoint, {
-          method: 'GET',
-          headers: { 'Accept': 'application/json' }
-        });
-
-        if (getRes.ok) {
-          const remoteData = await getRes.json();
-          if (remoteData) {
-            remoteContracts = Array.isArray(remoteData) ? remoteData : (remoteData.contracts || Object.values(remoteData));
-          } else {
-            remoteContracts = [];
-          }
-          syncSuccess = true;
-        }
-      } catch (err) {
-        console.warn('Firebase sync channel attempt:', err);
-      }
-
-      // CHANNEL 2: GitHub Gist API (If configured)
-      if (!syncSuccess && config.githubToken) {
-        try {
-          remoteContracts = await this.syncWithGitHubGist(config);
-          if (remoteContracts) syncSuccess = true;
-        } catch (e) {
-          console.warn('GitHub Gist sync attempt:', e);
-        }
-      }
-
-      if (syncSuccess && Array.isArray(remoteContracts)) {
-        // Smart Merge local and remote
-        const local = this.getContracts();
-        const contractMap = new Map();
-
-        local.forEach(c => contractMap.set(c.id, c));
-
-        let hasNewUpdates = false;
-        remoteContracts.forEach(rc => {
-          if (!rc || !rc.id) return;
-          if (!contractMap.has(rc.id)) {
-            contractMap.set(rc.id, rc);
-            hasNewUpdates = true;
-          } else {
-            const lc = contractMap.get(rc.id);
-            const lcTime = new Date(lc.updatedAt || lc.createdAt || 0).getTime();
-            const rcTime = new Date(rc.updatedAt || rc.createdAt || 0).getTime();
-            if (rcTime > lcTime) {
-              contractMap.set(rc.id, rc);
-              hasNewUpdates = true;
-            }
-          }
-        });
-
-        const merged = Array.from(contractMap.values());
-        this.saveContractsLocally(merged);
-
-        // Push merged state back to Firebase / Cloud so other devices have the latest
-        try {
-          await fetch(endpoint, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(merged)
-          });
-        } catch (e) {
-          console.warn('Could not push back to Firebase:', e);
-        }
-
-        if (config.githubToken && config.githubGistId) {
-          this.pushToGitHubGist(config, merged).catch(e => console.warn(e));
-        }
-
-        localStorage.setItem(STORAGE_KEYS.LAST_SYNC, new Date().toISOString());
-        this.updateSyncUIStatus('synced');
-
-        if (hasNewUpdates && typeof App !== 'undefined') {
-          App.renderStats();
-          App.renderContractsTable();
-          if (typeof CalendarManager !== 'undefined') CalendarManager.render();
-        }
-
-        if (!silent && typeof App !== 'undefined' && App.showToast) {
-          App.showToast('¡Sincronización completada con éxito!', 'success');
-        }
-      } else {
-        this.updateSyncUIStatus('synced');
-      }
-    } catch (err) {
-      console.warn('Sync coordinator status:', err);
-      this.updateSyncUIStatus('error');
-      if (!silent && typeof App !== 'undefined' && App.showToast) {
-        App.showToast('Nota de sincronización: ' + err.message, 'warning');
-      }
-    } finally {
-      this.isSyncing = false;
-    }
-  },
-
-  /**
-   * Sync with GitHub Gist API
-   */
-  async syncWithGitHubGist(config) {
-    if (!config.githubToken) return null;
-
-    let gistId = config.githubGistId;
-    if (!gistId) {
-      gistId = await this.findOrCreateTakirinGist(config.githubToken);
-      if (gistId) {
-        config.githubGistId = gistId;
-        this.saveSyncConfig(config);
-      }
-    }
-
-    if (!gistId) return null;
-
-    const res = await fetch(`https://api.github.com/gists/${gistId}`, {
-      headers: {
-        'Authorization': `token ${config.githubToken}`,
-        'Accept': 'application/vnd.github.v3+json'
-      }
-    });
-
-    if (res.ok) {
-      const data = await res.json();
-      const file = data.files && data.files['takirin_contratos_data.json'];
-      if (file && file.content) {
-        return JSON.parse(file.content);
-      }
-    }
-    return null;
-  },
-
-  async pushToGitHubGist(config, contracts) {
-    if (!config.githubToken || !config.githubGistId) return;
-
-    await fetch(`https://api.github.com/gists/${config.githubGistId}`, {
-      method: 'PATCH',
-      headers: {
-        'Authorization': `token ${config.githubToken}`,
-        'Accept': 'application/vnd.github.v3+json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        description: 'Takirin La Chimenea - Base de Datos de Contratos de Taquizas',
-        files: {
-          'takirin_contratos_data.json': {
-            content: JSON.stringify(contracts, null, 2)
-          }
-        }
-      })
-    });
-  },
-
-  async findOrCreateTakirinGist(token) {
-    try {
-      const res = await fetch('https://api.github.com/gists', {
-        headers: {
-          'Authorization': `token ${token}`,
-          'Accept': 'application/vnd.github.v3+json'
-        }
-      });
-      if (res.ok) {
-        const gists = await res.json();
-        const existing = gists.find(g => g.files && g.files['takirin_contratos_data.json']);
-        if (existing) return existing.id;
-      }
-
-      const local = this.getContracts();
-      const createRes = await fetch('https://api.github.com/gists', {
-        method: 'POST',
-        headers: {
-          'Authorization': `token ${token}`,
-          'Accept': 'application/vnd.github.v3+json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          description: 'Takirin La Chimenea - Base de Datos de Contratos de Taquizas',
-          public: false,
-          files: {
-            'takirin_contratos_data.json': {
-              content: JSON.stringify(local, null, 2)
-            }
-          }
-        })
-      });
-
-      if (createRes.ok) {
-        const created = await createRes.json();
-        return created.id;
-      }
-    } catch (e) {
-      console.error('Error with GitHub Gist:', e);
-    }
-    return null;
-  },
-
-  updateSyncUIStatus(status) {
+  updateStatusPill(status) {
     const el = document.getElementById('navbar-sync-indicator');
     const textEl = document.getElementById('navbar-sync-text');
     if (!el) return;
 
-    const lastSync = localStorage.getItem(STORAGE_KEYS.LAST_SYNC);
-    let timeStr = '';
-    if (lastSync) {
-      const d = new Date(lastSync);
-      timeStr = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
-    }
-
-    if (status === 'syncing') {
+    if (status === 'connected') {
+      el.className = 'w-full flex items-center justify-center gap-2 px-3 py-1.5 rounded-xl text-xs font-bold bg-emerald-50 text-emerald-800 border border-emerald-200 hover:bg-emerald-100 transition-all cursor-pointer';
+      if (textEl) textEl.textContent = '🟢 Firebase: En Vivo';
+    } else if (status === 'syncing') {
       el.className = 'w-full flex items-center justify-center gap-2 px-3 py-1.5 rounded-xl text-xs font-bold bg-blue-100 text-blue-800 border border-blue-200 animate-pulse cursor-pointer';
       if (textEl) textEl.textContent = 'Sincronizando...';
-    } else if (status === 'synced') {
-      el.className = 'w-full flex items-center justify-center gap-2 px-3 py-1.5 rounded-xl text-xs font-bold bg-emerald-50 text-emerald-800 border border-emerald-200 hover:bg-emerald-100 transition-all cursor-pointer';
-      if (textEl) textEl.textContent = timeStr ? `Nube: Activa (${timeStr})` : 'Nube: Conectada';
     } else if (status === 'error') {
       el.className = 'w-full flex items-center justify-center gap-2 px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-50 text-amber-800 border border-amber-200 hover:bg-amber-100 transition-all cursor-pointer';
-      if (textEl) textEl.textContent = 'Nube: Toca para reintentar';
+      if (textEl) textEl.textContent = '🟡 Firebase: Reconectando';
     } else {
       el.className = 'w-full flex items-center justify-center gap-2 px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 border border-slate-200 hover:bg-slate-200 transition-all cursor-pointer';
-      if (textEl) textEl.textContent = 'Nube Activa';
+      if (textEl) textEl.textContent = '⚙️ Configurar Firebase';
     }
   },
 
   exportToJSON() {
-    const data = {
-      version: '1.0',
-      exportedAt: new Date().toISOString(),
-      contracts: this.getContracts(),
-      settings: this.getSettings()
-    };
-    
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const contracts = this.getContracts();
+    const blob = new Blob([JSON.stringify(contracts, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    const timestamp = new Date().toISOString().split('T')[0];
     a.href = url;
-    a.download = `takirin_contratos_respaldo_${timestamp}.json`;
+    a.download = `takirin_contratos_respaldo_${new Date().toISOString().split('T')[0]}.json`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -1548,39 +1162,28 @@ const StorageManager = {
       reader.onload = async (e) => {
         try {
           const content = JSON.parse(e.target.result);
-          let contractsToImport = [];
+          let contractsToImport = Array.isArray(content) ? content : (content.contracts || []);
           
-          if (Array.isArray(content)) {
-            contractsToImport = content;
-          } else if (content.contracts && Array.isArray(content.contracts)) {
-            contractsToImport = content.contracts;
-            if (content.settings) {
-              this.saveSettings(content.settings);
-            }
-          } else {
-            throw new Error('Formato de archivo inválido.');
-          }
+          if (!Array.isArray(contractsToImport)) throw new Error('Formato inválido');
 
           const current = this.getContracts();
           const map = new Map();
-          
           current.forEach(c => map.set(c.id, c));
           contractsToImport.forEach(c => map.set(c.id, c));
           
           const merged = Array.from(map.values());
-          this.saveContracts(merged);
+          await this.saveContracts(merged);
           
           resolve({
             success: true,
             count: contractsToImport.length,
             total: merged.length,
-            message: `Se importaron ${contractsToImport.length} contratos exitosamente.`
+            message: `Se importaron y sincronizaron ${contractsToImport.length} contratos.`
           });
         } catch (err) {
           reject(err);
         }
       };
-      reader.onerror = () => reject(new Error('Error al leer el archivo.'));
       reader.readAsText(file);
     });
   }
@@ -1667,6 +1270,10 @@ const ContractModel = {
     };
   },
 
+  generateId() {
+    return `TK-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`;
+  },
+
   getDayOfWeek(dateString) {
     if (!dateString) return '';
     try {
@@ -1676,6 +1283,10 @@ const ContractModel = {
     } catch (e) {
       return '';
     }
+  },
+
+  getDayOfWeekSpanish(dateString) {
+    return this.getDayOfWeek(dateString);
   },
 
   parseDateParts(dateString) {
@@ -1710,6 +1321,10 @@ const ContractModel = {
     } catch (e) {
       return '';
     }
+  },
+
+  calculateFinancials(contract) {
+    return this.recalculateTotals(contract);
   },
 
   recalculateTotals(contract) {
@@ -1877,8 +1492,8 @@ const PDFGenerator = {
               <div style="font-family:Arial, Helvetica, sans-serif; font-size:16px; font-weight:bold; letter-spacing:0.5px; margin:0 0 2px 0; color:#000;">${settings.businessName || 'TAKIRIN LA CHIMENEA'}</div>
               <div style="font-family:Arial, Helvetica, sans-serif; font-size:9.5px; font-weight:bold; margin:0 0 2px 0; color:#000;">${settings.address || 'CALLE 15 #221, COL. CENTRO, CP 94500, CÓRDOBA, VER.'}</div>
               <div style="font-family:Arial, Helvetica, sans-serif; font-size:11px; font-weight:bold; margin:0 0 4px 0; color:#000;">${settings.phone || '271 157 1770'}</div>
-              <div style="font-family:Arial, Helvetica, sans-serif; background-color:#e60000; color:#ffffff; font-size:12px; font-weight:bold; padding:3px 8px; text-align:center; letter-spacing:1px;">
-                CONTRATO DE TAQUIZA
+              <div style="font-family:Arial, Helvetica, sans-serif; background-color:${contract.payments && contract.payments.status === 'cancelled' ? '#64748b' : '#e60000'}; color:#ffffff; font-size:12px; font-weight:bold; padding:3px 8px; text-align:center; letter-spacing:1px;">
+                ${contract.payments && contract.payments.status === 'cancelled' ? 'CONTRATO CANCELADO' : 'CONTRATO DE TAQUIZA'}
               </div>
             </td>
 
@@ -2625,16 +2240,25 @@ const CalendarManager = {
 
       <!-- Action Buttons -->
       <div class="flex flex-wrap gap-2 justify-end border-t pt-4">
-        <button onclick="App.openQuickAnticipoModal('${contract.id}')" class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-lg transition-colors text-sm shadow-xs flex items-center gap-1.5">
-          💵 Registrar Anticipo
-        </button>
-        <button onclick="App.sendWhatsAppMessage('${contract.id}')" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg transition-colors text-sm shadow-xs flex items-center gap-1.5">
-          📱 WhatsApp
-        </button>
+        ${(contract.payments && contract.payments.status === 'cancelled') ? `
+          <button onclick="App.closeModal('event-detail-modal'); App.toggleCancelContract('${contract.id}')" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg transition-colors text-sm shadow-xs flex items-center gap-1.5">
+            🔄 Reactivar Evento
+          </button>
+        ` : `
+          <button onclick="App.openQuickAnticipoModal('${contract.id}')" class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-lg transition-colors text-sm shadow-xs flex items-center gap-1.5">
+            💵 Registrar Anticipo
+          </button>
+          <button onclick="App.sendWhatsAppMessage('${contract.id}')" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg transition-colors text-sm shadow-xs flex items-center gap-1.5">
+            📱 WhatsApp
+          </button>
+          <button onclick="App.toggleCancelContract('${contract.id}')" class="px-4 py-2 bg-slate-200 hover:bg-red-50 text-red-600 font-bold rounded-lg transition-colors text-sm shadow-xs flex items-center gap-1.5" title="Cancelar Taquiza sin borrar">
+            🚫 Cancelar
+          </button>
+        `}
         <button onclick="App.viewAndPrintContract('${contract.id}')" class="px-4 py-2 bg-slate-800 hover:bg-slate-900 text-white font-bold rounded-lg transition-colors text-sm shadow-xs flex items-center gap-1.5">
           🖨️ Ver / Imprimir
         </button>
-        <button onclick="App.editContract('${contract.id}')" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg transition-colors text-sm shadow-xs flex items-center gap-1.5">
+        <button onclick="App.closeModal('event-detail-modal'); App.editContract('${contract.id}')" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg transition-colors text-sm shadow-xs flex items-center gap-1.5">
           ✏️ Editar
         </button>
       </div>
@@ -2699,6 +2323,7 @@ window.CalendarManager = CalendarManager;
 
 /**
  * Takirin La Chimenea - Main Application Controller
+ * Navegación, Edición Blindada, Cancelación sin Borrado, Anticipos y WhatsApp
  */
 
 const App = {
@@ -2708,111 +2333,122 @@ const App = {
   searchQuery: '',
 
   async init() {
-    try {
-      await StorageManager.init();
-      this.setupEventListeners();
-      this.navigate('dashboard');
-      this.renderStats();
-      this.renderContractsTable();
-      if (typeof CalendarManager !== 'undefined' && CalendarManager.init) {
-        CalendarManager.init();
-      }
-    } catch (err) {
-      console.error('App init error:', err);
+    this.setupEventListeners();
+    await StorageManager.init();
+    this.renderStats();
+    this.renderContractsTable();
+    if (typeof CalendarManager !== 'undefined') {
+      CalendarManager.init();
     }
   },
 
-  navigate(viewName) {
-    this.currentView = viewName;
-
+  setupEventListeners() {
+    // Navigation items
     document.querySelectorAll('.nav-link').forEach(link => {
-      if (link.dataset.view === viewName) {
+      link.addEventListener('click', (e) => {
+        const view = link.getAttribute('data-view');
+        if (view) this.navigate(view);
+      });
+    });
+
+    // Search input
+    const searchInput = document.getElementById('search-contracts-input');
+    if (searchInput) {
+      searchInput.addEventListener('input', (e) => {
+        this.searchQuery = e.target.value.toLowerCase().trim();
+        this.renderContractsTable();
+      });
+    }
+
+    // Status filter
+    const statusFilter = document.getElementById('filter-contracts-status');
+    if (statusFilter) {
+      statusFilter.addEventListener('change', (e) => {
+        this.activeFilter = e.target.value;
+        this.renderContractsTable();
+      });
+    }
+
+    // Live form inputs for real-time preview sync
+    const form = document.getElementById('contract-form');
+    if (form) {
+      form.addEventListener('input', () => this.onFormChange());
+    }
+  },
+
+  navigate(viewId) {
+    this.currentView = viewId;
+
+    // Hide all view sections
+    document.querySelectorAll('main > section').forEach(sec => {
+      sec.classList.add('hidden');
+    });
+
+    // Show target view
+    const target = document.getElementById(`view-${viewId}`);
+    if (target) {
+      target.classList.remove('hidden');
+    }
+
+    // Update active nav-link
+    document.querySelectorAll('.nav-link').forEach(link => {
+      if (link.getAttribute('data-view') === viewId) {
         link.classList.add('active');
       } else {
         link.classList.remove('active');
       }
     });
 
-    const views = ['dashboard', 'contracts', 'editor', 'calendar', 'sync'];
-    views.forEach(v => {
-      const el = document.getElementById(`view-${v}`);
-      if (el) {
-        if (v === viewName) {
-          el.classList.remove('hidden');
-        } else {
-          el.classList.add('hidden');
-        }
-      }
-    });
-
-    if (viewName === 'dashboard') {
+    // Refresh view specific contents
+    if (viewId === 'dashboard') {
       this.renderStats();
-    } else if (viewName === 'contracts') {
+    } else if (viewId === 'contracts') {
       this.renderContractsTable();
-    } else if (viewName === 'calendar') {
+    } else if (viewId === 'calendar') {
       if (typeof CalendarManager !== 'undefined') CalendarManager.render();
-    } else if (viewName === 'editor' && !this.editingContract) {
-      this.newContract();
-    }
-  },
-
-  setupEventListeners() {
-    document.querySelectorAll('.nav-link').forEach(link => {
-      link.addEventListener('click', (e) => {
-        const view = link.dataset.view;
-        if (view) this.navigate(view);
-      });
-    });
-
-    const searchInput = document.getElementById('search-contracts-input');
-    if (searchInput) {
-      searchInput.addEventListener('input', (e) => {
-        this.searchQuery = e.target.value.toLowerCase();
-        this.renderContractsTable();
-      });
+    } else if (viewId === 'editor') {
+      this.updateLivePreview();
+    } else if (viewId === 'sync') {
+      const urlInput = document.getElementById('input-firebase-url');
+      if (urlInput && typeof StorageManager !== 'undefined') {
+        urlInput.value = StorageManager.getFirebaseUrl();
+      }
     }
 
-    const filterSelect = document.getElementById('filter-contracts-status');
-    if (filterSelect) {
-      filterSelect.addEventListener('change', (e) => {
-        this.activeFilter = e.target.value;
-        this.renderContractsTable();
-      });
-    }
-
-    const editorForm = document.getElementById('contract-form');
-    if (editorForm) {
-      editorForm.addEventListener('input', () => {
-        this.syncFormToModel();
-        this.updateLivePreview();
-      });
-    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   },
 
   renderStats() {
     try {
       const contracts = StorageManager.getContracts() || [];
-      const today = new Date();
-      const currentMonth = today.getMonth();
-      const currentYear = today.getFullYear();
-      const todayStr = today.toISOString().split('T')[0];
+      const totalContratos = contracts.length;
+      
+      const now = new Date();
+      const currentYear = now.getFullYear();
+      const currentMonth = now.getMonth();
+      const todayStr = now.toISOString().split('T')[0];
 
-      let totalContratos = contracts.length;
       let eventosEsteMes = 0;
       let ingresosTotales = 0;
       let anticiposCobrados = 0;
       let saldoPorCobrar = 0;
 
       contracts.forEach(c => {
-        if (!c.payments) c.payments = {};
-        if (c.payments.status !== 'cancelled') {
+        if (!c.payments) return;
+        const isCancelled = c.payments.status === 'cancelled';
+
+        if (!isCancelled) {
           ingresosTotales += (c.payments.total || 0);
           anticiposCobrados += (c.payments.totalAnticipos || 0);
           saldoPorCobrar += (c.payments.remainingBalance || 0);
+        }
 
-          if (c.event && c.event.date) {
-            const [y, m] = c.event.date.split('-').map(Number);
-            if (y === currentYear && (m - 1) === currentMonth) {
+        if (c.event && c.event.date && !isCancelled) {
+          const parts = c.event.date.split('-');
+          if (parts.length >= 2) {
+            const evYear = parseInt(parts[0], 10);
+            const evMonth = parseInt(parts[1], 10) - 1;
+            if (evYear === currentYear && evMonth === currentMonth) {
               eventosEsteMes++;
             }
           }
@@ -2835,7 +2471,7 @@ const App = {
       if (recentTable) {
         const recent = [...contracts]
           .sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0))
-          .slice(0, 5);
+          .slice(0, 6);
 
         if (recent.length === 0) {
           recentTable.innerHTML = `<tr><td colspan="7" class="text-center py-6 text-slate-400">No hay contratos registrados aún.</td></tr>`;
@@ -2874,10 +2510,10 @@ const App = {
                 </div>
               </div>
               <div class="flex items-center gap-3 w-full md:w-auto justify-end">
-                <button onclick="App.viewAndPrintContract('${next.id}')" class="px-4 py-2 bg-white text-red-700 hover:bg-red-50 font-bold rounded-xl text-xs shadow-sm transition-all">
+                <button onclick="App.viewAndPrintContract('${next.id}')" class="px-4 py-2 bg-white text-red-700 hover:bg-red-50 font-bold rounded-xl text-xs shadow-sm transition-all cursor-pointer">
                   🖨️ Ver Contrato
                 </button>
-                <button onclick="CalendarManager.showEventModal('${next.id}')" class="px-4 py-2 bg-red-900/50 hover:bg-red-900/80 text-white font-bold rounded-xl text-xs transition-all">
+                <button onclick="CalendarManager.showEventModal('${next.id}')" class="px-4 py-2 bg-red-900/50 hover:bg-red-900/80 text-white font-bold rounded-xl text-xs transition-all cursor-pointer">
                   Detalles
                 </button>
               </div>
@@ -2941,27 +2577,29 @@ const App = {
     if (!c.payments) c.payments = {};
 
     const status = c.payments.status || 'pending';
+    const isCancelled = status === 'cancelled';
+    
     let badgeClass = 'bg-amber-100 text-amber-800 border-amber-300';
     let statusText = 'Anticipo Dado';
 
-    if (status === 'paid') {
+    if (isCancelled) {
+      badgeClass = 'bg-slate-200 text-slate-700 border-slate-400';
+      statusText = '🚫 Cancelado';
+    } else if (status === 'paid') {
       badgeClass = 'bg-emerald-100 text-emerald-800 border-emerald-300';
       statusText = '✓ Liquidado';
-    } else if (status === 'cancelled') {
-      badgeClass = 'bg-slate-100 text-slate-600 border-slate-300';
-      statusText = 'Cancelado';
     } else if (c.payments.remainingBalance === c.payments.total) {
       badgeClass = 'bg-red-100 text-red-800 border-red-300';
       statusText = 'Sin Anticipo';
     }
 
     return `
-      <tr class="hover:bg-slate-50/80 transition-colors border-b border-slate-200 text-sm">
-        <td class="py-3 px-4 font-black text-slate-900">
-          <span class="bg-slate-900 text-white text-xs px-2 py-0.5 rounded font-mono">#${c.folio || '0000'}</span>
+      <tr class="hover:bg-slate-50/80 transition-colors border-b border-slate-200 text-sm ${isCancelled ? 'bg-slate-50/60 opacity-75' : ''}">
+        <td class="py-3 px-4 font-black text-slate-900 cursor-pointer" onclick="App.editContract('${c.id}')" title="Hacer clic para editar">
+          <span class="${isCancelled ? 'bg-slate-500' : 'bg-slate-900 hover:bg-red-600'} text-white text-xs px-2 py-0.5 rounded font-mono transition-colors">#${c.folio || '0000'}</span>
         </td>
-        <td class="py-3 px-4">
-          <div class="font-bold text-slate-800">${c.client.name || 'Sin Nombre'}</div>
+        <td class="py-3 px-4 cursor-pointer" onclick="App.editContract('${c.id}')" title="Hacer clic para editar">
+          <div class="font-bold text-slate-800 hover:text-red-600 transition-colors ${isCancelled ? 'line-through text-slate-500' : ''}">${c.client.name || 'Sin Nombre'}</div>
           <div class="text-xs text-slate-500">${c.client.phone || 'Sin teléfono'}</div>
         </td>
         <td class="py-3 px-4 text-xs">
@@ -2971,7 +2609,7 @@ const App = {
         <td class="py-3 px-4 text-right font-semibold text-slate-800">
           ${ContractModel.formatCurrency(c.payments.total)}
         </td>
-        <td class="py-3 px-4 text-right font-black ${(c.payments.remainingBalance || 0) > 0 ? 'text-red-600' : 'text-emerald-600'}">
+        <td class="py-3 px-4 text-right font-black ${isCancelled ? 'text-slate-400' : ((c.payments.remainingBalance || 0) > 0 ? 'text-red-600' : 'text-emerald-600')}">
           ${ContractModel.formatCurrency(c.payments.remainingBalance)}
         </td>
         <td class="py-3 px-4 text-center">
@@ -2981,28 +2619,109 @@ const App = {
         </td>
         <td class="py-3 px-4 text-right">
           <div class="flex items-center justify-end gap-1.5">
-            <button onclick="App.viewAndPrintContract('${c.id}')" class="p-1.5 text-slate-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Imprimir / Descargar PDF">
+            <button onclick="App.viewAndPrintContract('${c.id}')" class="p-1.5 text-slate-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer" title="Imprimir / Descargar PDF">
               🖨️
             </button>
-            <button onclick="App.openQuickAnticipoModal('${c.id}')" class="p-1.5 text-slate-600 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition-colors" title="Registrar Anticipo">
-              💵
-            </button>
-            <button onclick="App.sendWhatsAppMessage('${c.id}')" class="p-1.5 text-slate-600 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors" title="Compartir WhatsApp">
-              📱
-            </button>
-            <button onclick="App.editContract('${c.id}')" class="p-1.5 text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="Editar">
+            ${!isCancelled ? `
+              <button onclick="App.openQuickAnticipoModal('${c.id}')" class="p-1.5 text-slate-600 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition-colors cursor-pointer" title="Registrar Anticipo">
+                💵
+              </button>
+              <button onclick="App.sendWhatsAppMessage('${c.id}')" class="p-1.5 text-slate-600 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors cursor-pointer" title="Compartir WhatsApp">
+                📱
+              </button>
+            ` : ''}
+            <button onclick="App.editContract('${c.id}')" class="p-1.5 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-colors font-bold cursor-pointer" title="Editar Contrato">
               ✏️
             </button>
-            <button onclick="App.duplicateContract('${c.id}')" class="p-1.5 text-slate-600 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-colors" title="Duplicar">
+            <button onclick="App.duplicateContract('${c.id}')" class="p-1.5 text-slate-600 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-colors cursor-pointer" title="Duplicar">
               📋
             </button>
-            <button onclick="App.confirmDeleteContract('${c.id}')" class="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Eliminar">
-              🗑️
-            </button>
+            
+            ${isCancelled ? `
+              <button onclick="App.toggleCancelContract('${c.id}')" class="px-2 py-1 text-emerald-600 hover:text-emerald-800 hover:bg-emerald-50 rounded-lg transition-colors font-bold text-xs cursor-pointer" title="Reactivar Contrato">
+                🔄 Reactivar
+              </button>
+            ` : `
+              <button onclick="App.toggleCancelContract('${c.id}')" class="p-1.5 text-amber-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer" title="Cancelar Contrato (Sin borrar)">
+                🚫
+              </button>
+            `}
           </div>
         </td>
       </tr>
     `;
+  },
+
+  /**
+   * CANCEL / REACTIVATE CONTRACT WITHOUT DELETING
+   */
+  toggleCancelContract(contractId) {
+    const contract = StorageManager.getContract(contractId);
+    if (!contract) return;
+
+    const isCurrentlyCancelled = contract.payments && contract.payments.status === 'cancelled';
+
+    if (isCurrentlyCancelled) {
+      if (confirm(`¿Deseas REACTIVAR el contrato Folio #${contract.folio} de "${contract.client.name}"?`)) {
+        const total = contract.payments.total || 0;
+        const remaining = contract.payments.remainingBalance || 0;
+        if (remaining <= 0) {
+          contract.payments.status = 'paid';
+        } else if (contract.payments.totalAnticipos > 0) {
+          contract.payments.status = 'partial';
+        } else {
+          contract.payments.status = 'pending';
+        }
+        delete contract.cancellation;
+        contract.updatedAt = new Date().toISOString();
+
+        StorageManager.upsertContract(contract);
+        this.showToast(`Contrato #${contract.folio} reactivado exitosamente.`, 'success');
+        this.renderStats();
+        this.renderContractsTable();
+        if (typeof CalendarManager !== 'undefined') CalendarManager.render();
+      }
+    } else {
+      const eventDate = contract.event ? contract.event.date : '';
+      let penaltyText = '';
+      if (eventDate) {
+        const today = new Date();
+        const evD = new Date(eventDate);
+        const diffDays = Math.ceil((evD - today) / (1000 * 60 * 60 * 24));
+        const total = contract.payments.total || 0;
+        
+        if (diffDays > 15) {
+          const pen = total * 0.05;
+          penaltyText = `\n\n📌 Aplica cláusula de penalización del 5%: ${ContractModel.formatCurrency(pen)} (>15 días de anticipación).`;
+        } else if (diffDays >= 0) {
+          const pen = total * 0.10;
+          penaltyText = `\n\n📌 Aplica cláusula de penalización del 10%: ${ContractModel.formatCurrency(pen)} (<=10 días de anticipación).`;
+        }
+      }
+
+      const reason = prompt(
+        `¿Deseas marcar como CANCELADO el contrato Folio #${contract.folio} de "${contract.client.name}"?` +
+        `\n(El contrato NO se borrará; quedará guardado como cancelado en tu historial).` +
+        penaltyText +
+        `\n\nIngresa el motivo de cancelación (Opcional):`,
+        'Cancelado por el cliente'
+      );
+
+      if (reason !== null) {
+        contract.payments.status = 'cancelled';
+        contract.cancellation = {
+          cancelledAt: new Date().toISOString(),
+          reason: reason || 'Cancelado por el cliente'
+        };
+        contract.updatedAt = new Date().toISOString();
+
+        StorageManager.upsertContract(contract);
+        this.showToast(`Contrato #${contract.folio} marcado como CANCELADO.`, 'warning');
+        this.renderStats();
+        this.renderContractsTable();
+        if (typeof CalendarManager !== 'undefined') CalendarManager.render();
+      }
+    }
   },
 
   newContract() {
@@ -3011,265 +2730,375 @@ const App = {
     this.loadContractIntoForm(this.editingContract);
     this.navigate('editor');
     this.updateLivePreview();
+
+    const heading = document.getElementById('editor-title-heading');
+    const subtitle = document.getElementById('editor-subtitle-text');
+    const banner = document.getElementById('editor-mode-banner');
+
+    if (heading) heading.textContent = `Nuevo Contrato de Taquiza (Folio #${nextFolio})`;
+    if (subtitle) subtitle.textContent = `Llena los datos y los cambios se reflejarán en tiempo real.`;
+    if (banner) banner.classList.add('hidden');
+
+    setTimeout(() => {
+      const clientInput = document.getElementById('input-client-name');
+      if (clientInput) clientInput.focus();
+    }, 150);
   },
 
   newContractForDate(dateStr) {
     const nextFolio = StorageManager.getNextFolio();
     this.editingContract = ContractModel.createEmptyContract(nextFolio);
     this.editingContract.event.date = dateStr;
-    this.editingContract.event.dayOfWeek = ContractModel.getDayOfWeek(dateStr);
+    this.editingContract.event.dayOfWeek = ContractModel.getDayOfWeekSpanish(dateStr);
     this.loadContractIntoForm(this.editingContract);
     this.navigate('editor');
     this.updateLivePreview();
+
+    const heading = document.getElementById('editor-title-heading');
+    const subtitle = document.getElementById('editor-subtitle-text');
+    const banner = document.getElementById('editor-mode-banner');
+
+    if (heading) heading.textContent = `Nuevo Contrato para el ${ContractModel.formatDateHuman(dateStr)} (Folio #${nextFolio})`;
+    if (subtitle) subtitle.textContent = `Llena los datos del cliente y los cambios se reflejarán en vivo.`;
+    if (banner) banner.classList.add('hidden');
+
+    setTimeout(() => {
+      const clientInput = document.getElementById('input-client-name');
+      if (clientInput) clientInput.focus();
+    }, 150);
   },
 
+  /**
+   * ULTRA-ROBUST EDIT CONTRACT
+   */
   editContract(contractId) {
-    const contract = StorageManager.getContract(contractId);
-    if (!contract) {
-      this.showToast('No se encontró el contrato seleccionado.', 'error');
-      return;
+    try {
+      const contracts = StorageManager.getContracts() || [];
+      let contract = contracts.find(c => String(c.id) === String(contractId) || String(c.folio) === String(contractId));
+
+      if (!contract) {
+        contract = StorageManager.getContract(contractId);
+      }
+
+      if (!contract) {
+        this.showToast('No se encontró el contrato seleccionado.', 'warning');
+        return;
+      }
+
+      // Close modal if open
+      this.closeModal('event-detail-modal');
+      this.closeModal('quick-anticipo-modal');
+
+      // Deep clone so editing does not mutate original until saved
+      this.editingContract = JSON.parse(JSON.stringify(contract));
+      this.loadContractIntoForm(this.editingContract);
+      this.navigate('editor');
+      this.updateLivePreview();
+
+      // Update banner & headings
+      const heading = document.getElementById('editor-title-heading');
+      const subtitle = document.getElementById('editor-subtitle-text');
+      const banner = document.getElementById('editor-mode-banner');
+      const bannerText = document.getElementById('editor-mode-banner-text');
+
+      if (heading) heading.textContent = `Editando Folio #${contract.folio || '0000'}`;
+      if (subtitle) subtitle.textContent = `Cliente: ${contract.client && contract.client.name ? contract.client.name : 'Sin nombre'} • Realiza tus cambios y presiona Guardar.`;
+      if (banner && bannerText) {
+        bannerText.innerHTML = `<strong>Editando Folio #${contract.folio}:</strong> Modifica los datos que desees y pulsa <strong>Guardar Contrato</strong>.`;
+        banner.classList.remove('hidden');
+      }
+
+      setTimeout(() => {
+        const clientInput = document.getElementById('input-client-name');
+        if (clientInput) {
+          clientInput.focus();
+          clientInput.select();
+        }
+      }, 150);
+
+      this.showToast(`Cargado contrato Folio #${contract.folio} para editar.`, 'info');
+    } catch (err) {
+      console.error('Error al editar contrato:', err);
+      this.showToast('Error al abrir el editor: ' + err.message, 'error');
     }
-    this.editingContract = JSON.parse(JSON.stringify(contract));
-    this.loadContractIntoForm(this.editingContract);
-    this.navigate('editor');
-    this.updateLivePreview();
   },
 
   duplicateContract(contractId) {
-    const contract = StorageManager.getContract(contractId);
-    if (!contract) return;
+    const original = StorageManager.getContract(contractId);
+    if (!original) return;
 
     const nextFolio = StorageManager.getNextFolio();
-    const duplicated = JSON.parse(JSON.stringify(contract));
-    
-    duplicated.id = `TK-${new Date().getFullYear()}-${nextFolio}`;
-    duplicated.folio = nextFolio;
-    duplicated.contractDate = new Date().toISOString().split('T')[0];
-    duplicated.payments.anticipos = [];
-    duplicated.payments.totalAnticipos = 0;
-    ContractModel.recalculateTotals(duplicated);
+    const copy = JSON.parse(JSON.stringify(original));
+    copy.id = ContractModel.generateId();
+    copy.folio = nextFolio;
+    copy.createdAt = new Date().toISOString();
+    copy.updatedAt = new Date().toISOString();
+    copy.contractDate = new Date().toISOString().split('T')[0];
+    copy.payments.anticipos = [];
+    copy.payments.totalAnticipos = 0;
+    copy.payments.remainingBalance = copy.payments.total;
+    copy.payments.status = 'pending';
+    delete copy.cancellation;
 
-    this.editingContract = duplicated;
-    this.loadContractIntoForm(duplicated);
+    this.editingContract = copy;
+    this.loadContractIntoForm(copy);
     this.navigate('editor');
     this.updateLivePreview();
-    this.showToast(`Contrato duplicado con nuevo Folio #${nextFolio}`, 'info');
+    this.showToast(`Copia creada con nuevo Folio #${nextFolio}`, 'info');
   },
 
+  /**
+   * Blinded Safe Form Population
+   */
   loadContractIntoForm(contract) {
     if (!contract) return;
-    if (!contract.client) contract.client = {};
-    if (!contract.event) contract.event = {};
-    if (!contract.payments) contract.payments = {};
-
-    const get = (id) => document.getElementById(id);
-
-    if (get('input-folio')) get('input-folio').value = contract.folio || '';
-    if (get('input-contract-date')) get('input-contract-date').value = contract.contractDate || '';
     
-    if (get('input-client-name')) get('input-client-name').value = contract.client.name || '';
-    if (get('input-client-phone')) get('input-client-phone').value = contract.client.phone || '';
-    if (get('input-client-address')) get('input-client-address').value = contract.client.address || '';
-    if (get('input-client-reference')) get('input-client-reference').value = contract.client.reference || '';
+    const setVal = (id, val) => {
+      const el = document.getElementById(id);
+      if (el) el.value = (val !== undefined && val !== null) ? val : '';
+    };
 
-    if (get('input-event-type')) get('input-event-type').value = contract.event.type || '';
-    if (get('input-event-amount')) get('input-event-amount').value = contract.event.amount || 0;
-    if (get('input-complements')) get('input-complements').value = contract.event.complementsText || ContractModel.DEFAULT_COMPLEMENTS_TEXT;
-    if (get('input-additionals')) get('input-additionals').value = contract.event.additionals || '';
-    if (get('input-additionals-amount')) get('input-additionals-amount').value = contract.event.additionalsAmount || 0;
-    if (get('input-travel-cost')) get('input-travel-cost').value = contract.event.travelCost || 0;
+    setVal('input-folio', contract.folio || '');
+    setVal('input-contract-date', contract.contractDate || '');
+    
+    // Client
+    setVal('input-client-name', (contract.client && contract.client.name) || '');
+    setVal('input-client-phone', (contract.client && contract.client.phone) || '');
+    setVal('input-client-reference', (contract.client && contract.client.reference) || '');
+    setVal('input-client-address', (contract.client && contract.client.address) || '');
 
-    if (get('input-event-date')) get('input-event-date').value = contract.event.date || '';
-    if (get('input-event-day')) get('input-event-day').value = contract.event.dayOfWeek || '';
-    if (get('input-arrival-time')) get('input-arrival-time').value = contract.event.arrivalTime || '';
-    if (get('input-start-time')) get('input-start-time').value = contract.event.startTime || '';
-    if (get('input-service-time')) get('input-service-time').value = contract.event.serviceTime || '2 HORAS';
-    if (get('input-end-time')) get('input-end-time').value = contract.event.endTime || '';
-    if (get('input-assigned-staff')) get('input-assigned-staff').value = contract.event.assignedStaff || '';
-    if (get('input-elaborated-by')) get('input-elaborated-by').value = contract.elaboratedBy || '';
+    // Event Menu & Price
+    setVal('input-event-type', (contract.event && contract.event.type) || '');
+    setVal('input-event-amount', (contract.event && contract.event.amount) || '');
+    setVal('input-travel-cost', (contract.event && contract.event.travelCost) || 0);
+    setVal('input-complements', (contract.event && contract.event.complementsText) || ContractModel.DEFAULT_COMPLEMENTS_TEXT);
+    setVal('input-additionals', (contract.event && contract.event.additionals) || '');
+    setVal('input-additionals-amount', (contract.event && contract.event.additionalsAmount) || 0);
 
-    if (get('input-iva-rate')) get('input-iva-rate').value = contract.payments.ivaRate || 0;
+    // Logistics
+    setVal('input-event-date', (contract.event && contract.event.date) || '');
+    setVal('input-event-day', (contract.event && contract.event.dayOfWeek) || '');
+    setVal('input-arrival-time', (contract.event && contract.event.arrivalTime) || '');
+    setVal('input-start-time', (contract.event && contract.event.startTime) || '');
+    setVal('input-service-time', (contract.event && contract.event.serviceTime) || '2 HORAS');
+    setVal('input-end-time', (contract.event && contract.event.endTime) || '');
+    setVal('input-assigned-staff', (contract.event && contract.event.assignedStaff) || '');
+    setVal('input-elaborated-by', contract.elaboratedBy || 'Alexis Lira');
 
-    this.renderFormAnticiposList();
+    // Payments & Anticipos
+    setVal('input-iva-rate', (contract.payments && contract.payments.ivaRate) || 0);
+    this.renderFormAnticipos(contract.payments ? contract.payments.anticipos : []);
+    this.recalculateFormTotals();
   },
 
-  renderFormAnticiposList() {
-    const listContainer = document.getElementById('form-anticipos-container');
-    if (!listContainer || !this.editingContract) return;
+  renderFormAnticipos(anticipos = []) {
+    const container = document.getElementById('form-anticipos-container');
+    if (!container) return;
 
-    const anticipos = this.editingContract.payments.anticipos || [];
-
-    let html = '';
-    anticipos.forEach((ant, index) => {
-      html += `
-        <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-2 relative group">
-          <div class="flex justify-between items-center">
-            <span class="text-xs font-bold text-slate-700">Anticipo #${index + 1}</span>
-            <button type="button" onclick="App.removeAnticipoRow(${index})" class="text-red-500 hover:text-red-700 text-xs font-bold p-1">
-              ✕ Eliminar
-            </button>
-          </div>
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
-            <div>
-              <label class="text-[11px] font-semibold text-slate-500 block mb-0.5">Fecha</label>
-              <input type="date" value="${ant.date || ''}" onchange="App.updateAnticipoField(${index}, 'date', this.value)" class="w-full text-xs p-1.5 border rounded-lg bg-white">
-            </div>
-            <div>
-              <label class="text-[11px] font-semibold text-slate-500 block mb-0.5">Tipo de Pago</label>
-              <select onchange="App.updateAnticipoField(${index}, 'type', this.value)" class="w-full text-xs p-1.5 border rounded-lg bg-white">
-                <option value="Efectivo" ${ant.type === 'Efectivo' ? 'selected' : ''}>Efectivo</option>
-                <option value="Transferencia" ${ant.type === 'Transferencia' ? 'selected' : ''}>Transferencia</option>
-                <option value="Tarjeta" ${ant.type === 'Tarjeta' ? 'selected' : ''}>Tarjeta</option>
-                <option value="Depósito" ${ant.type === 'Depósito' ? 'selected' : ''}>Depósito</option>
-              </select>
-            </div>
-            <div>
-              <label class="text-[11px] font-semibold text-slate-500 block mb-0.5">Monto ($)</label>
-              <input type="number" step="any" min="0" value="${ant.amount || 0}" oninput="App.updateAnticipoField(${index}, 'amount', this.value)" class="w-full text-xs p-1.5 border rounded-lg bg-white font-bold text-slate-900">
-            </div>
-          </div>
-          <div>
-            <input type="text" placeholder="Nota o concepto (ej. Apartado 50%)" value="${ant.note || ''}" oninput="App.updateAnticipoField(${index}, 'note', this.value)" class="w-full text-xs p-1.5 border rounded-lg bg-white text-slate-600">
-          </div>
+    if (anticipos.length === 0) {
+      container.innerHTML = `
+        <div class="text-center py-2 text-xs text-slate-400 italic">
+          No hay anticipos registrados aún. Pulsa "+ Agregar Anticipo" para registrar uno.
         </div>
       `;
-    });
+      return;
+    }
 
-    listContainer.innerHTML = html;
+    container.innerHTML = anticipos.map((ant, index) => `
+      <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200 flex flex-wrap items-center gap-2 text-xs">
+        <span class="font-bold text-slate-600 w-5">#${index + 1}</span>
+        <div class="flex-1 min-w-[120px]">
+          <input type="date" value="${ant.date || ''}" onchange="App.onAnticipoFieldChange(${index}, 'date', this.value)" class="w-full text-xs p-1.5 border border-slate-300 rounded-lg bg-white">
+        </div>
+        <div class="w-28">
+          <select onchange="App.onAnticipoFieldChange(${index}, 'type', this.value)" class="w-full text-xs p-1.5 border border-slate-300 rounded-lg bg-white">
+            <option value="Efectivo" ${ant.type === 'Efectivo' ? 'selected' : ''}>Efectivo</option>
+            <option value="Transferencia" ${ant.type === 'Transferencia' ? 'selected' : ''}>Transferencia</option>
+            <option value="Tarjeta" ${ant.type === 'Tarjeta' ? 'selected' : ''}>Tarjeta</option>
+          </select>
+        </div>
+        <div class="w-28">
+          <input type="number" step="any" min="0" placeholder="Monto $" value="${ant.amount || ''}" oninput="App.onAnticipoFieldChange(${index}, 'amount', this.value)" class="w-full text-xs font-bold p-1.5 border border-slate-300 rounded-lg bg-white text-right">
+        </div>
+        <button type="button" onclick="App.removeAnticipoRow(${index})" class="text-red-500 hover:text-red-700 p-1 font-bold text-sm cursor-pointer" title="Quitar este anticipo">
+          ✕
+        </button>
+      </div>
+    `).join('');
   },
 
   addAnticipoRow() {
-    if (!this.editingContract) return;
+    if (!this.editingContract.payments) this.editingContract.payments = {};
+    if (!this.editingContract.payments.anticipos) this.editingContract.payments.anticipos = [];
+
     const todayStr = new Date().toISOString().split('T')[0];
-    if (!this.editingContract.payments.anticipos) {
-      this.editingContract.payments.anticipos = [];
-    }
     this.editingContract.payments.anticipos.push({
       id: 'ant-' + Date.now(),
       date: todayStr,
-      type: 'Efectivo',
+      type: 'Transferencia',
       amount: 0,
       note: ''
     });
-    this.renderFormAnticiposList();
-    this.syncFormToModel();
+
+    this.renderFormAnticipos(this.editingContract.payments.anticipos);
+    this.recalculateFormTotals();
     this.updateLivePreview();
   },
 
   removeAnticipoRow(index) {
-    if (!this.editingContract || !this.editingContract.payments.anticipos) return;
-    this.editingContract.payments.anticipos.splice(index, 1);
-    this.renderFormAnticiposList();
-    this.syncFormToModel();
-    this.updateLivePreview();
+    if (this.editingContract.payments && this.editingContract.payments.anticipos) {
+      this.editingContract.payments.anticipos.splice(index, 1);
+      this.renderFormAnticipos(this.editingContract.payments.anticipos);
+      this.recalculateFormTotals();
+      this.updateLivePreview();
+    }
   },
 
-  updateAnticipoField(index, field, value) {
-    if (!this.editingContract || !this.editingContract.payments.anticipos || !this.editingContract.payments.anticipos[index]) return;
-    this.editingContract.payments.anticipos[index][field] = field === 'amount' ? (parseFloat(value) || 0) : value;
-    this.syncFormToModel();
-    this.updateLivePreview();
+  onAnticipoFieldChange(index, field, value) {
+    if (this.editingContract.payments && this.editingContract.payments.anticipos && this.editingContract.payments.anticipos[index]) {
+      if (field === 'amount') {
+        this.editingContract.payments.anticipos[index].amount = parseFloat(value) || 0;
+      } else {
+        this.editingContract.payments.anticipos[index][field] = value;
+      }
+      this.recalculateFormTotals();
+      this.updateLivePreview();
+    }
   },
 
   onEventDateChange(dateValue) {
-    const day = ContractModel.getDayOfWeek(dateValue);
     const dayInput = document.getElementById('input-event-day');
-    if (dayInput) dayInput.value = day;
-    this.syncFormToModel();
-    this.updateLivePreview();
+    if (dayInput && dateValue) {
+      const dayName = ContractModel.getDayOfWeekSpanish(dateValue);
+      dayInput.value = dayName;
+    }
+    this.onFormChange();
   },
 
   onStartTimeChange() {
-    const startTime = document.getElementById('input-start-time').value;
-    const serviceTime = document.getElementById('input-service-time').value;
-    const endTime = ContractModel.calculateEndTime(startTime, serviceTime);
+    const startVal = document.getElementById('input-start-time').value;
+    const servVal = document.getElementById('input-service-time').value;
     const endInput = document.getElementById('input-end-time');
-    if (endInput) endInput.value = endTime;
+
+    if (startVal && endInput) {
+      const endCalculated = ContractModel.calculateEndTime(startVal, servVal);
+      endInput.value = endCalculated;
+    }
+    this.onFormChange();
+  },
+
+  onFormChange() {
     this.syncFormToModel();
+    this.recalculateFormTotals();
     this.updateLivePreview();
   },
 
   syncFormToModel() {
     if (!this.editingContract) return;
 
-    const get = (id) => document.getElementById(id);
+    const getVal = (id) => {
+      const el = document.getElementById(id);
+      return el ? el.value : '';
+    };
 
-    if (get('input-folio')) this.editingContract.folio = get('input-folio').value.trim();
-    if (get('input-contract-date')) this.editingContract.contractDate = get('input-contract-date').value;
+    this.editingContract.folio = getVal('input-folio').trim();
+    this.editingContract.contractDate = getVal('input-contract-date');
 
-    if (get('input-client-name')) this.editingContract.client.name = get('input-client-name').value.trim();
-    if (get('input-client-phone')) this.editingContract.client.phone = get('input-client-phone').value.trim();
-    if (get('input-client-address')) this.editingContract.client.address = get('input-client-address').value.trim();
-    if (get('input-client-reference')) this.editingContract.client.reference = get('input-client-reference').value.trim();
+    if (!this.editingContract.client) this.editingContract.client = {};
+    this.editingContract.client.name = getVal('input-client-name').trim();
+    this.editingContract.client.phone = getVal('input-client-phone').trim();
+    this.editingContract.client.reference = getVal('input-client-reference').trim();
+    this.editingContract.client.address = getVal('input-client-address').trim();
 
-    if (get('input-event-type')) this.editingContract.event.type = get('input-event-type').value;
-    if (get('input-event-amount')) this.editingContract.event.amount = parseFloat(get('input-event-amount').value) || 0;
-    if (get('input-complements')) this.editingContract.event.complementsText = get('input-complements').value;
-    if (get('input-additionals')) this.editingContract.event.additionals = get('input-additionals').value;
-    if (get('input-additionals-amount')) this.editingContract.event.additionalsAmount = parseFloat(get('input-additionals-amount').value) || 0;
-    if (get('input-travel-cost')) this.editingContract.event.travelCost = parseFloat(get('input-travel-cost').value) || 0;
+    if (!this.editingContract.event) this.editingContract.event = {};
+    this.editingContract.event.type = getVal('input-event-type');
+    this.editingContract.event.amount = parseFloat(getVal('input-event-amount')) || 0;
+    this.editingContract.event.travelCost = parseFloat(getVal('input-travel-cost')) || 0;
+    this.editingContract.event.complementsText = getVal('input-complements');
+    this.editingContract.event.additionals = getVal('input-additionals');
+    this.editingContract.event.additionalsAmount = parseFloat(getVal('input-additionals-amount')) || 0;
 
-    if (get('input-event-date')) this.editingContract.event.date = get('input-event-date').value;
-    if (get('input-event-day')) this.editingContract.event.dayOfWeek = get('input-event-day').value;
-    if (get('input-arrival-time')) this.editingContract.event.arrivalTime = get('input-arrival-time').value;
-    if (get('input-start-time')) this.editingContract.event.startTime = get('input-start-time').value;
-    if (get('input-service-time')) this.editingContract.event.serviceTime = get('input-service-time').value;
-    if (get('input-end-time')) this.editingContract.event.endTime = get('input-end-time').value;
-    if (get('input-assigned-staff')) this.editingContract.event.assignedStaff = get('input-assigned-staff').value;
-    if (get('input-elaborated-by')) this.editingContract.elaboratedBy = get('input-elaborated-by').value;
+    this.editingContract.event.date = getVal('input-event-date');
+    this.editingContract.event.dayOfWeek = getVal('input-event-day').toUpperCase();
+    this.editingContract.event.arrivalTime = getVal('input-arrival-time');
+    this.editingContract.event.startTime = getVal('input-start-time');
+    this.editingContract.event.serviceTime = getVal('input-service-time');
+    this.editingContract.event.endTime = getVal('input-end-time');
+    this.editingContract.event.assignedStaff = getVal('input-assigned-staff');
+    this.editingContract.elaboratedBy = getVal('input-elaborated-by');
 
-    if (get('input-iva-rate')) this.editingContract.payments.ivaRate = parseFloat(get('input-iva-rate').value) || 0;
+    if (!this.editingContract.payments) this.editingContract.payments = {};
+    this.editingContract.payments.ivaRate = parseFloat(getVal('input-iva-rate')) || 0;
+  },
 
-    ContractModel.recalculateTotals(this.editingContract);
+  recalculateFormTotals() {
+    if (!this.editingContract) return;
+    this.editingContract = ContractModel.calculateFinancials(this.editingContract);
 
-    const subtotalDisplay = document.getElementById('display-form-subtotal');
-    const totalDisplay = document.getElementById('display-form-total');
-    const saldoDisplay = document.getElementById('display-form-saldo');
+    const subtotalEl = document.getElementById('display-form-subtotal');
+    const totalEl = document.getElementById('display-form-total');
+    const saldoEl = document.getElementById('display-form-saldo');
 
-    if (subtotalDisplay) subtotalDisplay.textContent = ContractModel.formatCurrency(this.editingContract.payments.subtotal);
-    if (totalDisplay) totalDisplay.textContent = ContractModel.formatCurrency(this.editingContract.payments.total);
-    if (saldoDisplay) saldoDisplay.textContent = ContractModel.formatCurrency(this.editingContract.payments.remainingBalance);
+    if (subtotalEl) subtotalEl.textContent = ContractModel.formatCurrency(this.editingContract.payments.subtotal);
+    if (totalEl) totalEl.textContent = ContractModel.formatCurrency(this.editingContract.payments.total);
+    if (saldoEl) saldoEl.textContent = ContractModel.formatCurrency(this.editingContract.payments.remainingBalance);
   },
 
   updateLivePreview() {
     const previewContainer = document.getElementById('live-preview-container');
     if (!previewContainer || !this.editingContract) return;
-
     previewContainer.innerHTML = PDFGenerator.renderContractHTML(this.editingContract);
   },
 
   saveCurrentContract() {
     this.syncFormToModel();
-
-    if (!this.editingContract.client.name) {
-      this.showToast('Por favor ingresa el nombre del cliente.', 'warning');
+    if (!this.editingContract.client || !this.editingContract.client.name) {
+      this.showToast('Por favor escribe el nombre del cliente.', 'warning');
       const nameInput = document.getElementById('input-client-name');
       if (nameInput) nameInput.focus();
       return;
     }
 
-    if (!this.editingContract.folio) {
-      this.editingContract.folio = StorageManager.getNextFolio();
-    }
-
-    StorageManager.upsertContract(this.editingContract);
-    this.showToast(`Contrato Folio #${this.editingContract.folio} guardado correctamente.`, 'success');
+    this.recalculateFormTotals();
+    const saved = StorageManager.upsertContract(this.editingContract);
+    this.showToast(`¡Contrato #${saved.folio} guardado exitosamente!`, 'success');
     this.renderStats();
     this.renderContractsTable();
     if (typeof CalendarManager !== 'undefined') CalendarManager.render();
   },
 
-  viewAndPrintContract(contractId) {
-    const contract = (contractId ? StorageManager.getContract(contractId) : null) || this.editingContract;
-    if (!contract) return;
+  saveAndReturn() {
+    this.saveCurrentContract();
+    setTimeout(() => {
+      this.navigate('contracts');
+    }, 350);
+  },
 
+  viewAndPrintContract(contractId) {
+    let contract = null;
+    if (contractId) {
+      contract = StorageManager.getContract(contractId);
+    } else if (this.editingContract) {
+      this.syncFormToModel();
+      this.recalculateFormTotals();
+      contract = this.editingContract;
+    }
+
+    if (!contract) return;
     PDFGenerator.printContract(contract);
   },
 
   downloadContractPDF(contractId) {
-    const contract = (contractId ? StorageManager.getContract(contractId) : null) || this.editingContract;
-    if (!contract) return;
+    let contract = null;
+    if (contractId) {
+      contract = StorageManager.getContract(contractId);
+    } else if (this.editingContract) {
+      this.syncFormToModel();
+      this.recalculateFormTotals();
+      contract = this.editingContract;
+    }
 
+    if (!contract) return;
     PDFGenerator.downloadPDF(contract);
   },
 
@@ -3282,100 +3111,98 @@ const App = {
     if (!modal || !content) return;
 
     const todayStr = new Date().toISOString().split('T')[0];
+    const saldoActual = contract.payments ? contract.payments.remainingBalance : 0;
 
     content.innerHTML = `
       <div class="flex justify-between items-center border-b pb-3 mb-4">
         <div>
-          <span class="text-xs font-bold text-red-600 uppercase">Abonar / Liquidar</span>
-          <h3 class="text-lg font-black text-slate-900">${contract.client.name} (Folio #${contract.folio})</h3>
+          <span class="text-xs font-bold text-red-600 uppercase">Abono Rápido</span>
+          <h3 class="text-lg font-black text-slate-900">Folio #${contract.folio} - ${contract.client.name}</h3>
         </div>
-        <button onclick="App.closeModal('quick-anticipo-modal')" class="text-slate-400 hover:text-slate-600 font-bold text-xl">✕</button>
+        <button onclick="App.closeModal('quick-anticipo-modal')" class="text-slate-400 hover:text-slate-600 text-xl font-bold p-1 cursor-pointer">✕</button>
       </div>
 
-      <div class="bg-amber-50 p-3 rounded-xl border border-amber-200 mb-4 text-xs flex justify-between">
-        <div>
-          <span class="text-slate-500 block">Total del Contrato:</span>
-          <strong class="text-sm font-bold text-slate-900">${ContractModel.formatCurrency(contract.payments.total)}</strong>
-        </div>
-        <div>
-          <span class="text-slate-500 block">Anticipos previos:</span>
-          <strong class="text-sm font-bold text-emerald-700">${ContractModel.formatCurrency(contract.payments.totalAnticipos)}</strong>
-        </div>
-        <div>
-          <span class="text-slate-500 block">Saldo Restante:</span>
-          <strong class="text-sm font-black text-red-600">${ContractModel.formatCurrency(contract.payments.remainingBalance)}</strong>
-        </div>
+      <div class="bg-amber-50 p-3 rounded-xl border border-amber-200 mb-4 flex justify-between items-center text-xs">
+        <span>Saldo Pendiente Actual:</span>
+        <strong class="text-base text-red-600 font-black">${ContractModel.formatCurrency(saldoActual)}</strong>
       </div>
 
-      <form id="quick-anticipo-form" onsubmit="event.preventDefault(); App.submitQuickAnticipo('${contract.id}')" class="space-y-3">
+      <form onsubmit="event.preventDefault(); App.submitQuickAnticipo('${contract.id}')" class="space-y-3 text-xs">
         <div>
-          <label class="text-xs font-bold text-slate-700 block mb-1">Monto del Anticipo ($ MXN)</label>
-          <input type="number" step="any" min="1" max="${contract.payments.remainingBalance || contract.payments.total}" id="quick-anticipo-amount" value="${contract.payments.remainingBalance || 0}" required class="w-full text-base font-black p-2.5 border rounded-xl bg-white border-amber-300 focus:ring-2 focus:ring-amber-500">
+          <label class="block font-bold text-slate-700 mb-1">Monto del Anticipo / Abono ($ MXN) *</label>
+          <input type="number" step="any" min="1" id="quick-ant-amount" required placeholder="Ej. 1500" class="w-full text-base font-black p-2.5 border border-slate-300 rounded-xl bg-white focus:ring-2 focus:ring-amber-500">
         </div>
 
         <div class="grid grid-cols-2 gap-2">
           <div>
-            <label class="text-xs font-bold text-slate-700 block mb-1">Fecha</label>
-            <input type="date" id="quick-anticipo-date" value="${todayStr}" required class="w-full text-xs p-2 border rounded-xl bg-white">
+            <label class="block font-bold text-slate-700 mb-1">Fecha de Pago</label>
+            <input type="date" id="quick-ant-date" value="${todayStr}" class="w-full p-2 border border-slate-300 rounded-xl bg-white">
           </div>
           <div>
-            <label class="text-xs font-bold text-slate-700 block mb-1">Tipo de Pago</label>
-            <select id="quick-anticipo-type" class="w-full text-xs p-2 border rounded-xl bg-white">
+            <label class="block font-bold text-slate-700 mb-1">Método de Pago</label>
+            <select id="quick-ant-type" class="w-full p-2 border border-slate-300 rounded-xl bg-white">
               <option value="Efectivo">Efectivo</option>
-              <option value="Transferencia">Transferencia</option>
+              <option value="Transferencia" selected>Transferencia</option>
               <option value="Tarjeta">Tarjeta</option>
-              <option value="Depósito">Depósito</option>
             </select>
           </div>
         </div>
 
         <div>
-          <label class="text-xs font-bold text-slate-700 block mb-1">Nota o Concepto</label>
-          <input type="text" id="quick-anticipo-note" placeholder="Ej. Liquidación final / Pago 2do abono" class="w-full text-xs p-2 border rounded-xl bg-white">
+          <label class="block font-bold text-slate-700 mb-1">Nota o Referencia (Opcional)</label>
+          <input type="text" id="quick-ant-note" placeholder="Ej. Anticipo 50% / Liquidación" class="w-full p-2 border border-slate-300 rounded-xl bg-white">
         </div>
 
-        <div class="flex justify-end gap-2 border-t pt-4">
-          <button type="button" onclick="App.closeModal('quick-anticipo-modal')" class="px-4 py-2 border rounded-xl text-slate-600 text-xs font-bold">Cancelar</button>
-          <button type="submit" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-xs">Guardar Anticipo</button>
+        <div class="pt-3 flex gap-2 justify-end border-t mt-4">
+          <button type="button" onclick="App.closeModal('quick-anticipo-modal')" class="px-4 py-2 border border-slate-300 rounded-xl text-slate-700 font-bold hover:bg-slate-50 cursor-pointer">
+            Cancelar
+          </button>
+          <button type="submit" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-sm cursor-pointer">
+            💾 Registrar Abono
+          </button>
         </div>
       </form>
     `;
 
     modal.classList.remove('hidden');
     modal.classList.add('flex');
+    setTimeout(() => {
+      const input = document.getElementById('quick-ant-amount');
+      if (input) input.focus();
+    }, 100);
   },
 
   submitQuickAnticipo(contractId) {
     const contract = StorageManager.getContract(contractId);
     if (!contract) return;
 
-    const amount = parseFloat(document.getElementById('quick-anticipo-amount').value) || 0;
-    const date = document.getElementById('quick-anticipo-date').value;
-    const type = document.getElementById('quick-anticipo-type').value;
-    const note = document.getElementById('quick-anticipo-note').value;
+    const amountInput = document.getElementById('quick-ant-amount');
+    const dateInput = document.getElementById('quick-ant-date');
+    const typeInput = document.getElementById('quick-ant-type');
+    const noteInput = document.getElementById('quick-ant-note');
 
+    const amount = parseFloat(amountInput.value) || 0;
     if (amount <= 0) {
-      this.showToast('El monto debe ser mayor a cero.', 'warning');
+      this.showToast('Ingresa un monto de anticipo válido.', 'warning');
       return;
     }
 
+    if (!contract.payments) contract.payments = {};
     if (!contract.payments.anticipos) contract.payments.anticipos = [];
 
     contract.payments.anticipos.push({
       id: 'ant-' + Date.now(),
-      date: date,
-      type: type,
+      date: dateInput.value,
+      type: typeInput.value,
       amount: amount,
-      note: note
+      note: noteInput.value.trim()
     });
 
-    ContractModel.recalculateTotals(contract);
-    StorageManager.upsertContract(contract);
+    const updated = ContractModel.calculateFinancials(contract);
+    StorageManager.upsertContract(updated);
 
     this.closeModal('quick-anticipo-modal');
-    this.closeModal('event-detail-modal');
-    this.showToast(`Anticipo de ${ContractModel.formatCurrency(amount)} registrado con éxito.`, 'success');
-    
+    this.showToast(`¡Anticipo de ${ContractModel.formatCurrency(amount)} registrado!`, 'success');
     this.renderStats();
     this.renderContractsTable();
     if (typeof CalendarManager !== 'undefined') CalendarManager.render();
@@ -3385,17 +3212,20 @@ const App = {
     const contract = StorageManager.getContract(contractId);
     if (!contract) return;
 
-    const dateHuman = ContractModel.formatDateHuman(contract.event ? contract.event.date : '');
-    const phone = (contract.client && contract.client.phone ? contract.client.phone : '').replace(/[^0-9]/g, '');
-
-    const message = `🔥 *TAKIRIN LA CHIMENEA - CONTRATO DE TAQUIZA* 🔥\n\n` +
-      `Estimado(a) *${contract.client.name}*, le compartimos los detalles de su servicio de taquiza:\n\n` +
-      `📄 *Folio:* ${contract.folio}\n` +
-      `📅 *Fecha:* ${contract.event.dayOfWeek} ${dateHuman}\n` +
-      `⏰ *Hora de Llegada:* ${ContractModel.formatTime12(contract.event.arrivalTime)}\n` +
-      `⏰ *Hora de Servicio:* ${ContractModel.formatTime12(contract.event.startTime)} a ${ContractModel.formatTime12(contract.event.endTime)}\n` +
-      `📍 *Lugar:* ${contract.client.address}\n\n` +
-      `💵 *Total Contrato:* ${ContractModel.formatCurrency(contract.payments.total)}\n` +
+    const phone = (contract.client.phone || '').replace(/\D/g, '');
+    const clientName = contract.client.name || 'Cliente';
+    const eventDate = ContractModel.formatDateHuman(contract.event.date);
+    const time = ContractModel.formatTime12(contract.event.startTime);
+    const service = contract.event.serviceTime || '2 HORAS';
+    
+    const message = 
+      `🌮 *TAKIRIN LA CHIMENEA - RESUMEN DE TAQUIZA* 🌮\n\n` +
+      `¡Hola ${clientName}! Le compartimos los detalles de su servicio:\n\n` +
+      `📄 *Folio de Contrato:* #${contract.folio}\n` +
+      `📅 *Fecha:* ${contract.event.dayOfWeek} ${eventDate}\n` +
+      `⏰ *Horario de Servicio:* ${time} (${service})\n` +
+      `📍 *Lugar:* ${contract.client.address || 'Córdoba, Ver.'}\n\n` +
+      `💰 *Total del Servicio:* ${ContractModel.formatCurrency(contract.payments.total)}\n` +
       `✅ *Anticipo Registrado:* ${ContractModel.formatCurrency(contract.payments.totalAnticipos)}\n` +
       `⏳ *Saldo Restante:* ${ContractModel.formatCurrency(contract.payments.remainingBalance)}\n\n` +
       `¡Gracias por su preferencia! Donde la carne es más suave que la tortilla. 🌮🔥\n` +
@@ -3404,19 +3234,6 @@ const App = {
     const encoded = encodeURIComponent(message);
     const waUrl = phone ? `https://wa.me/52${phone}?text=${encoded}` : `https://wa.me/?text=${encoded}`;
     window.open(waUrl, '_blank');
-  },
-
-  confirmDeleteContract(contractId) {
-    const contract = StorageManager.getContract(contractId);
-    if (!contract) return;
-
-    if (confirm(`¿Estás seguro de eliminar el contrato Folio #${contract.folio} de "${contract.client.name}"? Esta acción no se puede deshacer.`)) {
-      StorageManager.deleteContract(contractId);
-      this.showToast(`Contrato #${contract.folio} eliminado.`, 'info');
-      this.renderStats();
-      this.renderContractsTable();
-      if (typeof CalendarManager !== 'undefined') CalendarManager.render();
-    }
   },
 
   closeModal(modalId) {
@@ -3465,8 +3282,28 @@ if (document.readyState === 'loading') {
 
   </script>
 
-  <!-- Cloud Sync UI Helper methods -->
   <script>
+    // Initialize Firebase URL input on load
+    document.addEventListener('DOMContentLoaded', () => {
+      const input = document.getElementById('input-firebase-url');
+      if (input) {
+        input.value = StorageManager.getFirebaseUrl();
+      }
+    });
+
+    App.saveFirebaseConfig = async function() {
+      const input = document.getElementById('input-firebase-url');
+      if (!input) return;
+      const url = input.value.trim();
+      if (!url) {
+        App.showToast('Ingresa una URL válida de Firebase Realtime Database.', 'warning');
+        return;
+      }
+      StorageManager.setFirebaseUrl(url);
+      App.showToast('Conectando a Firebase...', 'info');
+      await StorageManager.syncFromFirebase(false);
+    };
+
     App.handleImportFile = async function(file) {
       if (!file) return;
       try {
@@ -3478,36 +3315,6 @@ if (document.readyState === 'loading') {
       } catch (err) {
         App.showToast('Error al importar el archivo: ' + err.message, 'error');
       }
-    };
-
-    App.saveCloudKeySetting = async function() {
-      const keyInput = document.getElementById('input-cloud-key');
-      if (!keyInput) return;
-      const key = keyInput.value.trim() || 'takirin-lachimenea-cordoba';
-      const config = StorageManager.getSyncConfig();
-      config.cloudKey = key;
-      config.provider = 'cloudkey';
-      config.enabled = true;
-      StorageManager.saveSyncConfig(config);
-      App.showToast('Clave de sincronización guardada. Sincronizando...', 'info');
-      await StorageManager.syncWithCloud();
-    };
-
-    App.saveGitHubTokenSetting = async function() {
-      const tokenInput = document.getElementById('input-github-token');
-      if (!tokenInput) return;
-      const token = tokenInput.value.trim();
-      if (!token) {
-        App.showToast('Ingresa un token válido de GitHub.', 'warning');
-        return;
-      }
-      const config = StorageManager.getSyncConfig();
-      config.githubToken = token;
-      config.provider = 'github';
-      config.enabled = true;
-      StorageManager.saveSyncConfig(config);
-      App.showToast('Token de GitHub guardado. Conectando con GitHub Gists...', 'info');
-      await StorageManager.syncWithCloud();
     };
   </script>
 </body>

@@ -1,5 +1,6 @@
 /**
  * Takirin La Chimenea - Main Application Controller
+ * Navegación, Edición Blindada, Cancelación sin Borrado, Anticipos y WhatsApp
  */
 
 const App = {
@@ -9,111 +10,122 @@ const App = {
   searchQuery: '',
 
   async init() {
-    try {
-      await StorageManager.init();
-      this.setupEventListeners();
-      this.navigate('dashboard');
-      this.renderStats();
-      this.renderContractsTable();
-      if (typeof CalendarManager !== 'undefined' && CalendarManager.init) {
-        CalendarManager.init();
-      }
-    } catch (err) {
-      console.error('App init error:', err);
+    this.setupEventListeners();
+    await StorageManager.init();
+    this.renderStats();
+    this.renderContractsTable();
+    if (typeof CalendarManager !== 'undefined') {
+      CalendarManager.init();
     }
   },
 
-  navigate(viewName) {
-    this.currentView = viewName;
-
+  setupEventListeners() {
+    // Navigation items
     document.querySelectorAll('.nav-link').forEach(link => {
-      if (link.dataset.view === viewName) {
+      link.addEventListener('click', (e) => {
+        const view = link.getAttribute('data-view');
+        if (view) this.navigate(view);
+      });
+    });
+
+    // Search input
+    const searchInput = document.getElementById('search-contracts-input');
+    if (searchInput) {
+      searchInput.addEventListener('input', (e) => {
+        this.searchQuery = e.target.value.toLowerCase().trim();
+        this.renderContractsTable();
+      });
+    }
+
+    // Status filter
+    const statusFilter = document.getElementById('filter-contracts-status');
+    if (statusFilter) {
+      statusFilter.addEventListener('change', (e) => {
+        this.activeFilter = e.target.value;
+        this.renderContractsTable();
+      });
+    }
+
+    // Live form inputs for real-time preview sync
+    const form = document.getElementById('contract-form');
+    if (form) {
+      form.addEventListener('input', () => this.onFormChange());
+    }
+  },
+
+  navigate(viewId) {
+    this.currentView = viewId;
+
+    // Hide all view sections
+    document.querySelectorAll('main > section').forEach(sec => {
+      sec.classList.add('hidden');
+    });
+
+    // Show target view
+    const target = document.getElementById(`view-${viewId}`);
+    if (target) {
+      target.classList.remove('hidden');
+    }
+
+    // Update active nav-link
+    document.querySelectorAll('.nav-link').forEach(link => {
+      if (link.getAttribute('data-view') === viewId) {
         link.classList.add('active');
       } else {
         link.classList.remove('active');
       }
     });
 
-    const views = ['dashboard', 'contracts', 'editor', 'calendar', 'sync'];
-    views.forEach(v => {
-      const el = document.getElementById(`view-${v}`);
-      if (el) {
-        if (v === viewName) {
-          el.classList.remove('hidden');
-        } else {
-          el.classList.add('hidden');
-        }
-      }
-    });
-
-    if (viewName === 'dashboard') {
+    // Refresh view specific contents
+    if (viewId === 'dashboard') {
       this.renderStats();
-    } else if (viewName === 'contracts') {
+    } else if (viewId === 'contracts') {
       this.renderContractsTable();
-    } else if (viewName === 'calendar') {
+    } else if (viewId === 'calendar') {
       if (typeof CalendarManager !== 'undefined') CalendarManager.render();
-    } else if (viewName === 'editor' && !this.editingContract) {
-      this.newContract();
-    }
-  },
-
-  setupEventListeners() {
-    document.querySelectorAll('.nav-link').forEach(link => {
-      link.addEventListener('click', (e) => {
-        const view = link.dataset.view;
-        if (view) this.navigate(view);
-      });
-    });
-
-    const searchInput = document.getElementById('search-contracts-input');
-    if (searchInput) {
-      searchInput.addEventListener('input', (e) => {
-        this.searchQuery = e.target.value.toLowerCase();
-        this.renderContractsTable();
-      });
+    } else if (viewId === 'editor') {
+      this.updateLivePreview();
+    } else if (viewId === 'sync') {
+      const urlInput = document.getElementById('input-firebase-url');
+      if (urlInput && typeof StorageManager !== 'undefined') {
+        urlInput.value = StorageManager.getFirebaseUrl();
+      }
     }
 
-    const filterSelect = document.getElementById('filter-contracts-status');
-    if (filterSelect) {
-      filterSelect.addEventListener('change', (e) => {
-        this.activeFilter = e.target.value;
-        this.renderContractsTable();
-      });
-    }
-
-    const editorForm = document.getElementById('contract-form');
-    if (editorForm) {
-      editorForm.addEventListener('input', () => {
-        this.syncFormToModel();
-        this.updateLivePreview();
-      });
-    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   },
 
   renderStats() {
     try {
       const contracts = StorageManager.getContracts() || [];
-      const today = new Date();
-      const currentMonth = today.getMonth();
-      const currentYear = today.getFullYear();
-      const todayStr = today.toISOString().split('T')[0];
+      const totalContratos = contracts.length;
+      
+      const now = new Date();
+      const currentYear = now.getFullYear();
+      const currentMonth = now.getMonth();
+      const todayStr = now.toISOString().split('T')[0];
 
-      let totalContratos = contracts.length;
       let eventosEsteMes = 0;
       let ingresosTotales = 0;
       let anticiposCobrados = 0;
       let saldoPorCobrar = 0;
 
       contracts.forEach(c => {
-        if (!c.payments) c.payments = {};
-        if (c.payments.status !== 'cancelled') {
+        if (!c.payments) return;
+        const isCancelled = c.payments.status === 'cancelled';
+
+        if (!isCancelled) {
           ingresosTotales += (c.payments.total || 0);
           anticiposCobrados += (c.payments.totalAnticipos || 0);
           saldoPorCobrar += (c.payments.remainingBalance || 0);
+        }
 
-          if (c.event && c.event.date) {
-            const [y, m] = c.event.date.split('-').map(Number);
-            if (y === currentYear && (m - 1) === currentMonth) {
+        if (c.event && c.event.date && !isCancelled) {
+          const parts = c.event.date.split('-');
+          if (parts.length >= 2) {
+            const evYear = parseInt(parts[0], 10);
+            const evMonth = parseInt(parts[1], 10) - 1;
+            if (evYear === currentYear && evMonth === currentMonth) {
               eventosEsteMes++;
             }
           }
@@ -136,7 +148,7 @@ const App = {
       if (recentTable) {
         const recent = [...contracts]
           .sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0))
-          .slice(0, 5);
+          .slice(0, 6);
 
         if (recent.length === 0) {
           recentTable.innerHTML = `<tr><td colspan="7" class="text-center py-6 text-slate-400">No hay contratos registrados aún.</td></tr>`;
@@ -175,10 +187,10 @@ const App = {
                 </div>
               </div>
               <div class="flex items-center gap-3 w-full md:w-auto justify-end">
-                <button onclick="App.viewAndPrintContract('${next.id}')" class="px-4 py-2 bg-white text-red-700 hover:bg-red-50 font-bold rounded-xl text-xs shadow-sm transition-all">
+                <button onclick="App.viewAndPrintContract('${next.id}')" class="px-4 py-2 bg-white text-red-700 hover:bg-red-50 font-bold rounded-xl text-xs shadow-sm transition-all cursor-pointer">
                   🖨️ Ver Contrato
                 </button>
-                <button onclick="CalendarManager.showEventModal('${next.id}')" class="px-4 py-2 bg-red-900/50 hover:bg-red-900/80 text-white font-bold rounded-xl text-xs transition-all">
+                <button onclick="CalendarManager.showEventModal('${next.id}')" class="px-4 py-2 bg-red-900/50 hover:bg-red-900/80 text-white font-bold rounded-xl text-xs transition-all cursor-pointer">
                   Detalles
                 </button>
               </div>
@@ -242,27 +254,29 @@ const App = {
     if (!c.payments) c.payments = {};
 
     const status = c.payments.status || 'pending';
+    const isCancelled = status === 'cancelled';
+    
     let badgeClass = 'bg-amber-100 text-amber-800 border-amber-300';
     let statusText = 'Anticipo Dado';
 
-    if (status === 'paid') {
+    if (isCancelled) {
+      badgeClass = 'bg-slate-200 text-slate-700 border-slate-400';
+      statusText = '🚫 Cancelado';
+    } else if (status === 'paid') {
       badgeClass = 'bg-emerald-100 text-emerald-800 border-emerald-300';
       statusText = '✓ Liquidado';
-    } else if (status === 'cancelled') {
-      badgeClass = 'bg-slate-100 text-slate-600 border-slate-300';
-      statusText = 'Cancelado';
     } else if (c.payments.remainingBalance === c.payments.total) {
       badgeClass = 'bg-red-100 text-red-800 border-red-300';
       statusText = 'Sin Anticipo';
     }
 
     return `
-      <tr class="hover:bg-slate-50/80 transition-colors border-b border-slate-200 text-sm">
-        <td class="py-3 px-4 font-black text-slate-900">
-          <span class="bg-slate-900 text-white text-xs px-2 py-0.5 rounded font-mono">#${c.folio || '0000'}</span>
+      <tr class="hover:bg-slate-50/80 transition-colors border-b border-slate-200 text-sm ${isCancelled ? 'bg-slate-50/60 opacity-75' : ''}">
+        <td class="py-3 px-4 font-black text-slate-900 cursor-pointer" onclick="App.editContract('${c.id}')" title="Hacer clic para editar">
+          <span class="${isCancelled ? 'bg-slate-500' : 'bg-slate-900 hover:bg-red-600'} text-white text-xs px-2 py-0.5 rounded font-mono transition-colors">#${c.folio || '0000'}</span>
         </td>
-        <td class="py-3 px-4">
-          <div class="font-bold text-slate-800">${c.client.name || 'Sin Nombre'}</div>
+        <td class="py-3 px-4 cursor-pointer" onclick="App.editContract('${c.id}')" title="Hacer clic para editar">
+          <div class="font-bold text-slate-800 hover:text-red-600 transition-colors ${isCancelled ? 'line-through text-slate-500' : ''}">${c.client.name || 'Sin Nombre'}</div>
           <div class="text-xs text-slate-500">${c.client.phone || 'Sin teléfono'}</div>
         </td>
         <td class="py-3 px-4 text-xs">
@@ -272,7 +286,7 @@ const App = {
         <td class="py-3 px-4 text-right font-semibold text-slate-800">
           ${ContractModel.formatCurrency(c.payments.total)}
         </td>
-        <td class="py-3 px-4 text-right font-black ${(c.payments.remainingBalance || 0) > 0 ? 'text-red-600' : 'text-emerald-600'}">
+        <td class="py-3 px-4 text-right font-black ${isCancelled ? 'text-slate-400' : ((c.payments.remainingBalance || 0) > 0 ? 'text-red-600' : 'text-emerald-600')}">
           ${ContractModel.formatCurrency(c.payments.remainingBalance)}
         </td>
         <td class="py-3 px-4 text-center">
@@ -282,28 +296,109 @@ const App = {
         </td>
         <td class="py-3 px-4 text-right">
           <div class="flex items-center justify-end gap-1.5">
-            <button onclick="App.viewAndPrintContract('${c.id}')" class="p-1.5 text-slate-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Imprimir / Descargar PDF">
+            <button onclick="App.viewAndPrintContract('${c.id}')" class="p-1.5 text-slate-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer" title="Imprimir / Descargar PDF">
               🖨️
             </button>
-            <button onclick="App.openQuickAnticipoModal('${c.id}')" class="p-1.5 text-slate-600 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition-colors" title="Registrar Anticipo">
-              💵
-            </button>
-            <button onclick="App.sendWhatsAppMessage('${c.id}')" class="p-1.5 text-slate-600 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors" title="Compartir WhatsApp">
-              📱
-            </button>
-            <button onclick="App.editContract('${c.id}')" class="p-1.5 text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="Editar">
+            ${!isCancelled ? `
+              <button onclick="App.openQuickAnticipoModal('${c.id}')" class="p-1.5 text-slate-600 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition-colors cursor-pointer" title="Registrar Anticipo">
+                💵
+              </button>
+              <button onclick="App.sendWhatsAppMessage('${c.id}')" class="p-1.5 text-slate-600 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors cursor-pointer" title="Compartir WhatsApp">
+                📱
+              </button>
+            ` : ''}
+            <button onclick="App.editContract('${c.id}')" class="p-1.5 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-colors font-bold cursor-pointer" title="Editar Contrato">
               ✏️
             </button>
-            <button onclick="App.duplicateContract('${c.id}')" class="p-1.5 text-slate-600 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-colors" title="Duplicar">
+            <button onclick="App.duplicateContract('${c.id}')" class="p-1.5 text-slate-600 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-colors cursor-pointer" title="Duplicar">
               📋
             </button>
-            <button onclick="App.confirmDeleteContract('${c.id}')" class="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Eliminar">
-              🗑️
-            </button>
+            
+            ${isCancelled ? `
+              <button onclick="App.toggleCancelContract('${c.id}')" class="px-2 py-1 text-emerald-600 hover:text-emerald-800 hover:bg-emerald-50 rounded-lg transition-colors font-bold text-xs cursor-pointer" title="Reactivar Contrato">
+                🔄 Reactivar
+              </button>
+            ` : `
+              <button onclick="App.toggleCancelContract('${c.id}')" class="p-1.5 text-amber-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer" title="Cancelar Contrato (Sin borrar)">
+                🚫
+              </button>
+            `}
           </div>
         </td>
       </tr>
     `;
+  },
+
+  /**
+   * CANCEL / REACTIVATE CONTRACT WITHOUT DELETING
+   */
+  toggleCancelContract(contractId) {
+    const contract = StorageManager.getContract(contractId);
+    if (!contract) return;
+
+    const isCurrentlyCancelled = contract.payments && contract.payments.status === 'cancelled';
+
+    if (isCurrentlyCancelled) {
+      if (confirm(`¿Deseas REACTIVAR el contrato Folio #${contract.folio} de "${contract.client.name}"?`)) {
+        const total = contract.payments.total || 0;
+        const remaining = contract.payments.remainingBalance || 0;
+        if (remaining <= 0) {
+          contract.payments.status = 'paid';
+        } else if (contract.payments.totalAnticipos > 0) {
+          contract.payments.status = 'partial';
+        } else {
+          contract.payments.status = 'pending';
+        }
+        delete contract.cancellation;
+        contract.updatedAt = new Date().toISOString();
+
+        StorageManager.upsertContract(contract);
+        this.showToast(`Contrato #${contract.folio} reactivado exitosamente.`, 'success');
+        this.renderStats();
+        this.renderContractsTable();
+        if (typeof CalendarManager !== 'undefined') CalendarManager.render();
+      }
+    } else {
+      const eventDate = contract.event ? contract.event.date : '';
+      let penaltyText = '';
+      if (eventDate) {
+        const today = new Date();
+        const evD = new Date(eventDate);
+        const diffDays = Math.ceil((evD - today) / (1000 * 60 * 60 * 24));
+        const total = contract.payments.total || 0;
+        
+        if (diffDays > 15) {
+          const pen = total * 0.05;
+          penaltyText = `\n\n📌 Aplica cláusula de penalización del 5%: ${ContractModel.formatCurrency(pen)} (>15 días de anticipación).`;
+        } else if (diffDays >= 0) {
+          const pen = total * 0.10;
+          penaltyText = `\n\n📌 Aplica cláusula de penalización del 10%: ${ContractModel.formatCurrency(pen)} (<=10 días de anticipación).`;
+        }
+      }
+
+      const reason = prompt(
+        `¿Deseas marcar como CANCELADO el contrato Folio #${contract.folio} de "${contract.client.name}"?` +
+        `\n(El contrato NO se borrará; quedará guardado como cancelado en tu historial).` +
+        penaltyText +
+        `\n\nIngresa el motivo de cancelación (Opcional):`,
+        'Cancelado por el cliente'
+      );
+
+      if (reason !== null) {
+        contract.payments.status = 'cancelled';
+        contract.cancellation = {
+          cancelledAt: new Date().toISOString(),
+          reason: reason || 'Cancelado por el cliente'
+        };
+        contract.updatedAt = new Date().toISOString();
+
+        StorageManager.upsertContract(contract);
+        this.showToast(`Contrato #${contract.folio} marcado como CANCELADO.`, 'warning');
+        this.renderStats();
+        this.renderContractsTable();
+        if (typeof CalendarManager !== 'undefined') CalendarManager.render();
+      }
+    }
   },
 
   newContract() {
@@ -312,265 +407,375 @@ const App = {
     this.loadContractIntoForm(this.editingContract);
     this.navigate('editor');
     this.updateLivePreview();
+
+    const heading = document.getElementById('editor-title-heading');
+    const subtitle = document.getElementById('editor-subtitle-text');
+    const banner = document.getElementById('editor-mode-banner');
+
+    if (heading) heading.textContent = `Nuevo Contrato de Taquiza (Folio #${nextFolio})`;
+    if (subtitle) subtitle.textContent = `Llena los datos y los cambios se reflejarán en tiempo real.`;
+    if (banner) banner.classList.add('hidden');
+
+    setTimeout(() => {
+      const clientInput = document.getElementById('input-client-name');
+      if (clientInput) clientInput.focus();
+    }, 150);
   },
 
   newContractForDate(dateStr) {
     const nextFolio = StorageManager.getNextFolio();
     this.editingContract = ContractModel.createEmptyContract(nextFolio);
     this.editingContract.event.date = dateStr;
-    this.editingContract.event.dayOfWeek = ContractModel.getDayOfWeek(dateStr);
+    this.editingContract.event.dayOfWeek = ContractModel.getDayOfWeekSpanish(dateStr);
     this.loadContractIntoForm(this.editingContract);
     this.navigate('editor');
     this.updateLivePreview();
+
+    const heading = document.getElementById('editor-title-heading');
+    const subtitle = document.getElementById('editor-subtitle-text');
+    const banner = document.getElementById('editor-mode-banner');
+
+    if (heading) heading.textContent = `Nuevo Contrato para el ${ContractModel.formatDateHuman(dateStr)} (Folio #${nextFolio})`;
+    if (subtitle) subtitle.textContent = `Llena los datos del cliente y los cambios se reflejarán en vivo.`;
+    if (banner) banner.classList.add('hidden');
+
+    setTimeout(() => {
+      const clientInput = document.getElementById('input-client-name');
+      if (clientInput) clientInput.focus();
+    }, 150);
   },
 
+  /**
+   * ULTRA-ROBUST EDIT CONTRACT
+   */
   editContract(contractId) {
-    const contract = StorageManager.getContract(contractId);
-    if (!contract) {
-      this.showToast('No se encontró el contrato seleccionado.', 'error');
-      return;
+    try {
+      const contracts = StorageManager.getContracts() || [];
+      let contract = contracts.find(c => String(c.id) === String(contractId) || String(c.folio) === String(contractId));
+
+      if (!contract) {
+        contract = StorageManager.getContract(contractId);
+      }
+
+      if (!contract) {
+        this.showToast('No se encontró el contrato seleccionado.', 'warning');
+        return;
+      }
+
+      // Close modal if open
+      this.closeModal('event-detail-modal');
+      this.closeModal('quick-anticipo-modal');
+
+      // Deep clone so editing does not mutate original until saved
+      this.editingContract = JSON.parse(JSON.stringify(contract));
+      this.loadContractIntoForm(this.editingContract);
+      this.navigate('editor');
+      this.updateLivePreview();
+
+      // Update banner & headings
+      const heading = document.getElementById('editor-title-heading');
+      const subtitle = document.getElementById('editor-subtitle-text');
+      const banner = document.getElementById('editor-mode-banner');
+      const bannerText = document.getElementById('editor-mode-banner-text');
+
+      if (heading) heading.textContent = `Editando Folio #${contract.folio || '0000'}`;
+      if (subtitle) subtitle.textContent = `Cliente: ${contract.client && contract.client.name ? contract.client.name : 'Sin nombre'} • Realiza tus cambios y presiona Guardar.`;
+      if (banner && bannerText) {
+        bannerText.innerHTML = `<strong>Editando Folio #${contract.folio}:</strong> Modifica los datos que desees y pulsa <strong>Guardar Contrato</strong>.`;
+        banner.classList.remove('hidden');
+      }
+
+      setTimeout(() => {
+        const clientInput = document.getElementById('input-client-name');
+        if (clientInput) {
+          clientInput.focus();
+          clientInput.select();
+        }
+      }, 150);
+
+      this.showToast(`Cargado contrato Folio #${contract.folio} para editar.`, 'info');
+    } catch (err) {
+      console.error('Error al editar contrato:', err);
+      this.showToast('Error al abrir el editor: ' + err.message, 'error');
     }
-    this.editingContract = JSON.parse(JSON.stringify(contract));
-    this.loadContractIntoForm(this.editingContract);
-    this.navigate('editor');
-    this.updateLivePreview();
   },
 
   duplicateContract(contractId) {
-    const contract = StorageManager.getContract(contractId);
-    if (!contract) return;
+    const original = StorageManager.getContract(contractId);
+    if (!original) return;
 
     const nextFolio = StorageManager.getNextFolio();
-    const duplicated = JSON.parse(JSON.stringify(contract));
-    
-    duplicated.id = `TK-${new Date().getFullYear()}-${nextFolio}`;
-    duplicated.folio = nextFolio;
-    duplicated.contractDate = new Date().toISOString().split('T')[0];
-    duplicated.payments.anticipos = [];
-    duplicated.payments.totalAnticipos = 0;
-    ContractModel.recalculateTotals(duplicated);
+    const copy = JSON.parse(JSON.stringify(original));
+    copy.id = ContractModel.generateId();
+    copy.folio = nextFolio;
+    copy.createdAt = new Date().toISOString();
+    copy.updatedAt = new Date().toISOString();
+    copy.contractDate = new Date().toISOString().split('T')[0];
+    copy.payments.anticipos = [];
+    copy.payments.totalAnticipos = 0;
+    copy.payments.remainingBalance = copy.payments.total;
+    copy.payments.status = 'pending';
+    delete copy.cancellation;
 
-    this.editingContract = duplicated;
-    this.loadContractIntoForm(duplicated);
+    this.editingContract = copy;
+    this.loadContractIntoForm(copy);
     this.navigate('editor');
     this.updateLivePreview();
-    this.showToast(`Contrato duplicado con nuevo Folio #${nextFolio}`, 'info');
+    this.showToast(`Copia creada con nuevo Folio #${nextFolio}`, 'info');
   },
 
+  /**
+   * Blinded Safe Form Population
+   */
   loadContractIntoForm(contract) {
     if (!contract) return;
-    if (!contract.client) contract.client = {};
-    if (!contract.event) contract.event = {};
-    if (!contract.payments) contract.payments = {};
-
-    const get = (id) => document.getElementById(id);
-
-    if (get('input-folio')) get('input-folio').value = contract.folio || '';
-    if (get('input-contract-date')) get('input-contract-date').value = contract.contractDate || '';
     
-    if (get('input-client-name')) get('input-client-name').value = contract.client.name || '';
-    if (get('input-client-phone')) get('input-client-phone').value = contract.client.phone || '';
-    if (get('input-client-address')) get('input-client-address').value = contract.client.address || '';
-    if (get('input-client-reference')) get('input-client-reference').value = contract.client.reference || '';
+    const setVal = (id, val) => {
+      const el = document.getElementById(id);
+      if (el) el.value = (val !== undefined && val !== null) ? val : '';
+    };
 
-    if (get('input-event-type')) get('input-event-type').value = contract.event.type || '';
-    if (get('input-event-amount')) get('input-event-amount').value = contract.event.amount || 0;
-    if (get('input-complements')) get('input-complements').value = contract.event.complementsText || ContractModel.DEFAULT_COMPLEMENTS_TEXT;
-    if (get('input-additionals')) get('input-additionals').value = contract.event.additionals || '';
-    if (get('input-additionals-amount')) get('input-additionals-amount').value = contract.event.additionalsAmount || 0;
-    if (get('input-travel-cost')) get('input-travel-cost').value = contract.event.travelCost || 0;
+    setVal('input-folio', contract.folio || '');
+    setVal('input-contract-date', contract.contractDate || '');
+    
+    // Client
+    setVal('input-client-name', (contract.client && contract.client.name) || '');
+    setVal('input-client-phone', (contract.client && contract.client.phone) || '');
+    setVal('input-client-reference', (contract.client && contract.client.reference) || '');
+    setVal('input-client-address', (contract.client && contract.client.address) || '');
 
-    if (get('input-event-date')) get('input-event-date').value = contract.event.date || '';
-    if (get('input-event-day')) get('input-event-day').value = contract.event.dayOfWeek || '';
-    if (get('input-arrival-time')) get('input-arrival-time').value = contract.event.arrivalTime || '';
-    if (get('input-start-time')) get('input-start-time').value = contract.event.startTime || '';
-    if (get('input-service-time')) get('input-service-time').value = contract.event.serviceTime || '2 HORAS';
-    if (get('input-end-time')) get('input-end-time').value = contract.event.endTime || '';
-    if (get('input-assigned-staff')) get('input-assigned-staff').value = contract.event.assignedStaff || '';
-    if (get('input-elaborated-by')) get('input-elaborated-by').value = contract.elaboratedBy || '';
+    // Event Menu & Price
+    setVal('input-event-type', (contract.event && contract.event.type) || '');
+    setVal('input-event-amount', (contract.event && contract.event.amount) || '');
+    setVal('input-travel-cost', (contract.event && contract.event.travelCost) || 0);
+    setVal('input-complements', (contract.event && contract.event.complementsText) || ContractModel.DEFAULT_COMPLEMENTS_TEXT);
+    setVal('input-additionals', (contract.event && contract.event.additionals) || '');
+    setVal('input-additionals-amount', (contract.event && contract.event.additionalsAmount) || 0);
 
-    if (get('input-iva-rate')) get('input-iva-rate').value = contract.payments.ivaRate || 0;
+    // Logistics
+    setVal('input-event-date', (contract.event && contract.event.date) || '');
+    setVal('input-event-day', (contract.event && contract.event.dayOfWeek) || '');
+    setVal('input-arrival-time', (contract.event && contract.event.arrivalTime) || '');
+    setVal('input-start-time', (contract.event && contract.event.startTime) || '');
+    setVal('input-service-time', (contract.event && contract.event.serviceTime) || '2 HORAS');
+    setVal('input-end-time', (contract.event && contract.event.endTime) || '');
+    setVal('input-assigned-staff', (contract.event && contract.event.assignedStaff) || '');
+    setVal('input-elaborated-by', contract.elaboratedBy || 'Alexis Lira');
 
-    this.renderFormAnticiposList();
+    // Payments & Anticipos
+    setVal('input-iva-rate', (contract.payments && contract.payments.ivaRate) || 0);
+    this.renderFormAnticipos(contract.payments ? contract.payments.anticipos : []);
+    this.recalculateFormTotals();
   },
 
-  renderFormAnticiposList() {
-    const listContainer = document.getElementById('form-anticipos-container');
-    if (!listContainer || !this.editingContract) return;
+  renderFormAnticipos(anticipos = []) {
+    const container = document.getElementById('form-anticipos-container');
+    if (!container) return;
 
-    const anticipos = this.editingContract.payments.anticipos || [];
-
-    let html = '';
-    anticipos.forEach((ant, index) => {
-      html += `
-        <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-2 relative group">
-          <div class="flex justify-between items-center">
-            <span class="text-xs font-bold text-slate-700">Anticipo #${index + 1}</span>
-            <button type="button" onclick="App.removeAnticipoRow(${index})" class="text-red-500 hover:text-red-700 text-xs font-bold p-1">
-              ✕ Eliminar
-            </button>
-          </div>
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
-            <div>
-              <label class="text-[11px] font-semibold text-slate-500 block mb-0.5">Fecha</label>
-              <input type="date" value="${ant.date || ''}" onchange="App.updateAnticipoField(${index}, 'date', this.value)" class="w-full text-xs p-1.5 border rounded-lg bg-white">
-            </div>
-            <div>
-              <label class="text-[11px] font-semibold text-slate-500 block mb-0.5">Tipo de Pago</label>
-              <select onchange="App.updateAnticipoField(${index}, 'type', this.value)" class="w-full text-xs p-1.5 border rounded-lg bg-white">
-                <option value="Efectivo" ${ant.type === 'Efectivo' ? 'selected' : ''}>Efectivo</option>
-                <option value="Transferencia" ${ant.type === 'Transferencia' ? 'selected' : ''}>Transferencia</option>
-                <option value="Tarjeta" ${ant.type === 'Tarjeta' ? 'selected' : ''}>Tarjeta</option>
-                <option value="Depósito" ${ant.type === 'Depósito' ? 'selected' : ''}>Depósito</option>
-              </select>
-            </div>
-            <div>
-              <label class="text-[11px] font-semibold text-slate-500 block mb-0.5">Monto ($)</label>
-              <input type="number" step="any" min="0" value="${ant.amount || 0}" oninput="App.updateAnticipoField(${index}, 'amount', this.value)" class="w-full text-xs p-1.5 border rounded-lg bg-white font-bold text-slate-900">
-            </div>
-          </div>
-          <div>
-            <input type="text" placeholder="Nota o concepto (ej. Apartado 50%)" value="${ant.note || ''}" oninput="App.updateAnticipoField(${index}, 'note', this.value)" class="w-full text-xs p-1.5 border rounded-lg bg-white text-slate-600">
-          </div>
+    if (anticipos.length === 0) {
+      container.innerHTML = `
+        <div class="text-center py-2 text-xs text-slate-400 italic">
+          No hay anticipos registrados aún. Pulsa "+ Agregar Anticipo" para registrar uno.
         </div>
       `;
-    });
+      return;
+    }
 
-    listContainer.innerHTML = html;
+    container.innerHTML = anticipos.map((ant, index) => `
+      <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200 flex flex-wrap items-center gap-2 text-xs">
+        <span class="font-bold text-slate-600 w-5">#${index + 1}</span>
+        <div class="flex-1 min-w-[120px]">
+          <input type="date" value="${ant.date || ''}" onchange="App.onAnticipoFieldChange(${index}, 'date', this.value)" class="w-full text-xs p-1.5 border border-slate-300 rounded-lg bg-white">
+        </div>
+        <div class="w-28">
+          <select onchange="App.onAnticipoFieldChange(${index}, 'type', this.value)" class="w-full text-xs p-1.5 border border-slate-300 rounded-lg bg-white">
+            <option value="Efectivo" ${ant.type === 'Efectivo' ? 'selected' : ''}>Efectivo</option>
+            <option value="Transferencia" ${ant.type === 'Transferencia' ? 'selected' : ''}>Transferencia</option>
+            <option value="Tarjeta" ${ant.type === 'Tarjeta' ? 'selected' : ''}>Tarjeta</option>
+          </select>
+        </div>
+        <div class="w-28">
+          <input type="number" step="any" min="0" placeholder="Monto $" value="${ant.amount || ''}" oninput="App.onAnticipoFieldChange(${index}, 'amount', this.value)" class="w-full text-xs font-bold p-1.5 border border-slate-300 rounded-lg bg-white text-right">
+        </div>
+        <button type="button" onclick="App.removeAnticipoRow(${index})" class="text-red-500 hover:text-red-700 p-1 font-bold text-sm cursor-pointer" title="Quitar este anticipo">
+          ✕
+        </button>
+      </div>
+    `).join('');
   },
 
   addAnticipoRow() {
-    if (!this.editingContract) return;
+    if (!this.editingContract.payments) this.editingContract.payments = {};
+    if (!this.editingContract.payments.anticipos) this.editingContract.payments.anticipos = [];
+
     const todayStr = new Date().toISOString().split('T')[0];
-    if (!this.editingContract.payments.anticipos) {
-      this.editingContract.payments.anticipos = [];
-    }
     this.editingContract.payments.anticipos.push({
       id: 'ant-' + Date.now(),
       date: todayStr,
-      type: 'Efectivo',
+      type: 'Transferencia',
       amount: 0,
       note: ''
     });
-    this.renderFormAnticiposList();
-    this.syncFormToModel();
+
+    this.renderFormAnticipos(this.editingContract.payments.anticipos);
+    this.recalculateFormTotals();
     this.updateLivePreview();
   },
 
   removeAnticipoRow(index) {
-    if (!this.editingContract || !this.editingContract.payments.anticipos) return;
-    this.editingContract.payments.anticipos.splice(index, 1);
-    this.renderFormAnticiposList();
-    this.syncFormToModel();
-    this.updateLivePreview();
+    if (this.editingContract.payments && this.editingContract.payments.anticipos) {
+      this.editingContract.payments.anticipos.splice(index, 1);
+      this.renderFormAnticipos(this.editingContract.payments.anticipos);
+      this.recalculateFormTotals();
+      this.updateLivePreview();
+    }
   },
 
-  updateAnticipoField(index, field, value) {
-    if (!this.editingContract || !this.editingContract.payments.anticipos || !this.editingContract.payments.anticipos[index]) return;
-    this.editingContract.payments.anticipos[index][field] = field === 'amount' ? (parseFloat(value) || 0) : value;
-    this.syncFormToModel();
-    this.updateLivePreview();
+  onAnticipoFieldChange(index, field, value) {
+    if (this.editingContract.payments && this.editingContract.payments.anticipos && this.editingContract.payments.anticipos[index]) {
+      if (field === 'amount') {
+        this.editingContract.payments.anticipos[index].amount = parseFloat(value) || 0;
+      } else {
+        this.editingContract.payments.anticipos[index][field] = value;
+      }
+      this.recalculateFormTotals();
+      this.updateLivePreview();
+    }
   },
 
   onEventDateChange(dateValue) {
-    const day = ContractModel.getDayOfWeek(dateValue);
     const dayInput = document.getElementById('input-event-day');
-    if (dayInput) dayInput.value = day;
-    this.syncFormToModel();
-    this.updateLivePreview();
+    if (dayInput && dateValue) {
+      const dayName = ContractModel.getDayOfWeekSpanish(dateValue);
+      dayInput.value = dayName;
+    }
+    this.onFormChange();
   },
 
   onStartTimeChange() {
-    const startTime = document.getElementById('input-start-time').value;
-    const serviceTime = document.getElementById('input-service-time').value;
-    const endTime = ContractModel.calculateEndTime(startTime, serviceTime);
+    const startVal = document.getElementById('input-start-time').value;
+    const servVal = document.getElementById('input-service-time').value;
     const endInput = document.getElementById('input-end-time');
-    if (endInput) endInput.value = endTime;
+
+    if (startVal && endInput) {
+      const endCalculated = ContractModel.calculateEndTime(startVal, servVal);
+      endInput.value = endCalculated;
+    }
+    this.onFormChange();
+  },
+
+  onFormChange() {
     this.syncFormToModel();
+    this.recalculateFormTotals();
     this.updateLivePreview();
   },
 
   syncFormToModel() {
     if (!this.editingContract) return;
 
-    const get = (id) => document.getElementById(id);
+    const getVal = (id) => {
+      const el = document.getElementById(id);
+      return el ? el.value : '';
+    };
 
-    if (get('input-folio')) this.editingContract.folio = get('input-folio').value.trim();
-    if (get('input-contract-date')) this.editingContract.contractDate = get('input-contract-date').value;
+    this.editingContract.folio = getVal('input-folio').trim();
+    this.editingContract.contractDate = getVal('input-contract-date');
 
-    if (get('input-client-name')) this.editingContract.client.name = get('input-client-name').value.trim();
-    if (get('input-client-phone')) this.editingContract.client.phone = get('input-client-phone').value.trim();
-    if (get('input-client-address')) this.editingContract.client.address = get('input-client-address').value.trim();
-    if (get('input-client-reference')) this.editingContract.client.reference = get('input-client-reference').value.trim();
+    if (!this.editingContract.client) this.editingContract.client = {};
+    this.editingContract.client.name = getVal('input-client-name').trim();
+    this.editingContract.client.phone = getVal('input-client-phone').trim();
+    this.editingContract.client.reference = getVal('input-client-reference').trim();
+    this.editingContract.client.address = getVal('input-client-address').trim();
 
-    if (get('input-event-type')) this.editingContract.event.type = get('input-event-type').value;
-    if (get('input-event-amount')) this.editingContract.event.amount = parseFloat(get('input-event-amount').value) || 0;
-    if (get('input-complements')) this.editingContract.event.complementsText = get('input-complements').value;
-    if (get('input-additionals')) this.editingContract.event.additionals = get('input-additionals').value;
-    if (get('input-additionals-amount')) this.editingContract.event.additionalsAmount = parseFloat(get('input-additionals-amount').value) || 0;
-    if (get('input-travel-cost')) this.editingContract.event.travelCost = parseFloat(get('input-travel-cost').value) || 0;
+    if (!this.editingContract.event) this.editingContract.event = {};
+    this.editingContract.event.type = getVal('input-event-type');
+    this.editingContract.event.amount = parseFloat(getVal('input-event-amount')) || 0;
+    this.editingContract.event.travelCost = parseFloat(getVal('input-travel-cost')) || 0;
+    this.editingContract.event.complementsText = getVal('input-complements');
+    this.editingContract.event.additionals = getVal('input-additionals');
+    this.editingContract.event.additionalsAmount = parseFloat(getVal('input-additionals-amount')) || 0;
 
-    if (get('input-event-date')) this.editingContract.event.date = get('input-event-date').value;
-    if (get('input-event-day')) this.editingContract.event.dayOfWeek = get('input-event-day').value;
-    if (get('input-arrival-time')) this.editingContract.event.arrivalTime = get('input-arrival-time').value;
-    if (get('input-start-time')) this.editingContract.event.startTime = get('input-start-time').value;
-    if (get('input-service-time')) this.editingContract.event.serviceTime = get('input-service-time').value;
-    if (get('input-end-time')) this.editingContract.event.endTime = get('input-end-time').value;
-    if (get('input-assigned-staff')) this.editingContract.event.assignedStaff = get('input-assigned-staff').value;
-    if (get('input-elaborated-by')) this.editingContract.elaboratedBy = get('input-elaborated-by').value;
+    this.editingContract.event.date = getVal('input-event-date');
+    this.editingContract.event.dayOfWeek = getVal('input-event-day').toUpperCase();
+    this.editingContract.event.arrivalTime = getVal('input-arrival-time');
+    this.editingContract.event.startTime = getVal('input-start-time');
+    this.editingContract.event.serviceTime = getVal('input-service-time');
+    this.editingContract.event.endTime = getVal('input-end-time');
+    this.editingContract.event.assignedStaff = getVal('input-assigned-staff');
+    this.editingContract.elaboratedBy = getVal('input-elaborated-by');
 
-    if (get('input-iva-rate')) this.editingContract.payments.ivaRate = parseFloat(get('input-iva-rate').value) || 0;
+    if (!this.editingContract.payments) this.editingContract.payments = {};
+    this.editingContract.payments.ivaRate = parseFloat(getVal('input-iva-rate')) || 0;
+  },
 
-    ContractModel.recalculateTotals(this.editingContract);
+  recalculateFormTotals() {
+    if (!this.editingContract) return;
+    this.editingContract = ContractModel.calculateFinancials(this.editingContract);
 
-    const subtotalDisplay = document.getElementById('display-form-subtotal');
-    const totalDisplay = document.getElementById('display-form-total');
-    const saldoDisplay = document.getElementById('display-form-saldo');
+    const subtotalEl = document.getElementById('display-form-subtotal');
+    const totalEl = document.getElementById('display-form-total');
+    const saldoEl = document.getElementById('display-form-saldo');
 
-    if (subtotalDisplay) subtotalDisplay.textContent = ContractModel.formatCurrency(this.editingContract.payments.subtotal);
-    if (totalDisplay) totalDisplay.textContent = ContractModel.formatCurrency(this.editingContract.payments.total);
-    if (saldoDisplay) saldoDisplay.textContent = ContractModel.formatCurrency(this.editingContract.payments.remainingBalance);
+    if (subtotalEl) subtotalEl.textContent = ContractModel.formatCurrency(this.editingContract.payments.subtotal);
+    if (totalEl) totalEl.textContent = ContractModel.formatCurrency(this.editingContract.payments.total);
+    if (saldoEl) saldoEl.textContent = ContractModel.formatCurrency(this.editingContract.payments.remainingBalance);
   },
 
   updateLivePreview() {
     const previewContainer = document.getElementById('live-preview-container');
     if (!previewContainer || !this.editingContract) return;
-
     previewContainer.innerHTML = PDFGenerator.renderContractHTML(this.editingContract);
   },
 
   saveCurrentContract() {
     this.syncFormToModel();
-
-    if (!this.editingContract.client.name) {
-      this.showToast('Por favor ingresa el nombre del cliente.', 'warning');
+    if (!this.editingContract.client || !this.editingContract.client.name) {
+      this.showToast('Por favor escribe el nombre del cliente.', 'warning');
       const nameInput = document.getElementById('input-client-name');
       if (nameInput) nameInput.focus();
       return;
     }
 
-    if (!this.editingContract.folio) {
-      this.editingContract.folio = StorageManager.getNextFolio();
-    }
-
-    StorageManager.upsertContract(this.editingContract);
-    this.showToast(`Contrato Folio #${this.editingContract.folio} guardado correctamente.`, 'success');
+    this.recalculateFormTotals();
+    const saved = StorageManager.upsertContract(this.editingContract);
+    this.showToast(`¡Contrato #${saved.folio} guardado exitosamente!`, 'success');
     this.renderStats();
     this.renderContractsTable();
     if (typeof CalendarManager !== 'undefined') CalendarManager.render();
   },
 
-  viewAndPrintContract(contractId) {
-    const contract = (contractId ? StorageManager.getContract(contractId) : null) || this.editingContract;
-    if (!contract) return;
+  saveAndReturn() {
+    this.saveCurrentContract();
+    setTimeout(() => {
+      this.navigate('contracts');
+    }, 350);
+  },
 
+  viewAndPrintContract(contractId) {
+    let contract = null;
+    if (contractId) {
+      contract = StorageManager.getContract(contractId);
+    } else if (this.editingContract) {
+      this.syncFormToModel();
+      this.recalculateFormTotals();
+      contract = this.editingContract;
+    }
+
+    if (!contract) return;
     PDFGenerator.printContract(contract);
   },
 
   downloadContractPDF(contractId) {
-    const contract = (contractId ? StorageManager.getContract(contractId) : null) || this.editingContract;
-    if (!contract) return;
+    let contract = null;
+    if (contractId) {
+      contract = StorageManager.getContract(contractId);
+    } else if (this.editingContract) {
+      this.syncFormToModel();
+      this.recalculateFormTotals();
+      contract = this.editingContract;
+    }
 
+    if (!contract) return;
     PDFGenerator.downloadPDF(contract);
   },
 
@@ -583,100 +788,98 @@ const App = {
     if (!modal || !content) return;
 
     const todayStr = new Date().toISOString().split('T')[0];
+    const saldoActual = contract.payments ? contract.payments.remainingBalance : 0;
 
     content.innerHTML = `
       <div class="flex justify-between items-center border-b pb-3 mb-4">
         <div>
-          <span class="text-xs font-bold text-red-600 uppercase">Abonar / Liquidar</span>
-          <h3 class="text-lg font-black text-slate-900">${contract.client.name} (Folio #${contract.folio})</h3>
+          <span class="text-xs font-bold text-red-600 uppercase">Abono Rápido</span>
+          <h3 class="text-lg font-black text-slate-900">Folio #${contract.folio} - ${contract.client.name}</h3>
         </div>
-        <button onclick="App.closeModal('quick-anticipo-modal')" class="text-slate-400 hover:text-slate-600 font-bold text-xl">✕</button>
+        <button onclick="App.closeModal('quick-anticipo-modal')" class="text-slate-400 hover:text-slate-600 text-xl font-bold p-1 cursor-pointer">✕</button>
       </div>
 
-      <div class="bg-amber-50 p-3 rounded-xl border border-amber-200 mb-4 text-xs flex justify-between">
-        <div>
-          <span class="text-slate-500 block">Total del Contrato:</span>
-          <strong class="text-sm font-bold text-slate-900">${ContractModel.formatCurrency(contract.payments.total)}</strong>
-        </div>
-        <div>
-          <span class="text-slate-500 block">Anticipos previos:</span>
-          <strong class="text-sm font-bold text-emerald-700">${ContractModel.formatCurrency(contract.payments.totalAnticipos)}</strong>
-        </div>
-        <div>
-          <span class="text-slate-500 block">Saldo Restante:</span>
-          <strong class="text-sm font-black text-red-600">${ContractModel.formatCurrency(contract.payments.remainingBalance)}</strong>
-        </div>
+      <div class="bg-amber-50 p-3 rounded-xl border border-amber-200 mb-4 flex justify-between items-center text-xs">
+        <span>Saldo Pendiente Actual:</span>
+        <strong class="text-base text-red-600 font-black">${ContractModel.formatCurrency(saldoActual)}</strong>
       </div>
 
-      <form id="quick-anticipo-form" onsubmit="event.preventDefault(); App.submitQuickAnticipo('${contract.id}')" class="space-y-3">
+      <form onsubmit="event.preventDefault(); App.submitQuickAnticipo('${contract.id}')" class="space-y-3 text-xs">
         <div>
-          <label class="text-xs font-bold text-slate-700 block mb-1">Monto del Anticipo ($ MXN)</label>
-          <input type="number" step="any" min="1" max="${contract.payments.remainingBalance || contract.payments.total}" id="quick-anticipo-amount" value="${contract.payments.remainingBalance || 0}" required class="w-full text-base font-black p-2.5 border rounded-xl bg-white border-amber-300 focus:ring-2 focus:ring-amber-500">
+          <label class="block font-bold text-slate-700 mb-1">Monto del Anticipo / Abono ($ MXN) *</label>
+          <input type="number" step="any" min="1" id="quick-ant-amount" required placeholder="Ej. 1500" class="w-full text-base font-black p-2.5 border border-slate-300 rounded-xl bg-white focus:ring-2 focus:ring-amber-500">
         </div>
 
         <div class="grid grid-cols-2 gap-2">
           <div>
-            <label class="text-xs font-bold text-slate-700 block mb-1">Fecha</label>
-            <input type="date" id="quick-anticipo-date" value="${todayStr}" required class="w-full text-xs p-2 border rounded-xl bg-white">
+            <label class="block font-bold text-slate-700 mb-1">Fecha de Pago</label>
+            <input type="date" id="quick-ant-date" value="${todayStr}" class="w-full p-2 border border-slate-300 rounded-xl bg-white">
           </div>
           <div>
-            <label class="text-xs font-bold text-slate-700 block mb-1">Tipo de Pago</label>
-            <select id="quick-anticipo-type" class="w-full text-xs p-2 border rounded-xl bg-white">
+            <label class="block font-bold text-slate-700 mb-1">Método de Pago</label>
+            <select id="quick-ant-type" class="w-full p-2 border border-slate-300 rounded-xl bg-white">
               <option value="Efectivo">Efectivo</option>
-              <option value="Transferencia">Transferencia</option>
+              <option value="Transferencia" selected>Transferencia</option>
               <option value="Tarjeta">Tarjeta</option>
-              <option value="Depósito">Depósito</option>
             </select>
           </div>
         </div>
 
         <div>
-          <label class="text-xs font-bold text-slate-700 block mb-1">Nota o Concepto</label>
-          <input type="text" id="quick-anticipo-note" placeholder="Ej. Liquidación final / Pago 2do abono" class="w-full text-xs p-2 border rounded-xl bg-white">
+          <label class="block font-bold text-slate-700 mb-1">Nota o Referencia (Opcional)</label>
+          <input type="text" id="quick-ant-note" placeholder="Ej. Anticipo 50% / Liquidación" class="w-full p-2 border border-slate-300 rounded-xl bg-white">
         </div>
 
-        <div class="flex justify-end gap-2 border-t pt-4">
-          <button type="button" onclick="App.closeModal('quick-anticipo-modal')" class="px-4 py-2 border rounded-xl text-slate-600 text-xs font-bold">Cancelar</button>
-          <button type="submit" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-xs">Guardar Anticipo</button>
+        <div class="pt-3 flex gap-2 justify-end border-t mt-4">
+          <button type="button" onclick="App.closeModal('quick-anticipo-modal')" class="px-4 py-2 border border-slate-300 rounded-xl text-slate-700 font-bold hover:bg-slate-50 cursor-pointer">
+            Cancelar
+          </button>
+          <button type="submit" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-sm cursor-pointer">
+            💾 Registrar Abono
+          </button>
         </div>
       </form>
     `;
 
     modal.classList.remove('hidden');
     modal.classList.add('flex');
+    setTimeout(() => {
+      const input = document.getElementById('quick-ant-amount');
+      if (input) input.focus();
+    }, 100);
   },
 
   submitQuickAnticipo(contractId) {
     const contract = StorageManager.getContract(contractId);
     if (!contract) return;
 
-    const amount = parseFloat(document.getElementById('quick-anticipo-amount').value) || 0;
-    const date = document.getElementById('quick-anticipo-date').value;
-    const type = document.getElementById('quick-anticipo-type').value;
-    const note = document.getElementById('quick-anticipo-note').value;
+    const amountInput = document.getElementById('quick-ant-amount');
+    const dateInput = document.getElementById('quick-ant-date');
+    const typeInput = document.getElementById('quick-ant-type');
+    const noteInput = document.getElementById('quick-ant-note');
 
+    const amount = parseFloat(amountInput.value) || 0;
     if (amount <= 0) {
-      this.showToast('El monto debe ser mayor a cero.', 'warning');
+      this.showToast('Ingresa un monto de anticipo válido.', 'warning');
       return;
     }
 
+    if (!contract.payments) contract.payments = {};
     if (!contract.payments.anticipos) contract.payments.anticipos = [];
 
     contract.payments.anticipos.push({
       id: 'ant-' + Date.now(),
-      date: date,
-      type: type,
+      date: dateInput.value,
+      type: typeInput.value,
       amount: amount,
-      note: note
+      note: noteInput.value.trim()
     });
 
-    ContractModel.recalculateTotals(contract);
-    StorageManager.upsertContract(contract);
+    const updated = ContractModel.calculateFinancials(contract);
+    StorageManager.upsertContract(updated);
 
     this.closeModal('quick-anticipo-modal');
-    this.closeModal('event-detail-modal');
-    this.showToast(`Anticipo de ${ContractModel.formatCurrency(amount)} registrado con éxito.`, 'success');
-    
+    this.showToast(`¡Anticipo de ${ContractModel.formatCurrency(amount)} registrado!`, 'success');
     this.renderStats();
     this.renderContractsTable();
     if (typeof CalendarManager !== 'undefined') CalendarManager.render();
@@ -686,17 +889,20 @@ const App = {
     const contract = StorageManager.getContract(contractId);
     if (!contract) return;
 
-    const dateHuman = ContractModel.formatDateHuman(contract.event ? contract.event.date : '');
-    const phone = (contract.client && contract.client.phone ? contract.client.phone : '').replace(/[^0-9]/g, '');
-
-    const message = `🔥 *TAKIRIN LA CHIMENEA - CONTRATO DE TAQUIZA* 🔥\n\n` +
-      `Estimado(a) *${contract.client.name}*, le compartimos los detalles de su servicio de taquiza:\n\n` +
-      `📄 *Folio:* ${contract.folio}\n` +
-      `📅 *Fecha:* ${contract.event.dayOfWeek} ${dateHuman}\n` +
-      `⏰ *Hora de Llegada:* ${ContractModel.formatTime12(contract.event.arrivalTime)}\n` +
-      `⏰ *Hora de Servicio:* ${ContractModel.formatTime12(contract.event.startTime)} a ${ContractModel.formatTime12(contract.event.endTime)}\n` +
-      `📍 *Lugar:* ${contract.client.address}\n\n` +
-      `💵 *Total Contrato:* ${ContractModel.formatCurrency(contract.payments.total)}\n` +
+    const phone = (contract.client.phone || '').replace(/\D/g, '');
+    const clientName = contract.client.name || 'Cliente';
+    const eventDate = ContractModel.formatDateHuman(contract.event.date);
+    const time = ContractModel.formatTime12(contract.event.startTime);
+    const service = contract.event.serviceTime || '2 HORAS';
+    
+    const message = 
+      `🌮 *TAKIRIN LA CHIMENEA - RESUMEN DE TAQUIZA* 🌮\n\n` +
+      `¡Hola ${clientName}! Le compartimos los detalles de su servicio:\n\n` +
+      `📄 *Folio de Contrato:* #${contract.folio}\n` +
+      `📅 *Fecha:* ${contract.event.dayOfWeek} ${eventDate}\n` +
+      `⏰ *Horario de Servicio:* ${time} (${service})\n` +
+      `📍 *Lugar:* ${contract.client.address || 'Córdoba, Ver.'}\n\n` +
+      `💰 *Total del Servicio:* ${ContractModel.formatCurrency(contract.payments.total)}\n` +
       `✅ *Anticipo Registrado:* ${ContractModel.formatCurrency(contract.payments.totalAnticipos)}\n` +
       `⏳ *Saldo Restante:* ${ContractModel.formatCurrency(contract.payments.remainingBalance)}\n\n` +
       `¡Gracias por su preferencia! Donde la carne es más suave que la tortilla. 🌮🔥\n` +
@@ -705,19 +911,6 @@ const App = {
     const encoded = encodeURIComponent(message);
     const waUrl = phone ? `https://wa.me/52${phone}?text=${encoded}` : `https://wa.me/?text=${encoded}`;
     window.open(waUrl, '_blank');
-  },
-
-  confirmDeleteContract(contractId) {
-    const contract = StorageManager.getContract(contractId);
-    if (!contract) return;
-
-    if (confirm(`¿Estás seguro de eliminar el contrato Folio #${contract.folio} de "${contract.client.name}"? Esta acción no se puede deshacer.`)) {
-      StorageManager.deleteContract(contractId);
-      this.showToast(`Contrato #${contract.folio} eliminado.`, 'info');
-      this.renderStats();
-      this.renderContractsTable();
-      if (typeof CalendarManager !== 'undefined') CalendarManager.render();
-    }
   },
 
   closeModal(modalId) {
