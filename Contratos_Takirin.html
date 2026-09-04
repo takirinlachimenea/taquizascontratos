@@ -546,7 +546,10 @@ body {
             ←
           </button>
           <div>
-            <h2 id="editor-title-heading" class="text-lg font-black text-slate-900">Editor de Contrato (Formato FOP-01)</h2>
+            <div class="flex items-center gap-2.5 flex-wrap">
+              <h2 id="editor-title-heading" class="text-lg font-black text-slate-900">Editor de Contrato (Formato FOP-01)</h2>
+              <span id="editor-autosave-badge" class="hidden text-[11px] font-bold px-2.5 py-0.5 rounded-full border transition-all"></span>
+            </div>
             <p id="editor-subtitle-text" class="text-xs text-slate-500">Los cambios se actualizan en tiempo real en la vista previa del documento oficial.</p>
           </div>
         </div>
@@ -2353,6 +2356,10 @@ const App = {
   editingContract: null,
   activeFilter: 'all',
   searchQuery: '',
+  autoSaveTimer: null,
+  autoSaveInterval: null,
+  isDirty: false,
+  lastAutoSavedTime: null,
 
   async init() {
     this.setupEventListeners();
@@ -2362,6 +2369,7 @@ const App = {
     if (typeof CalendarManager !== 'undefined') {
       CalendarManager.init();
     }
+    this.startAutoSaveSystem();
   },
 
   setupEventListeners() {
@@ -2762,7 +2770,8 @@ const App = {
 
     if (heading) heading.textContent = `Nuevo Contrato de Taquiza (Folio #${nextFolio})`;
     if (subtitle) subtitle.textContent = `Llena los datos y los cambios se reflejarán en tiempo real.`;
-    if (banner) banner.classList.add('hidden');
+    this.isDirty = false;
+    this.updateAutoSaveBadge('waiting');
 
     setTimeout(() => {
       const clientInput = document.getElementById('input-client-name');
@@ -2832,6 +2841,10 @@ const App = {
         bannerText.innerHTML = `<strong>Editando Folio #${contract.folio}:</strong> Modifica los datos que desees y pulsa <strong>Guardar Contrato</strong>.`;
         banner.classList.remove('hidden');
       }
+
+      this.isDirty = false;
+      this.lastAutoSavedTime = new Date(contract.updatedAt || contract.createdAt || Date.now());
+      this.updateAutoSaveBadge('saved');
 
       setTimeout(() => {
         const clientInput = document.getElementById('input-client-name');
@@ -3012,10 +3025,92 @@ const App = {
     this.onFormChange();
   },
 
+  startAutoSaveSystem() {
+    if (this.autoSaveInterval) clearInterval(this.autoSaveInterval);
+    // Periodic auto-save every 15 seconds while actively editing
+    this.autoSaveInterval = setInterval(() => {
+      if (this.currentView === 'editor' && this.isDirty && this.editingContract) {
+        this.autoSaveContract(false);
+      }
+    }, 15000);
+  },
+
+  updateAutoSaveBadge(state, customMessage) {
+    const badge = document.getElementById('editor-autosave-badge');
+    if (!badge) return;
+
+    badge.classList.remove('hidden', 'bg-amber-50', 'text-amber-800', 'border-amber-300', 'bg-blue-50', 'text-blue-800', 'border-blue-300', 'bg-emerald-50', 'text-emerald-800', 'border-emerald-300', 'bg-slate-100', 'text-slate-600', 'border-slate-300');
+
+    if (state === 'dirty') {
+      badge.classList.add('bg-amber-50', 'text-amber-800', 'border-amber-300');
+      badge.innerHTML = `● Guardando cambios...`;
+    } else if (state === 'saving') {
+      badge.classList.add('bg-blue-50', 'text-blue-800', 'border-blue-300');
+      badge.innerHTML = `⏳ Guardando automáticamente...`;
+    } else if (state === 'saved') {
+      const timeStr = this.lastAutoSavedTime ? this.lastAutoSavedTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : '';
+      badge.classList.add('bg-emerald-50', 'text-emerald-800', 'border-emerald-300');
+      badge.innerHTML = `✓ Guardado automático ${timeStr ? '(' + timeStr + ')' : ''}`;
+    } else if (state === 'waiting') {
+      badge.classList.add('bg-slate-100', 'text-slate-600', 'border-slate-300');
+      badge.innerHTML = `✍️ Escribe el nombre del cliente`;
+    } else if (customMessage) {
+      badge.classList.add('bg-slate-100', 'text-slate-600', 'border-slate-300');
+      badge.textContent = customMessage;
+    }
+  },
+
+  autoSaveContract(isUserAction = false) {
+    if (!this.editingContract) return false;
+
+    this.syncFormToModel();
+    this.recalculateFormTotals();
+
+    const clientName = (this.editingContract.client && this.editingContract.client.name) ? this.editingContract.client.name.trim() : '';
+
+    if (!clientName) {
+      try {
+        localStorage.setItem('tk_contract_draft', JSON.stringify(this.editingContract));
+      } catch (e) {}
+      this.updateAutoSaveBadge('waiting');
+      return false;
+    }
+
+    this.updateAutoSaveBadge('saving');
+
+    try {
+      const saved = StorageManager.upsertContract(this.editingContract);
+      this.isDirty = false;
+      this.lastAutoSavedTime = new Date();
+      this.updateAutoSaveBadge('saved');
+      this.renderStats();
+      this.renderContractsTable();
+      if (typeof CalendarManager !== 'undefined') CalendarManager.render();
+
+      if (isUserAction) {
+        this.showToast(`✓ Contrato #${saved.folio} guardado automáticamente`, 'success');
+      }
+      return true;
+    } catch (err) {
+      console.error('Error in autoSaveContract:', err);
+      return false;
+    }
+  },
+
   onFormChange() {
     this.syncFormToModel();
     this.recalculateFormTotals();
     this.updateLivePreview();
+    this.isDirty = true;
+    this.updateAutoSaveBadge('dirty');
+
+    // Debounce auto-save: 2 seconds after user stops typing
+    if (this.autoSaveTimer) clearTimeout(this.autoSaveTimer);
+    this.autoSaveTimer = setTimeout(() => {
+      if (this.currentView === 'editor' && this.editingContract && this.isDirty) {
+        this.autoSaveContract(false);
+      }
+    }, 2000);
   },
 
   syncFormToModel() {
@@ -3075,56 +3170,77 @@ const App = {
     previewContainer.innerHTML = PDFGenerator.renderContractHTML(this.editingContract);
   },
 
-  saveCurrentContract() {
+  saveCurrentContract(silent = false) {
     this.syncFormToModel();
-    if (!this.editingContract.client || !this.editingContract.client.name) {
-      this.showToast('Por favor escribe el nombre del cliente.', 'warning');
-      const nameInput = document.getElementById('input-client-name');
-      if (nameInput) nameInput.focus();
-      return;
+    if (!this.editingContract.client || !this.editingContract.client.name || !this.editingContract.client.name.trim()) {
+      if (!silent) {
+        this.showToast('Por favor escribe el nombre del cliente.', 'warning');
+        const nameInput = document.getElementById('input-client-name');
+        if (nameInput) nameInput.focus();
+      }
+      return false;
     }
 
     this.recalculateFormTotals();
     const saved = StorageManager.upsertContract(this.editingContract);
-    this.showToast(`¡Contrato #${saved.folio} guardado exitosamente!`, 'success');
+    this.isDirty = false;
+    this.lastAutoSavedTime = new Date();
+    this.updateAutoSaveBadge('saved');
+
+    if (!silent) {
+      this.showToast(`¡Contrato #${saved.folio} guardado exitosamente!`, 'success');
+    }
     this.renderStats();
     this.renderContractsTable();
     if (typeof CalendarManager !== 'undefined') CalendarManager.render();
+    return true;
   },
 
   saveAndReturn() {
-    this.saveCurrentContract();
-    setTimeout(() => {
-      this.navigate('contracts');
-    }, 350);
+    const success = this.saveCurrentContract(false);
+    if (success) {
+      setTimeout(() => {
+        this.navigate('contracts');
+      }, 350);
+    }
   },
 
   viewAndPrintContract(contractId) {
     let contract = null;
     if (contractId) {
-      contract = StorageManager.getContract(contractId);
+      if (this.editingContract && (this.editingContract.id === contractId || this.editingContract.folio === contractId)) {
+        this.autoSaveContract(false);
+        contract = this.editingContract;
+      } else {
+        contract = StorageManager.getContract(contractId);
+      }
     } else if (this.editingContract) {
-      this.syncFormToModel();
-      this.recalculateFormTotals();
+      this.autoSaveContract(false);
       contract = this.editingContract;
     }
 
     if (!contract) return;
+    this.showToast('🖨️ Contrato guardado. Abriendo formato para imprimir...', 'info');
     PDFGenerator.printContract(contract);
   },
 
-  downloadContractPDF(contractId) {
+  async downloadContractPDF(contractId) {
     let contract = null;
     if (contractId) {
-      contract = StorageManager.getContract(contractId);
+      if (this.editingContract && (this.editingContract.id === contractId || this.editingContract.folio === contractId)) {
+        this.autoSaveContract(false);
+        contract = this.editingContract;
+      } else {
+        contract = StorageManager.getContract(contractId);
+      }
     } else if (this.editingContract) {
-      this.syncFormToModel();
-      this.recalculateFormTotals();
+      this.autoSaveContract(false);
       contract = this.editingContract;
     }
 
     if (!contract) return;
-    PDFGenerator.downloadPDF(contract);
+    this.showToast('📥 Contrato guardado automáticamente. Generando PDF...', 'info');
+    await PDFGenerator.downloadPDF(contract);
   },
 
   openQuickAnticipoModal(contractId) {

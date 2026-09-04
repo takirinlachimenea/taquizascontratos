@@ -39,7 +39,7 @@
   <meta http-equiv="Expires" content="0">
 
   <!-- Custom CSS & Print Styles -->
-  <link rel="stylesheet" href="css/styles.css?v=20260831.8">
+  <link rel="stylesheet" href="css/styles.css?v=20260904.1">
 </head>
 <body class="bg-slate-100 min-h-screen text-slate-800 flex flex-col md:flex-row antialiased">
 
@@ -366,7 +366,10 @@
             ←
           </button>
           <div>
-            <h2 id="editor-title-heading" class="text-lg font-black text-slate-900">Editor de Contrato (Formato FOP-01)</h2>
+            <div class="flex items-center gap-2.5 flex-wrap">
+              <h2 id="editor-title-heading" class="text-lg font-black text-slate-900">Editor de Contrato (Formato FOP-01)</h2>
+              <span id="editor-autosave-badge" class="hidden text-[11px] font-bold px-2.5 py-0.5 rounded-full border transition-all"></span>
+            </div>
             <p id="editor-subtitle-text" class="text-xs text-slate-500">Los cambios se actualizan en tiempo real en la vista previa del documento oficial.</p>
           </div>
         </div>
@@ -698,11 +701,11 @@
   <div id="toast-container" class="toast-container fixed bottom-5 right-5 z-50 space-y-2 pointer-events-none"></div>
 
   <!-- Application Logic Scripts (Versioned for Instant Cache Busting) -->
-  <script src="js/storage.js?v=20260831.8"></script>
-  <script src="js/contract-model.js?v=20260831.8"></script>
-  <script src="js/pdf-generator.js?v=20260831.8"></script>
-  <script src="js/calendar.js?v=20260831.8"></script>
-  <script src="js/app.js?v=20260831.8"></script>
+  <script src="js/storage.js?v=20260904.1"></script>
+  <script src="js/contract-model.js?v=20260904.1"></script>
+  <script src="js/pdf-generator.js?v=20260904.1"></script>
+  <script src="js/calendar.js?v=20260904.1"></script>
+  <script src="js/app.js?v=20260904.1"></script>
 
   <script>
     // Initialize Firebase URL input on load
